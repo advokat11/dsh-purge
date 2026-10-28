@@ -40,11 +40,11 @@ export function shimKind(v) {
 }
 
 export const LAYER_GROUP = {
-  提示词: "prompt",
-  代码: "code",
-  工具: "tools",
-  "0.1.5 兼容": "compat",
-  "0.2.0 兼容": "dsh20",
+  "промпт": "prompt",
+  "код": "code",
+  "Инструменты": "tools",
+  "совместимость с 0.1.5": "compat",
+  "Совместимость с 0.2.0": "dsh20",
 };
 
 export const GROUP_ORDER = ["prompt", "code", "tools", "compat", "dsh20"];
@@ -93,7 +93,7 @@ export function PatchGroups({ state }) {
     return h(
       "p",
       { role: "status" },
-      "读取失败，补丁明细暂不可用；请刷新重试。",
+      "ошибка чтения, детали патчей пока недоступны; обновите страницу и повторите.",
     );
   if (!state || !state.patch_status)
     return h("div", { className: "dshpp-skel", style: { height: 120 } });

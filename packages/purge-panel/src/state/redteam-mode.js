@@ -9,8 +9,8 @@ export function isRedteamPresetId(value) {
   if (!text) return false;
   if (text === "redteam") return true;
   if (/^red[\s_-]*team$/i.test(text)) return true;
-  const label = text.replace(/不是红队/g, "").replace(/非红队/g, "");
-  if (/红队/.test(label)) return true;
+  const label = text.replace(/не\s*RedTeam/gi, "").replace(/не-?RedTeam/gi, "");
+  if (/RedTeam/i.test(label)) return true;
   return false;
 }
 
@@ -74,8 +74,8 @@ export function isRedteamModeActive() {
     /* ignore */
   }
   if (typeof document === "undefined" || !document.querySelector) return false;
-  /* 新会话：模式下拉里的「红队模式」chip（选好但还没写入 session）
-   * 优先走语义化 data-* 挂点,其次 class 子串模糊匹配 + 文本兜底。 */
+  /* новый чат: chip «Режим RedTeam» в выпадающем списке режимов (выбран, но ещё не записан в session)
+   * приоритет — семантические data-* точки, затем нечёткое совпадение по подстроке class + по тексту. */
   try {
     const semantic = document.querySelector(
       "[data-agent-preset='redteam'], [data-preset-id='redteam'], [data-mode='redteam']",
@@ -88,18 +88,18 @@ export function isRedteamModeActive() {
       const text = String(el.textContent || "")
         .replace(/\s+/g, " ")
         .trim();
-      if (/红队模式/.test(text) || /^RedTeam\b/i.test(text)) return true;
+      if (/режим\s+RedTeam/i.test(text) || /^RedTeam\b/i.test(text)) return true;
     }
   } catch {
     /* ignore */
   }
   try {
     const labels = document.querySelectorAll(
-      "[class*='label' i][class*='preset' i], [class*='presetLabel' i], [title*='红队'], [title*='RedTeam']",
+      "[class*='label' i][class*='preset' i], [class*='presetLabel' i], [title*='RedTeam' i], [title*='RedTeam']",
     );
     for (const el of labels) {
       const text = String(el.textContent || "").trim();
-      if (/红队模式/.test(text) || /^RedTeam\b/i.test(text)) return true;
+      if (/режим\s+RedTeam/i.test(text) || /^RedTeam\b/i.test(text)) return true;
       if (isRedteamPresetId(text)) return true;
     }
   } catch {
@@ -122,9 +122,9 @@ export function looksLikeSendControl(el) {
   ]
     .filter(Boolean)
     .join(" ");
-  if (/停止|Stop/i.test(label) && !/发送|Send/i.test(label)) return false;
-  if (/发送|Submit|Send(?!\s*feedback)/i.test(label)) return true;
-  /* composer 主按钮：data-composer-card 内的 primary */
+  if (/останов|стоп|Stop/i.test(label) && !/отправ|Send/i.test(label)) return false;
+  if (/отправ|Submit|Send(?!\s*feedback)/i.test(label)) return true;
+  /* главная кнопка composer: primary внутри data-composer-card */
   try {
     const card = btn.closest("[data-composer-card], [data-composer-seat]");
     if (card) {

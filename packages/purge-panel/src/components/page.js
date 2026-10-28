@@ -14,12 +14,12 @@ import { __dshPurgeDrill } from "../vendor/drill.js";
 import { readDrillAuth, setDock, requestDrill } from "../state/dock.js";
 
 const TABS = [
-  ["status", "状态", "宿主兼容、补丁、破甲自检"],
-  ["prompt", "提示词", "注入正文与破甲强化段"],
-  ["rules", "规则", "规则集与工作区策略"],
-  ["skills", "技能", "DSH 技能目录"],
-  ["drill", "演练台", "红队演练与环境适配"],
-  ["more", "更多", "服务器名单、更新与维护"],
+  ["status", "Статус", "совместимость с хостом, патчи, самопроверка снятия защиты"],
+  ["prompt", "Промпт", "текст инъекции и усиливающий блок снятия защиты"],
+  ["rules", "Правила", "наборы правил и политики рабочего пространства"],
+  ["skills", "Навыки", "каталог навыков DSH"],
+  ["drill", "Полигон", "учения RedTeam и адаптация окружения"],
+  ["more", "Ещё", "список серверов, обновление и обслуживание"],
 ];
 
 function PurgeGlyph({ size = 18 } = {}) {
@@ -58,67 +58,67 @@ export function StatusStrip({ info }) {
     h(
       "span",
       { className: "dshpp-strip-item" },
-      "兼容级别 ",
+      "уровень совместимости ",
       h(
         "b",
         null,
         level === "qualified"
-          ? "已回归验证"
+          ? "подтверждено регрессией"
           : level === "unverified"
-            ? "未验证版本"
+            ? "непроверенная версия"
             : level === "mixed"
-              ? "组件版本不一致"
+              ? "версии компонентов расходятся"
               : level
-                ? "未定位宿主"
+                ? "хост не найден"
                 : info?.ok === false
-                  ? "读取失败"
-                  : "检测中",
+                  ? "ошибка чтения"
+                  : "проверка",
       ),
       h(
         HelpTip,
-        { title: "兼容级别" },
+        { title: "уровень совместимости" },
         compat.message ||
-          "读取宿主组件版本后给出结论。qualified 表示该 DSH 版本的补丁锚点已逐条回归。",
+          "Вердикт по версиям компонентов хоста. qualified значит, что якоря патчей для этой версии DSH проверены по одному.",
       ),
     ),
     h(
       "span",
       { className: "dshpp-strip-item" },
-      "磁盘写入计数 ",
+      "счётчик записи на диск ",
       h(
         "b",
         null,
         `${info?.patches_applied ?? "?"}/${info?.patches_total ?? "?"}`,
-        info?.patches_na > 0 ? ` · ${info.patches_na} 条本机不适用` : "",
+        info?.patches_na > 0 ? ` · ${info.patches_na} шт. неприменимы на этой машине` : "",
       ),
       h(
         HelpTip,
-        { title: "宿主补丁" },
-        `实际写进 DSH 宿主代码的补丁条数（分母只算本机适用的）。全部补丁 ${info?.patches_total_all ?? "?"} 条，其中 ${info?.patches_na ?? 0} 条目标插件/预设未安装；待应用表示锚点还在、还没写入；没对上表示宿主源码已变，需要重新定位锚点。`,
+        { title: "патчи хоста" },
+        `Сколько патчей реально записано в код хоста DSH (в знаменателе только применимые здесь). Всего патчей ${info?.patches_total_all ?? "?"}, из них ${info?.patches_na ?? 0} — целевой плагин/пресет не установлен; «ожидает применения» значит якорь на месте, записи ещё не было; «не совпало» значит исходники хоста изменились и якорь нужно искать заново.`,
       ),
     ),
     h(
       "span",
       { className: "dshpp-strip-item" },
-      "插件 ",
+      "плагин ",
       h("b", null, info?.plugin_version || __PANEL_VERSION__),
     ),
   );
 }
 
-/** 磁盘归档与进程入口分别呈现；不能从磁盘写入推断运行时已加载。 */
+/** Дисковый архив и точка входа процесса показываются отдельно; по записи на диск нельзя судить о том, что загружено в рантайме. */
 export function LayoutNotice({ info }) {
   if (!info || (!info.asar_still_sealed && !info.host_layout)) return null;
   const sealed = info.asar_still_sealed === true;
   const note =
     info.host_layout?.note ||
-    "目标磁盘仍有 app.asar；当前进程加载来源尚未确认。";
+    "На целевом диске всё ещё лежит app.asar; источник загрузки текущего процесса ещё не подтверждён.";
   const handoff = info.asar_handoff
-    ? ` 换包状态：${{ not_scheduled: "尚未应用：点「应用」后才会安排换包", archive_reappeared: "归档再次出现，旧换包记录不代表当前已完成", backup_missing: "原归档备份缺失，请检查诊断", unknown_target: "目标实例未确定", unreadable: "换包记录不可读，请检查诊断", starting: "助手启动中（尚未确认就绪）", ready: "助手已就绪", waiting_for_quit: "等待完整退出（macOS ⌘Q / Windows 系统托盘）", waiting_for_unlock: "等待归档解锁", moving: "正在保留原归档", complete: "换包完成，请手动打开 DSH", already_unsealed: "归档已移走，请手动打开 DSH", failed: "失败，请查看诊断并按恢复文档操作", expired: "等待超时，请重新应用或按恢复文档操作", helper_stopped: "助手意外结束，请重新应用或按恢复文档操作" }[info.asar_handoff.phase] || info.asar_handoff.phase}。`
+      ? ` Фаза замены пакета: ${{ not_scheduled: "ещё не применено: замена пакета планируется только после нажатия «Применить»", archive_reappeared: "архив появился снова; старая запись о замене не значит, что текущая уже завершена", backup_missing: "резервная копия исходного архива отсутствует, проверьте диагностику", unknown_target: "целевой экземпляр не определён", unreadable: "запись о замене не читается, проверьте диагностику", starting: "помощник запускается (готовность пока не подтверждена)", ready: "помощник готов", waiting_for_quit: "ждём полного выхода (macOS ⌘Q / системный трей Windows)", waiting_for_unlock: "ждём разблокировки архива", moving: "сохраняем исходный архив", complete: "замена пакета завершена, откройте DSH вручную", already_unsealed: "архив уже убран, откройте DSH вручную", failed: "сбой, смотрите диагностику и действуйте по документу восстановления", expired: "ожидание истекло, примените заново или действуйте по документу восстановления", helper_stopped: "помощник неожиданно завершился, примените заново или действуйте по документу восстановления" }[info.asar_handoff.phase] || info.asar_handoff.phase}.`
     : "";
   const diskNote =
     info.host_layout?.disk.archive_exists === true
-      ? " 目标磁盘仍有 app.asar。"
+      ? " На целевом диске всё ещё лежит app.asar."
       : "";
   if (sealed) {
     return h(
@@ -129,23 +129,23 @@ export function LayoutNotice({ info }) {
       handoff,
     );
   }
-  // 换包正常时只留一行确认，说明折进 details：它讲的是"入口不代表已重载"，
-  // 属于常驻解释，不该每次都占一行注意力。
+  // при нормальной замене пакета оставляем одну строку подтверждения, а пояснение прячем в details: оно говорит, что «точка входа не значит перезагрузку»,
+  // это постоянное объяснение и не должно каждый раз занимать строку внимания.
   return h(
     "details",
     { className: "dshpp-layout-details" },
-    h("summary", null, "✓ 已从解包目录启动（换包完成）"),
+    h("summary", null, "✓ запущено из распакованного каталога (замена пакета завершена)"),
     h("p", { className: "dshpp-note" }, note, diskNote, handoff),
   );
 }
 
-/** 界面与后端不是同一份包时，必须显眼提示——否则用户会以为设置没生效。 */
+/** Когда интерфейс и бэкенд из разных пакетов, об этом надо сказать заметно — иначе пользователь решит, что настройки не применились. */
 export function VersionNotice({ info }) {
   if (info && info.ok === false) {
     return h(
       "p",
       { className: "dshpp-warn", role: "status" },
-      `状态读取失败：${info.error || "接口不可用"}。当前宿主与补丁状态未知，请点「刷新」重试；持续失败时请提供操作系统、DSH/插件版本和此错误。`,
+      `Ошибка чтения статуса: ${info.error || "интерфейс недоступен"}. Состояние хоста и патчей неизвестно — нажмите «Обновить» и повторите; если ошибка не уходит, приложите ОС, версии DSH/плагина и этот текст.`,
     );
   }
   const backend = info?.plugin_version;
@@ -153,7 +153,7 @@ export function VersionNotice({ info }) {
   return h(
     "p",
     { className: "dshpp-warn", role: "status" },
-    `官方版本 ${backend}；界面 ${__PANEL_VERSION__}。两者不一致时设置可能不生效，请更新到同一版本后重启 DSH。`,
+    `Официальная версия ${backend}; интерфейс ${__PANEL_VERSION__}. Если они расходятся, настройки могут не применяться — обновитесь до одной версии и перезапустите DSH.`,
   );
 }
 
@@ -170,7 +170,7 @@ export function PurgePage() {
     apiJson("/dsh-purge/status")
       .then(setInfo)
       .catch((error) => setInfo(unavailableStatus(error)));
-  // 子组件的 onStatus 在依赖里，必须是稳定引用，否则每次渲染都会再 setInfo 一次。
+  // onStatus дочернего компонента лежит в зависимостях, значит ссылка должна быть стабильной, иначе setInfo будет вызываться на каждый рендер.
   const mergeInfo = useCallback((s) => s && setInfo(s), []);
   useEffect(() => {
     if (tab === "status") loadInfo();
@@ -211,7 +211,7 @@ export function PurgePage() {
             ? h(
                 "span",
                 { className: "dshpp-page-ver" },
-                "社区版 " + __PANEL_VERSION__,
+                "community-версия " + __PANEL_VERSION__,
               )
             : null,
         ),
@@ -283,7 +283,7 @@ export function PurgePage() {
                   h(
                     "p",
                     { className: "dshpp-muted" },
-                    "演练台需要先完成一次授权。",
+                    "для полигона сначала нужна авторизация.",
                   ),
                   h(
                     Btn,
@@ -294,7 +294,7 @@ export function PurgePage() {
                         requestDrill("auth");
                       },
                     },
-                    "去授权",
+                    "Перейти к авторизации",
                   ),
                 ),
           )
@@ -304,8 +304,8 @@ export function PurgePage() {
       "footer",
       { className: "dshpp-page-foot" },
       __COMMUNITY__
-        ? "基于 YuJunZhiXue/dsh-purge 1.1.71 独立维护 · MIT · 保留原作者署名"
-        : "界面独立维护 · 基于 YuJunZhiXue/dsh-purge 1.1.71（MIT）",
+        ? "Поддерживается независимо · на основе YuJunZhiXue/dsh-purge 1.1.71 · MIT · авторство сохранено"
+        : "Интерфейс поддерживается независимо · на основе YuJunZhiXue/dsh-purge 1.1.71 (MIT)",
     ),
   );
 }

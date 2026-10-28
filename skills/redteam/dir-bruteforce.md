@@ -1,27 +1,27 @@
 ---
 name: dir-bruteforce
-description: 目录与文件爆破：后台入口、备份文件、配置泄露、源码与版本库暴露（ffuf/feroxbuster/dirsearch/gobuster）
-whenToUse: 已确认 Web 存活但指纹无直接 Nday 线索；需要找后台入口、备份、配置、源码、上传点等隐藏路径
+description: Брутфорс каталогов и файлов: входы в админку, бэкапы, утечки конфигурации, раскрытие исходников и репозиториев (ffuf/feroxbuster/dirsearch/gobuster)
+whenToUse: Веб-сервис уже подтверждённо жив, но фингерпринт не даёт зацепок на Nday; нужно найти скрытые пути — админку, бэкапы, конфиги, исходники, точки загрузки
 role: vuln-scan
 enabled: true
 ---
 
-# 目录与文件爆破（找入口的主力）
+# Брутфорс каталогов и файлов (основная сила для поиска входов)
 
-**实战里大部分入口不是 CVE 打进去的，是目录爆破扫出来的**：后台 `/admin`、备份 `www.zip`、配置 `.env`、
-源码 `.git/`、接口文档 `swagger-ui.html`、上传点、调试页、actuator/druid 监控台。
-本技能覆盖本机已就位的四个工具，**不要只用一个**——它们的字典与判定逻辑不同，互补。
+**В реальной работе большинство входов находится не через CVE, а через брутфорс каталогов**: админка `/admin`, бэкап `www.zip`, конфиг `.env`,
+исходники `.git/`, документация API `swagger-ui.html`, точки загрузки, отладочные страницы, консоли мониторинга actuator/druid.
+Этот навык покрывает четыре уже установленных на машине инструмента, и **использовать нужно не один** — у них разные словари и логика определения попаданий, они дополняют друг друга.
 
-## 本机工具
+## Инструменты на этой машине
 
-| 工具 | 路径 | 版本 | 特点 |
+| Инструмент | Путь | Версия | Особенности |
 | --- | --- | --- | --- |
-| **feroxbuster** | `/usr/bin/feroxbuster` | 2.13.1 | Rust，递归爆破最强，自动跟随目录层级，**首选** |
-| **ffuf** | `/usr/bin/ffuf` | 2.1.0-dev | 最快、最灵活，支持多字典/vhost/参数 fuzz |
-| **dirsearch** | `$DSH_HOME/redteam/toolkit/dirsearch/dirsearch` | v0.5.0 | Python。`setup.sh` 不下载，需自行放到该路径 |
-| **gobuster** | `/usr/bin/gobuster` | — | 轻量稳定，dir/dns/vhost 三模式 |
+| **feroxbuster** | `/usr/bin/feroxbuster` | 2.13.1 | Rust, лучший рекурсивный брутфорс, сам обходит уровни каталогов, **первый выбор** |
+| **ffuf** | `/usr/bin/ffuf` | 2.1.0-dev | Самый быстрый и гибкий, поддерживает несколько словарей/vhost/fuzz параметров |
+| **dirsearch** | `$DSH_HOME/redteam/toolkit/dirsearch/dirsearch` | v0.5.0 | Python. `setup.sh` его не скачивает, нужно положить по этому пути самостоятельно |
+| **gobuster** | `/usr/bin/gobuster` | — | Лёгкий и стабильный, режимы dir/dns/vhost |
 
-## 一、feroxbuster（首选：递归 + 自动过滤）
+## 1. feroxbuster (первый выбор: рекурсия + автофильтрация)
 
 ```bash
 feroxbuster -u https://target.example.com \
@@ -32,27 +32,27 @@ feroxbuster -u https://target.example.com \
   -o runs/ferox-target.txt --json -o runs/ferox-target.json
 ```
 
-要点：`-d 3`（递归深度）别开太大；`--rate-limit` 交给服务器喘气；`-x` 后缀表必须带**备份与配置类**。
+Важное: `-d 3` (глубина рекурсии) не задирайте; `--rate-limit` даёт серверу дышать; в списке `-x` обязательно должны быть **бэкапы и конфиги**.
 
-## 二、ffuf（最快，多字典 / vhost / 参数）
+## 2. ffuf (самый быстрый, несколько словарей / vhost / параметры)
 
 ```bash
-# 目录与文件（两轮：先目录，再按命中的目录加后缀）
+# каталоги и файлы (два прохода: сначала каталоги, затем по найденным каталогам с расширениями)
 ffuf -u https://target/FUZZ -w /usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt \
   -mc 200,204,301,302,307,401,403,500 -fc 404 -t 40 -rate 80 -timeout 10 \
   -o runs/ffuf-dir.json -of json
 
-# 敏感文件（备份/配置/源码/密钥）
+# чувствительные файлы (бэкапы/конфиги/исходники/ключи)
 ffuf -u https://target/FUZZ -w /usr/share/seclists/Discovery/Web-Content/quickhits.txt \
   -mc all -fc 404 -t 40 -o runs/ffuf-quick.json -of json
 
-# vhost 虚拟主机发现（同 IP 多站点，边缘资产常从这里出来）
+# поиск виртуальных хостов vhost (несколько сайтов на одном IP, периферийные активы часто находятся здесь)
 ffuf -u https://target/ -H "Host: FUZZ.example.com" \
   -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-20000.txt \
   -fs 0 -mc all -t 50 -o runs/ffuf-vhost.json -of json
 ```
 
-## 三、dirsearch（字典全，适合补漏）
+## 3. dirsearch (полные словари, удобно закрывать пробелы)
 
 ```bash
 $DSH_HOME/redteam/toolkit/dirsearch/dirsearch \
@@ -61,55 +61,55 @@ $DSH_HOME/redteam/toolkit/dirsearch/dirsearch \
   -r -R 3 --format json -o runs/dirsearch-target.json
 ```
 
-## 四、gobuster（轻量兜底）
+## 4. gobuster (лёгкий вариант на подхвате)
 
 ```bash
 gobuster dir -u https://target -w /usr/share/seclists/Discovery/Web-Content/common.txt \
   -x php,asp,aspx,jsp,zip,bak -t 30 -k -o runs/gobuster-target.txt
 ```
 
-## 字典（本机已有，优先用这些）
+## Словари (уже есть на машине, используйте в приоритете)
 
-| 用途 | 路径 |
+| Назначение | Путь |
 | --- | --- |
-| 大目录字典 | `/usr/share/seclists/Discovery/Web-Content/raft-large-directories.txt` |
-| 中目录字典 | `/usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt` |
-| 常见文件 | `/usr/share/seclists/Discovery/Web-Content/common.txt` |
-| 敏感文件（quickhits） | `/usr/share/seclists/Discovery/Web-Content/quickhits.txt` |
-| 子域（vhost 用） | `/usr/share/seclists/Discovery/DNS/subdomains-top1million-20000.txt` |
+| Большой словарь каталогов | `/usr/share/seclists/Discovery/Web-Content/raft-large-directories.txt` |
+| Средний словарь каталогов | `/usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt` |
+| Частые файлы | `/usr/share/seclists/Discovery/Web-Content/common.txt` |
+| Чувствительные файлы (quickhits) | `/usr/share/seclists/Discovery/Web-Content/quickhits.txt` |
+| Поддомены (для vhost) | `/usr/share/seclists/Discovery/DNS/subdomains-top1million-20000.txt` |
 
-字典目录：`/usr/share/seclists`、`/usr/share/wordlists`。**缺字典时**用 `redteam_credential_list` 里已收集的
-单位词（品牌名、拼音缩写）自造小字典——针对性字典命中率往往高于通用大字典。
+Каталоги словарей: `/usr/share/seclists`, `/usr/share/wordlists`. **Если словаря нет**, соберите небольшой словарь из слов организации
+(название бренда, аббревиатуры из пиньиня), уже собранных в `redteam_credential_list` — целевой словарь обычно результативнее общего большого.
 
-## 重点目标（扫到就要跟到底）
+## Ключевые цели (нашли — доводите до конца)
 
-| 命中 | 下一步 |
+| Попадание | Что дальше |
 | --- | --- |
-| `/admin`、`/manage`、`/login`、后台路径 | 交给账号权限路线：默认口令/弱口令（技能 `credential-attack`） |
-| `.git/`、`.svn/`、`.env`、`config.php.bak`、`www.zip`、`web.rar` | **源码与配置泄露**：拉下来找数据库连接串、密钥、硬编码账号 → `redteam_credential_add` |
-| `swagger-ui.html`、`/v2/api-docs`、`/openapi.json` | 提取全量接口清单 → 未授权与越权探测（技能 `unauth-exploit`） |
-| `actuator`、`druid`、`/console`、`/jmx` | 未授权监控台，常直通 RCE 或数据库 |
-| 上传点、导入、备份恢复、模板/报表设计 | 交给漏洞利用角色串 getshell 链 |
-| `.ssh/`、`id_rsa`、`*.pem`、`*.jks` | 私钥泄露 → 直接尝试登录（`ssh -i`） |
+| `/admin`, `/manage`, `/login`, пути админки | Передать в линию доступа к аккаунтам: пароли по умолчанию/слабые пароли (навык `credential-attack`) |
+| `.git/`, `.svn/`, `.env`, `config.php.bak`, `www.zip`, `web.rar` | **Утечка исходников и конфигурации**: скачать и искать строки подключения к БД, ключи, захардкоженные учётные данные → `redteam_credential_add` |
+| `swagger-ui.html`, `/v2/api-docs`, `/openapi.json` | Извлечь полный список интерфейсов → проверка на отсутствие авторизации и обход прав (навык `unauth-exploit`) |
+| `actuator`, `druid`, `/console`, `/jmx` | Консоли мониторинга без авторизации, часто ведут сразу к RCE или базе данных |
+| Точки загрузки, импорт, восстановление из бэкапа, дизайн шаблонов/отчётов | Передать роли эксплуатации для сборки цепочки получения shell |
+| `.ssh/`, `id_rsa`, `*.pem`, `*.jks` | Утечка приватных ключей → сразу пробовать вход (`ssh -i`) |
 
-## 降噪与自保
+## Снижение шума и самосохранение
 
-1. **必须先过滤 404 的软 404**：先请求一个不存在的随机路径，看返回状态码与响应长度，用它做 `--filter-size` / `-fs`。
-2. **限速**：`-rate 80` / `--delay 0.1` / `-t 30` 起步；被 WAF 拦（大量 403/429）先降到 5–10 req/s。
-3. **别碰危险路径**：`/logout`、`/reboot`、`/shutdown`、`/delete*`、`/reset*` 这类会改状态的不要爆破，
-   字典里遇到也要排除（会造成业务中断，且演练记分不认）。
-4. **被封 >3 次放弃**该资产（`redteam_asset_test` status=abandoned + blocked=true），转下一个。
-5. **内网目标走隧道**：feroxbuster `--proxy socks5://127.0.0.1:1080`、ffuf `-x socks5://127.0.0.1:1080`
-   （技能 `suo5-tunnel`）。
+1. **Сначала нужно отфильтровать «мягкие» 404**: запросите несуществующий случайный путь, посмотрите код ответа и длину тела — по ним задайте `--filter-size` / `-fs`.
+2. **Ограничение скорости**: начинайте с `-rate 80` / `--delay 0.1` / `-t 30`; если поймал WAF (много 403/429), снижайте до 5–10 req/s.
+3. **Не трогайте опасные пути**: `/logout`, `/reboot`, `/shutdown`, `/delete*`, `/reset*` — меняющие состояние не брутфорсьте,
+   и из словарей их исключайте (это ломает бизнес, и в зачёт учения такие находки не идут).
+4. **Больше 3 блокировок — отказывайтесь** от актива (`redteam_asset_test` status=abandoned + blocked=true) и переходите к следующему.
+5. **Цели во внутренней сети — через туннель**: feroxbuster `--proxy socks5://127.0.0.1:1080`, ffuf `-x socks5://127.0.0.1:1080`
+   (навык `suo5-tunnel`).
 
-## 输出与落库（强制）
+## Вывод и запись в базу (обязательно)
 
-1. **隐藏路径本身不是得分项**，但**每个拿到东西的路径都要落库**：
-   - 找到后台/上传点/接口文档 → 记进该资产 `redteam_asset_test` 的 `surface`（追加式），交给漏洞发现/利用的下一个动作；
-   - 泄露源码/配置/密钥/凭据 → `redteam_credential_add`（`source=配置泄露`，`tool` 写路径与命令，明文写 `secret_value`）；
-   - 未授权可访问的接口/监控台 → 直接 `redteam_vuln_add`（含 `evidence` 回显）+ `redteam_http_evidence_add`。
-2. 每个关键动作 `redteam_chain_add`：`stage_code=internet`（或 `internal`），
-   `tool` 写实际命令原文（例如 `feroxbuster -u https://target -w raft-large-directories.txt -x php,zip,bak -d 3 --rate-limit 80`），
-   `result` 写命中摘要（例如 `命中 /admin/、/backup/www.zip、/.env`）。
-3. 跑完立刻 `redteam_asset_test` 回写 `status`/`test`/`surface`——不写状态后面的人一定重复扫。
-4. 字典与结果文件一律放 `runs/`（报告要能复现）。
+1. **Сам по себе скрытый путь очков не даёт**, но **каждый путь, где что-то нашлось, нужно записать в базу**:
+   - найдена админка/точка загрузки/документация API → записать в `surface` теста актива `redteam_asset_test` (в режиме добавления) и передать следующему действию поиска/эксплуатации уязвимостей;
+   - утёкшие исходники/конфиги/ключи/учётные данные → `redteam_credential_add` (`source=утечка конфигурации`, в `tool` путь и команда, открытый пароль в `secret_value`);
+   - интерфейсы и консоли, доступные без авторизации → сразу `redteam_vuln_add` (с выдержкой в `evidence`) + `redteam_http_evidence_add`.
+2. Каждое ключевое действие — `redteam_chain_add`: `stage_code=internet` (или `internal`),
+   в `tool` — фактический текст команды (например `feroxbuster -u https://target -w raft-large-directories.txt -x php,zip,bak -d 3 --rate-limit 80`),
+   в `result` — сводка попаданий (например `найдены /admin/, /backup/www.zip, /.env`).
+3. Сразу после прогона пишите обратно `status`/`test`/`surface` через `redteam_asset_test` — без статуса следующий человек обязательно пересканирует.
+4. Словари и файлы результатов — всегда в `runs/` (отчёт должен воспроизводиться).

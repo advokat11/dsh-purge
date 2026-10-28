@@ -31,14 +31,14 @@ export function fetchEnvAdaptStatus() {
     .catch(() => null);
 }
 
-/* 同步探测的占位：不再做同步 XHR（会卡 UI 主线程）。调用方 mustBlockSubmit
- * 在 cache 过期/缺失时按"未知→保守 block"处理，同时 EnvAdaptSendGate 的
- * useEffect 轮询会异步 refresh，下次调用即可放行。 */
+/* заглушка синхронной проверки: синхронный XHR больше не делаем (он блокирует главный поток UI). Вызывающий mustBlockSubmit
+ * при истёкшем/пустом cache считает «неизвестно → консервативный block», а поллинг useEffect в EnvAdaptSendGate
+ * асинхронно обновляет данные, так что следующий вызов уже пропустит. */
 export function fetchEnvAdaptStatusSync() {
   return null;
 }
 
-/** 红队发送前门禁：未就绪 → 授权并打开环境适配；可确认跳过。 */
+/** Гейт перед отправкой в RedTeam: не готово → авторизация и открытие адаптации окружения; пропуск можно подтвердить. */
 export function EnvAdaptSendGate() {
   const t = useT();
   const [open, setOpen] = useState(false);
@@ -62,13 +62,13 @@ export function EnvAdaptSendGate() {
   const blockAndOpen = useCallback(() => {
     setConfirmSkip(false);
     refresh();
-    /* 第一次：只走完整授权窗 → 授权后进环境适配页 */
+    /* первый раз: только полное окно авторизации → после авторизации попадаем на страницу адаптации окружения */
     if (!readDrillAuth()) {
       setOpen(false);
       requestDrillEnv();
       return true;
     }
-    /* 已授权过：只弹精简环境适配窗，不再自动拉开整块演练台 */
+    /* уже авторизованы: показываем только компактное окно адаптации окружения, весь полигон больше не разворачиваем */
     setOpen(true);
     return true;
   }, [refresh]);
@@ -76,7 +76,7 @@ export function EnvAdaptSendGate() {
   const mustBlockSubmit = useCallback(() => {
     if (!isRedteamModeActive()) return false;
     const cached = cacheRef.current;
-    /* cache 过期时触发异步刷新;本次调用按最后一次 cache 判断,未知保守 block */
+    /* при истёкшем cache запускаем асинхронное обновление; в этом вызове судим по последнему cache, неизвестно — консервативный block */
     if (!cached.at || Date.now() - cached.at > 2500) {
       refresh().catch(() => {});
     }
@@ -85,8 +85,8 @@ export function EnvAdaptSendGate() {
     return true;
   }, [blockAndOpen, refresh]);
 
-  /* 挂住宿主 SessionInputShell.submit —— 比点按钮启发式可靠。
-   * patch 必须可逆:存 origSubmit 到 WeakMap,unmount / 依赖变更时恢复。 */
+  /* перехватываем submit хостового SessionInputShell — это надёжнее эвристики по нажатию кнопки.
+   * patch должен быть обратимым: держим origSubmit в WeakMap и восстанавливаем при unmount / смене зависимостей. */
   useEffect(() => {
     const patched = new WeakMap();
     const patchedShells = [];
@@ -105,7 +105,7 @@ export function EnvAdaptSendGate() {
         try {
           if (mustBlockSubmit()) return;
         } catch {
-          /* 门禁异常时不吞掉发送 */
+          /* при сбое гейта отправку не глотаем */
         }
         return bound(mode);
       };

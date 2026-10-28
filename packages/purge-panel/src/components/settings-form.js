@@ -99,7 +99,7 @@ export function PurgifySection({ page = "status", onStatus } = {}) {
 
   const updateErrorText = (tr, e) => {
     const msg = String((e && e.message) || e || "");
-    if (msg === "timeout" || /aborted|abort|超时/i.test(msg))
+    if (msg === "timeout" || /aborted|abort|timeout/i.test(msg))
       return tr("update.timeout");
     if (/\b404\b/.test(msg) || /non-json/.test(msg))
       return tr("update.needRestart");
@@ -437,7 +437,7 @@ export function PurgifySection({ page = "status", onStatus } = {}) {
               if (d.manualQuit) {
                 setNotice({
                   kind: "ok",
-                  text: "补丁已写入磁盘，当前进程尚未加载。换包助手等待你完整退出（macOS 用 ⌘Q，Windows 从系统托盘退出）。确认换包完成后再手动打开 DSH，不会自动重启。",
+                  text: "Патчи записаны на диск, текущий процесс их ещё не загрузил. Помощник замены пакета ждёт, пока вы полностью выйдете (в macOS — ⌘Q, в Windows — выход из системного трея). После подтверждения замены откройте DSH вручную; автоматического перезапуска не будет.",
                 });
                 setAskRestart(false);
                 loadAll();
@@ -494,7 +494,7 @@ export function PurgifySection({ page = "status", onStatus } = {}) {
         rejectNeedPrompt(t);
         return;
       }
-      if (!d || !d.ok) throw new Error((d && d.error) || "保存失败");
+      if (!d || !d.ok) throw new Error((d && d.error) || "не удалось сохранить");
       const unchanged = readPromptBox() === content;
       if (unchanged && typeof d.content === "string") {
         overrideRef.current = d.content;
@@ -504,7 +504,7 @@ export function PurgifySection({ page = "status", onStatus } = {}) {
         kind: "ok",
         text: unchanged
           ? t("saved.override")
-          : "已保存提交的版本；当前修改尚未保存。",
+          : "Сохранена отправленная версия; текущие правки не сохранены.",
       });
     } catch (e) {
       if (ticket === actionTicket.current)
@@ -526,7 +526,7 @@ export function PurgifySection({ page = "status", onStatus } = {}) {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ content }),
       });
-      if (!d || !d.ok) throw new Error((d && d.error) || "保存失败");
+      if (!d || !d.ok) throw new Error((d && d.error) || "не удалось сохранить");
       const unchanged = ownRef.current === content;
       if (unchanged && typeof d.content === "string") {
         ownRef.current = d.content;
@@ -535,7 +535,7 @@ export function PurgifySection({ page = "status", onStatus } = {}) {
       setNotice({
         kind: "ok",
         text: !unchanged
-          ? "已保存提交的版本；当前修改尚未保存。"
+          ? "Сохранена отправленная версия; текущие правки не сохранены."
           : d.dropped > 0
             ? t("saved.own.dropped", { n: d.dropped })
             : t("saved.own"),
@@ -579,7 +579,7 @@ export function PurgifySection({ page = "status", onStatus } = {}) {
           kind: "ok",
           text: unchanged
             ? tr("saved.restoreInject")
-            : "已恢复默认值；当前修改尚未保存。",
+            : "Значения по умолчанию восстановлены; текущие правки не сохранены.",
         });
       })
       .catch((e) => {
@@ -830,18 +830,18 @@ export function PurgifySection({ page = "status", onStatus } = {}) {
             "b",
             null,
             !s
-              ? "正在读取宿主状态…"
+              ? "Читаем состояние хоста…"
               : s.ok === false
-                ? "状态读取失败，宿主与补丁状态未知"
+                ? "Ошибка чтения состояния: состояние хоста и патчей неизвестно"
                 : !located
                   ? sealedReady
-                    ? "宿主还没解开：点「应用」"
-                    : "未定位到宿主：点「应用」重试"
+                    ? "Хост ещё не распакован: нажмите «Применить»"
+                    : "Хост не найден: нажмите «Применить» и повторите"
                   : s?.asar_still_sealed
-                    ? `${applied}/${total} 条磁盘补丁（退出重开后加载）`
+                    ? `${applied}/${total} шт. патчей на диске (загрузятся после перезапуска)`
                     : tally.pending
-                      ? `还有 ${tally.pending} 条待应用`
-                      : `${applied}/${total} 条补丁已生效`,
+                      ? `ещё ${tally.pending} шт. ждут применения`
+                      : `${applied}/${total} шт. патчей действуют`,
           ),
           h(
             "span",
@@ -887,13 +887,13 @@ export function PurgifySection({ page = "status", onStatus } = {}) {
               onClick: loadAll,
               disabled: patchBusy || uninstallBusy,
             },
-            "刷新",
+            "Обновить",
           ),
         ),
         h(
           "p",
           { className: "dshpp-hero-hint" },
-          "装好插件、更新过 DSH、或发现模型又开始推脱时：点一次「应用」，然后退出并重开 DSH，就会恢复。",
+          "После установки плагина, обновления DSH или когда модель снова начала уклоняться: нажмите один раз «Применить», затем выйдите и откройте DSH заново — всё восстановится.",
         ),
         noticeNode(notice),
       ),
@@ -914,7 +914,7 @@ export function PurgifySection({ page = "status", onStatus } = {}) {
         h(
           "details",
           { className: "dshpp-editions" },
-          h("summary", null, "版本管理"),
+          h("summary", null, "Управление версиями"),
           renderEdition("stable"),
           renderEdition("beta"),
         ),
@@ -926,17 +926,17 @@ export function PurgifySection({ page = "status", onStatus } = {}) {
         h(
           "summary",
           null,
-          "补丁明细 ",
+          "Детали патчей ",
           h(
             "b",
             null,
             !s
-              ? "读取中"
+              ? "Читаем"
               : s.ok === false
-                ? "状态未知"
+                ? "Состояние неизвестно"
                 : s.ai_base
-                  ? `${applied}/${total} 已应用`
-                  : "未定位宿主",
+                  ? `${applied}/${total} применено`
+                  : "Хост не найден",
           ),
         ),
         h(PatchGroups, { state: s }),
@@ -944,7 +944,7 @@ export function PurgifySection({ page = "status", onStatus } = {}) {
       h(
         "details",
         null,
-        h("summary", null, "高级选项"),
+        h("summary", null, "Дополнительно"),
         h(HooksDenySection, { onSaved: loadAll }),
       ),
       askUninstall
@@ -1079,7 +1079,7 @@ export function PurgifySection({ page = "status", onStatus } = {}) {
       h("textarea", {
         className: "dshpp-area",
         ref: promptAreaRef,
-        "aria-label": "提示词内容",
+        "aria-label": "содержимое промпта",
         disabled: !overrideLoaded,
         value: override,
         onChange: (e) => {
@@ -1129,7 +1129,7 @@ export function PurgifySection({ page = "status", onStatus } = {}) {
       ),
       h("textarea", {
         className: "dshpp-area",
-        "aria-label": "服务器名单",
+        "aria-label": "список серверов",
         disabled: !ownLoaded,
         value: ownServers,
         onChange: (e) => {

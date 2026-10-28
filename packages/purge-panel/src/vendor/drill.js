@@ -12,8 +12,8 @@ export const __dshPurgeDrill = (() => {
   const h = React.createElement;
 
   /*
-   * 演练台自己是一块浮动窗：position:fixed，用 left/top/width/height 放。
-   * 不给官方 frame 加 padding，不改官方输入框的宽度。嵌在清洗面板里时走 .rt-embedded。
+   * Полигон сам по себе — плавающее окно: position:fixed, размещается через left/top/width/height.
+   * Официальному frame не добавляем padding и не меняем ширину официального поля ввода. При встраивании в панель очистки используется .rt-embedded.
    */
   const CSS = `
 .rt-dock{position:fixed;top:12px;right:12px;z-index:20;display:flex;flex-direction:column;box-sizing:border-box;
@@ -36,8 +36,8 @@ export const __dshPurgeDrill = (() => {
 .rt-btn{border:1px solid var(--dsw-alias-border-l1);background:var(--dsw-alias-bg-layer-2);color:inherit;
   border-radius:6px;padding:3px 9px;font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap}
 .rt-btn:hover{border-color:var(--dsw-alias-border-l2)}
-/* brand-primary 在深色主题下是近白色（#f9fafb），当底色配 #fff 会白底白字。
-   改用标签色/底色这对反转 token，两套主题都保持高对比。 */
+/* brand-primary в тёмной теме почти белый (#f9fafb): на фоне #fff получится белый текст на белом.
+   Используем инвертированную пару token «цвет метки / цвет фона» — высокий контраст сохраняется в обеих темах. */
 .rt-btn-primary{background:var(--dsw-alias-label-primary,#111);border-color:var(--dsw-alias-label-primary,#111);color:var(--dsw-alias-bg-base,#fff)}
 .rt-btn-primary:hover{opacity:.9}
 .rt-btn:disabled{opacity:.5;cursor:default}
@@ -46,7 +46,7 @@ export const __dshPurgeDrill = (() => {
   display:inline-flex;align-items:center;gap:5px;border-bottom:2px solid transparent;margin-bottom:-1px;background:transparent}
 .rt-tab:hover{color:var(--dsw-alias-label-primary)}
 .rt-tab.on{color:var(--dsw-alias-label-primary);background:transparent;font-weight:600;border-bottom-color:var(--dsw-alias-brand-primary,#6dbf8c)}
-/* 未读红点：该页签有新内容（新资产/新漏洞/新得分/新步骤…），点开看过就消失 */
+/* Непрочитанное: на вкладке появился новый контент (новый актив/уязвимость/баллы/шаг…), после просмотра точка исчезает */
 .rt-tab-dot{width:7px;height:7px;border-radius:50%;background:#ef4444;flex:none;
   box-shadow:0 0 0 2px color-mix(in srgb, #ef4444 22%, transparent)}
 .rt-body{flex:1;min-height:0;display:flex;flex-direction:column}
@@ -78,7 +78,7 @@ export const __dshPurgeDrill = (() => {
 .rt-tag-active{color:#f59e0b;border-color:#f59e0b55;background:#f59e0b1a}
 .rt-tag-live{color:#10b981;border-color:#10b98155;background:#10b9811a}
 .rt-tag-warn{color:#ef4444;border-color:#ef444455;background:#ef44441a}
-/* 纪律提示条：不满足交付要求（非冰蝎/哥斯拉马、没有 suo5 隧道）时顶在区块最上方 */
+/* Полоса напоминания о дисциплине: показывается в самом верху блока, если не выполнены требования сдачи (шелл не Behinder/Godzilla, нет туннеля suo5) */
 .rt-hint{border-radius:6px;padding:7px 9px;margin-bottom:8px;font-size:11.5px;line-height:1.6;
   border:1px dashed #ef444488;background:#ef44440f;color:var(--dsw-alias-label-primary)}
 .rt-hint b{color:#ef4444}
@@ -86,7 +86,7 @@ export const __dshPurgeDrill = (() => {
 .rt-expand{grid-column:1/-1;padding:8px 4px 10px;font-size:12px;color:var(--dsw-alias-label-secondary)}
 .rt-kv{display:flex;gap:8px;margin-bottom:3px;align-items:baseline}
 .rt-kv b{color:var(--dsw-alias-label-primary);font-weight:600;min-width:64px;flex:none}
-/* 图谱视图已移除（见 AssetsTab：资产关系由「域名维度」与 redteam_attack_path 工具承担） */
+/* Представление графом удалено (см. AssetsTab: связи активов обеспечивают «разрез по доменам» и инструмент redteam_attack_path) */
 .rt-pane{flex:1;min-height:0;overflow:auto;padding:12px}
 .rt-card{border:1px solid color-mix(in srgb,var(--dsw-alias-border-l1,#444) 75%,transparent);border-radius:8px;padding:10px;margin-bottom:10px;
   background:color-mix(in srgb,var(--dsw-alias-bg-layer-2,#2a2a2a) 48%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
@@ -132,12 +132,12 @@ export const __dshPurgeDrill = (() => {
 .rt-score-row.head{cursor:default;color:var(--dsw-alias-label-secondary);font-size:11.5px;font-weight:600;
   position:sticky;top:0;background:var(--dsw-alias-bg-layer-1);z-index:1}
 .rt-score-detail{grid-column:1/-1;padding:8px 4px 10px;font-size:12px;color:var(--dsw-alias-label-secondary)}
-/* 得分目标按合并版的 8 个类别分组：类别头 + 组内按分值升序 */
+/* Цели начисления сгруппированы по 8 категориям объединённой версии: заголовок категории + внутри по возрастанию баллов */
 .rt-score-group{display:flex;align-items:center;gap:8px;padding:7px 10px 5px;margin-top:2px;
   font-size:12px;font-weight:600;border-top:1px solid var(--dsw-alias-border-l1);background:var(--dsw-alias-bg-layer-2)}
 .rt-score-group:first-child{border-top:none}
 .rt-score-group .rt-sg-sub{font-weight:400;font-size:11px;color:var(--dsw-alias-label-secondary)}
-/* ── 会话与入口：每张卡片分「标题行 / 关键事实 / 可用命令 / 备注」四段，避免一行糊在一起 ── */
+/* ── Сессии и входы: каждая карточка делится на четыре блока «строка заголовка / ключевые факты / доступные команды / примечания», чтобы всё не сливалось в одну строку ── */
 .rt-sess-facts{display:flex;flex-direction:column;gap:2px;margin-top:5px}
 .rt-sess-fact{display:flex;gap:6px;font-size:11.5px;line-height:1.5}
 .rt-sess-fact>b{flex:none;min-width:62px;font-weight:600;color:var(--dsw-alias-label-secondary)}
@@ -287,11 +287,11 @@ export const __dshPurgeDrill = (() => {
 .rt-subtab{padding:4px 10px;border-radius:6px 6px 0 0;cursor:pointer;font-size:12px;color:var(--dsw-alias-label-secondary)}
 .rt-subtab.on{color:var(--dsw-alias-label-primary);background:var(--dsw-alias-bg-layer-2);font-weight:600}
 .rt-sevbar{width:3px;border-radius:2px;align-self:stretch;flex:none;margin-right:2px}
-/* ── 折叠层次体系 ─────────────────────────────────────────────────────────────
-   L1 折叠头 .rt-sec   ：通栏、无圆角无边框、左色条、深底 —— 永远是"扁"的
-   L2 内容卡 .rt-atest/.rt-hit/.rt-cred/.rt-evi：内缩、有边框、圆角 —— 立起来
-   L3 详情/长文本 .rt-clip-body / .rt-evi-body ：无边框、最浅、等宽
-   L4 子项容器 .rt-sec-body：左缩进 + 竖引导线，表明"属于上面那个头"
+/* ── Иерархия сворачивания ─────────────────────────────────────────────────────────────
+   L1 заголовок секции .rt-sec   : во всю ширину, без скруглений и рамок, цветная полоска слева, тёмный фон —— всегда "плоский"
+   L2 карточка содержимого .rt-atest/.rt-hit/.rt-cred/.rt-evi: с отступом, рамкой, скруглением —— приподнята
+   L3 детали/длинный текст .rt-clip-body / .rt-evi-body : без рамки, самый светлый, моноширинный
+   L4 контейнер подпунктов .rt-sec-body: отступ слева + вертикальная направляющая, показывающая "принадлежность верхнему заголовку"
    ──────────────────────────────────────────────────────────────────────────── */
 .rt-sec-wrap{margin:0}
 .rt-sec{display:flex;align-items:center;gap:8px;padding:7px 12px 7px 9px;cursor:pointer;
@@ -314,7 +314,7 @@ export const __dshPurgeDrill = (() => {
 .rt-sec.t-past{border-left-color:#94a3b8}
 .rt-sec-body{margin-left:12px;border-left:1px solid var(--dsw-alias-border-l1);padding:7px 0 3px 10px}
 .rt-sec-body>.rt-atest:last-child,.rt-sec-body>.rt-hit:last-child{margin-bottom:2px}
-/* 长文本折叠（L3）：默认预览 2 行并渐隐，展开后限高滚动 */
+/* Сворачивание длинного текста (L3): по умолчанию превью в 2 строки с затуханием, после раскрытия ограничение высоты со скроллом */
 .rt-clip{margin-top:6px}
 .rt-clip-head{display:flex;align-items:center;gap:6px}
 .rt-clip-label{font-size:11px;color:var(--dsw-alias-label-secondary);font-weight:600}
@@ -381,7 +381,7 @@ export const __dshPurgeDrill = (() => {
 .rt-rep-req-head{display:flex;align-items:center;gap:7px;padding:4px 8px;font-size:11.5px;font-weight:600;
   background:var(--dsw-alias-bg-layer-1);border-bottom:1px solid var(--dsw-alias-border-l1)}
 .rt-rep-http{margin:0;padding:8px 10px;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;line-height:1.6;white-space:pre-wrap;word-break:break-word;max-height:240px;overflow:auto;background:var(--dsw-alias-bg-base)}
-/* ── 报告里的「这一步怎么来的」：动作步骤 / 命令 / 凭据 / 隧道 ───────────── */
+/* ── «Откуда взялся этот шаг» в отчёте: шаги действий / команды / учётные данные / туннели ───────────── */
 .rt-rep-trace{margin-top:8px;border:1px solid var(--dsw-alias-border-l1);border-radius:7px;padding:8px 10px;
   background:var(--dsw-alias-bg-base)}
 .rt-rep-trace-head{display:flex;align-items:center;gap:7px;margin-bottom:5px}
@@ -399,7 +399,7 @@ export const __dshPurgeDrill = (() => {
 .rt-rep-step-result{font-size:11.5px;margin-top:3px;word-break:break-word}
 .rt-rep-src{margin-top:6px;padding-top:6px;border-top:1px dashed var(--dsw-alias-border-l1)}
 .rt-rep-src-title{font-weight:600;font-size:12px;margin-bottom:3px}
-/* ── 全链路攻击路径图 ─────────────────────────────────────────────── */
+/* ── Схема полного пути атаки ─────────────────────────────────────────────── */
 .rt-ap{padding:10px 12px 18px;overflow:auto}
 .rt-ap-stage{margin-bottom:2px}
 .rt-ap-head{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--dsw-alias-bg-layer-2);
@@ -417,7 +417,7 @@ export const __dshPurgeDrill = (() => {
 .rt-ap-pts{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;font-weight:700;color:#065f46;background:#a7f3d0;
   border:1px solid #10b98155;border-radius:10px;padding:0 7px;white-space:nowrap}
 .rt-ap-pts.off{color:var(--dsw-alias-label-secondary);background:var(--dsw-alias-bg-layer-1);border-color:var(--dsw-alias-border-l1)}
-/* 按服务封顶/自建而不计分的命中：分值标灰（+0），避免看着像又加了分 */
+/* Попадания без баллов из-за лимита сервиса или собственного развёртывания: баллы серые (+0), чтобы не выглядело как начисление */
 .rt-ap-pts.uncounted{color:var(--dsw-alias-label-secondary);background:var(--dsw-alias-bg-layer-1);border-color:var(--dsw-alias-border-l1)}
 .rt-ap-nth{font-size:10.5px;color:var(--dsw-alias-label-secondary);white-space:nowrap}
 .rt-ap-hit{border:1px solid var(--dsw-alias-border-l1);border-left:3px solid #10b981;border-radius:6px;
@@ -434,7 +434,7 @@ export const __dshPurgeDrill = (() => {
 .rt-ap-none{font-size:11.5px;color:var(--dsw-alias-label-secondary);padding:2px 0 4px}
 .rt-ap-trans{display:flex;align-items:center;gap:7px;padding:2px 0 2px 14px}
 .rt-ap-trans-t{font-size:11px;color:var(--dsw-alias-label-secondary)}
-/* 横向路径图 */
+/* Схема латерального перемещения */
 .rt-ap-h{display:flex;align-items:stretch;padding:10px 12px 14px;overflow-x:auto;flex:1;min-height:0}
 .rt-ap-col{display:flex;align-items:stretch;flex:none}
 .rt-ap-col-arrow{align-self:center;color:var(--dsw-alias-border-l2);padding:0 6px;font-size:12px;flex:none}
@@ -467,16 +467,16 @@ export const __dshPurgeDrill = (() => {
 .rt-hcol-sub.off{opacity:.6}
 .rt-hit-row{display:flex;flex-wrap:wrap;align-items:center;gap:2px 7px;font-size:11.5px;padding:4px 7px;border-radius:5px;
   background:var(--dsw-alias-bg-layer-1);border:1px solid var(--dsw-alias-border-l1);margin-bottom:3px}
-/* 资产与内容都自适应换行：长域名/长口令/长结果一律换行显示，不截断成省略号 */
+/* Активы и содержимое переносятся адаптивно: длинные домены/пароли/результаты показываются с переносом, без обрезки в многоточие */
 .rt-hit-asset{font-family:ui-monospace,Menlo,monospace;font-weight:600;flex:0 1 auto;max-width:100%;
   overflow-wrap:anywhere;word-break:break-word}
 .rt-hit-txt{flex:1 1 100%;color:var(--dsw-alias-label-primary);line-height:1.55;
   white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word}
 .rt-hit-txt.none{color:var(--dsw-alias-state-error-primary)}
 .rt-hit-row .rt-hit-time{flex:none;margin-left:auto}
-/* 自己注册/自建的账号：留痕但不计分，整行压暗 */
+/* Самостоятельно зарегистрированные/развёрнутые учётные записи: фиксируются, но баллов не дают, вся строка приглушена */
 .rt-hit-row.self-created{opacity:.72;border-left:3px solid #ef444488}
-/* 同一资产同一端口的重复账号/库权限：服务已拿满，不计分（只作留痕） */
+/* Повторные учётные записи/права на БД того же актива и порта: сервис уже взят полностью, баллов нет (только фиксация) */
 .rt-hit-row.service-capped{opacity:.72;border-left:3px solid #f59e0b88}
 .rt-hit-row.service-capped .rt-hit-idx{background:#f59e0b}
 .rt-rep-group{margin-bottom:14px}
@@ -489,24 +489,24 @@ export const __dshPurgeDrill = (() => {
   display:inline-flex;align-items:center;justify-content:center}
 .rt-rep-stage-name{font-weight:700;font-size:13px}
 .rt-rep-stage-n{font-size:11px;color:var(--dsw-alias-label-secondary)}
-/* 折叠后仍要能一眼看到"这一阶段拿了多少分"，所以分数留在头上 */
+/* После сворачивания должно быть сразу видно, «сколько баллов дал этап», поэтому счёт остаётся в заголовке */
 .rt-rep-pts{font-size:11px;font-weight:600;padding:1px 6px;border-radius:5px;border:1px solid transparent;flex:none}
 .rt-rep-body{padding-left:6px}
-/* ── 知识库（POC/EXP） ──────────────────────────────────────────── */
+/* ── База знаний (POC/EXP) ──────────────────────────────────────────── */
 .rt-kb-filter{display:flex;align-items:center;gap:7px;padding:8px 10px;border-bottom:1px solid var(--dsw-alias-border-l1)}
-/* 知识库归类总览：一行标签，点一下按该类筛选 */
+/* Обзор категорий базы знаний: одна строка тегов, клик фильтрует по категории */
 .rt-kb-cats{display:flex;flex-wrap:wrap;gap:6px;padding:8px 10px;border-bottom:1px solid var(--dsw-alias-border-l1)}
-/* 知识库分组标题（按归类分组时每组一条） */
+/* Заголовок группы базы знаний (по одному на группу при группировке по категориям) */
 .rt-kb-cat{display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--dsw-alias-bg-layer-2);
   border-bottom:1px solid var(--dsw-alias-border-l1);position:sticky;top:0;z-index:1}
 .rt-kb-cat-name{font-weight:600;font-size:12.5px}
-/* 技能可用性徽章（技能库页签） */
+/* Бейдж доступности навыка (вкладка библиотеки навыков) */
 .rt-avail{display:inline-block;padding:0 5px;border-radius:4px;font-size:10.5px;white-space:nowrap;
   border:1px solid var(--dsw-alias-border-l1);color:var(--dsw-alias-label-secondary)}
 .rt-avail-available{color:#10b981;border-color:#10b98155;background:#10b9811a}
 .rt-avail-broken{color:#ef4444;border-color:#ef444455;background:#ef44441a}
 .rt-avail-unknown{color:#94a3b8;border-color:#94a3b855;background:#94a3b81a}
-/* 版本 / 更新弹窗 */
+/* Модальное окно версии / обновления */
 .rt-modal{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center}
 .rt-modal-box{width:min(560px,92vw);max-height:80vh;overflow:auto;background:var(--dsw-alias-bg-layer-1);
   border:1px solid var(--dsw-alias-border-l1);border-radius:10px;padding:14px 16px;font-size:12.5px;line-height:1.7;
@@ -531,7 +531,7 @@ export const __dshPurgeDrill = (() => {
 .rt-kb-body{padding:0 9px 9px}
 .rt-kb-actions{display:flex;gap:6px;margin:7px 0}
 .rt-kb-body .rt-kv span{overflow-wrap:anywhere;word-break:break-word}
-/* 本机 nuclei 模板命中：路径要能完整看到（复制成命令直接跑） */
+/* Попадания по локальным шаблонам nuclei: путь должен быть виден целиком (скопировать в команду и запускать) */
 .rt-kb-tpl{margin-top:12px;border-top:1px dashed var(--dsw-alias-border-l1);padding-top:8px}
 .rt-kb-tpl-row{display:flex;align-items:center;gap:7px;font-size:11.5px;padding:3px 7px;border-radius:5px;
   background:var(--dsw-alias-bg-layer-1);border:1px solid var(--dsw-alias-border-l1);margin-bottom:3px}
@@ -555,8 +555,8 @@ export const __dshPurgeDrill = (() => {
 .rt-shot-zoom{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.82);display:flex;flex-direction:column;
   align-items:center;justify-content:center;gap:10px;cursor:zoom-out;padding:18px}
 .rt-shot-zoom img{max-width:96vw;max-height:86vh;border-radius:6px;box-shadow:0 18px 48px rgba(0,0,0,.5)}
-.rt-shot-zoom-cap{color:#e5e7eb;font-size:12px;text-align:center;max-width:90vw;overflow-wrap:anywhere}`; /* ---------------------------------------------------------- 桥接与状态 */
-  /** 是否在「全面浏览」独立窗口里（URL hash 标记，复用同一套界面代码）。 */
+.rt-shot-zoom-cap{color:#e5e7eb;font-size:12px;text-align:center;max-width:90vw;overflow-wrap:anywhere}`; /* ---------------------------------------------------------- Мост и состояние */
+  /** Открыто ли отдельное окно «полного просмотра» (маркер в URL hash, тот же код интерфейса). */
   const isFullWindow = () => {
     try {
       return String(window.location.hash || "") === "#redteam-full";
@@ -605,7 +605,7 @@ export const __dshPurgeDrill = (() => {
       }
     }
   };
-  /* 保留导出。面板尺寸只写在自己的元素上，不再改官方 frame 的宽度。 */
+  /* Экспорт сохраняем. Размер панели пишется только в свой элемент, ширина официального frame больше не меняется. */
   let dockWidthTag = null;
   const setDockWidth = () => {};
   const useUI = () => {
@@ -621,32 +621,32 @@ export const __dshPurgeDrill = (() => {
     return st;
   };
 
-  /* 知识库归类（与 core.js 的 POC_CATEGORIES 一致；面板按它分组） */
+  /* Категории базы знаний (совпадают с POC_CATEGORIES в core.js; панель группирует по ним) */
   const POC_CAT_NAME = {
-    rce: "远程命令执行",
-    deserialization: "反序列化",
-    "file-upload": "文件上传 getshell",
-    sqli: "SQL 注入",
-    unauthorized: "未授权访问",
-    "auth-bypass": "认证绕过 / 越权",
-    "weak-password": "弱口令 / 爆破",
+    rce: "Удалённое выполнение команд",
+    deserialization: "Десериализация",
+    "file-upload": "Загрузка файлов getshell",
+    sqli: "SQL-инъекция",
+    unauthorized: "Доступ без авторизации",
+    "auth-bypass": "Обход аутентификации / превышение полномочий",
+    "weak-password": "Слабые пароли / брутфорс",
     ssrf: "SSRF",
     xxe: "XXE",
-    "path-traversal": "目录穿越 / 任意文件读",
-    "info-leak": "信息泄露",
-    privesc: "提权 / 横向",
-    tunnel: "隧道 / 代理",
-    other: "其它",
+    "path-traversal": "Обход каталогов / чтение произвольных файлов",
+    "info-leak": "Утечка информации",
+    privesc: "Повышение привилегий / латеральное перемещение",
+    tunnel: "Туннель / прокси",
+    other: "Прочее",
   };
   const POC_CAT_ORDER = Object.keys(POC_CAT_NAME);
-  /* 角色 code → 中文（报告/知识库都要标"谁发现的"） */
+  /* Код роли → подпись (и в отчёте, и в базе знаний нужно указывать, «кто нашёл») */
   const ROLE_LABEL = {
-    plan: "主会话（指挥）",
-    recon: "信息收集",
-    assess: "资产梳理",
-    "vuln-scan": "漏洞发现",
-    exploit: "漏洞利用",
-    internal: "内网渗透",
+    plan: "Главная сессия (командование)",
+    recon: "Разведка",
+    assess: "Инвентаризация активов",
+    "vuln-scan": "Поиск уязвимостей",
+    exploit: "Эксплуатация уязвимостей",
+    internal: "Пентест внутренней сети",
   };
 
   const fmt = (s) => (s ? String(s).replace("T", " ").slice(0, 16) : "—");
@@ -679,7 +679,7 @@ export const __dshPurgeDrill = (() => {
       });
     shotLoading.set(key, p);
   };
-  const SHOT_KIND = { screenshot: "现场截图", card: "记录生成的证据摘录" };
+  const SHOT_KIND = { screenshot: "Живой скриншот", card: "Выдержка из записи" };
   const ShotImage = ({ eng, shot, height }) => {
     const [zoom, setZoom] = React.useState(false);
     const src = shotSrc(eng, shot.id);
@@ -697,12 +697,12 @@ export const __dshPurgeDrill = (() => {
               className: "rt-shot-thumb rt-shot-loading",
               style: { height: (height || 96) + "px" },
             },
-            "载入中…",
+            "Загрузка…",
           )
         : h("img", {
             className: "rt-shot-thumb",
             src: src,
-            alt: shot.label || "证据 " + shot.id,
+            alt: shot.label || "Доказательство " + shot.id,
             style: { height: (height || 96) + "px", cursor: "zoom-in" },
             onClick: () => setZoom(true),
           }),
@@ -714,10 +714,10 @@ export const __dshPurgeDrill = (() => {
           {
             className: "rt-tag " + (card ? "rt-tag-warn" : "rt-tag-live"),
             title: card
-              ? "由当日记录生成的证据摘录，不是现场截图 —— 报告里同样会标注"
-              : "现场截图",
+              ? "Выдержка с доказательствами, сформированная из записи за день, а не живой скриншот —— в отчёте это тоже помечается"
+              : "Живой скриншот",
           },
-          SHOT_KIND[shot.kind] || shot.kind || "证据",
+          SHOT_KIND[shot.kind] || shot.kind || "Доказательство",
         ),
         h(
           "span",
@@ -734,9 +734,9 @@ export const __dshPurgeDrill = (() => {
               "div",
               { className: "rt-shot-zoom-cap" },
               (shot.label || shot.target || "") +
-                (card ? "　·　由当日记录生成（非现场截图）" : "") +
-                (shot.captured_at ? "　·　" + fmt(shot.captured_at) : "") +
-                "　·　点击任意处关闭",
+                (card ? " · Сформировано из записи за день (не живой скриншот)" : "") +
+                (shot.captured_at ? " · " + fmt(shot.captured_at) : "") +
+                " · Клик в любом месте закрывает",
             ),
           )
         : null,
@@ -751,15 +751,15 @@ export const __dshPurgeDrill = (() => {
       h(
         "div",
         { className: "rt-shots-head" },
-        h("b", null, title || "证据截图"),
+        h("b", null, title || "Скриншоты доказательств"),
         h(
           "span",
           { className: "rt-shots-n" },
-          "显示 " +
+          "Показано " +
             list.length +
-            " 张" +
+            " шт." +
             (total && total > list.length
-              ? "（该得分点共 " + total + " 张，取代表图）"
+              ? " (всего в этом пункте начисления " + total + " шт., показаны типовые)"
               : ""),
         ),
       ),
@@ -772,26 +772,26 @@ export const __dshPurgeDrill = (() => {
       ),
     );
   };
-  /** 发现时间在列表里只留「月-日 时:分」：整行宽度紧张，完整时间进悬浮提示 */
+  /** В списке у времени обнаружения остаётся только «месяц-день часы:минуты»: ширина строки ограничена, полное время — в подсказке */
   const fmtShort = (s) => {
     const t = String(s || "").replace("T", " ");
     return t.length >= 16 ? t.slice(5, 16) : t || "—";
   };
   const provLabel = (p) =>
-    p === "passive" ? "被动" : p === "active" ? "主动" : "未知";
+    p === "passive" ? "Пассивный" : p === "active" ? "Активный" : "Неизвестно";
 
   /**
-   * 给「可点击但不是 <button>」的元素补上键盘可达性，返回可直接展开进 props 的对象。
+   * Дополняем элементы «кликабельные, но не <button>» доступностью с клавиатуры и возвращаем объект, который сразу раскрывается в props.
    *
-   * 为什么需要：面板里大量用 div/span 当按钮（表格行、页签、结论条、C 段条目…），
-   * 它们鼠标能点、键盘完全够不着 —— 而这类元素此前有 16 处是各写各的，
-   * 写法还不一致（有的只有 role、有的漏了 Space 键）。
-   * 统一到一个工厂后，新增可点击元素只要 `...clickable(fn, { label })` 就有完整语义。
+   * Зачем: в панели много div/span в роли кнопок (строки таблиц, вкладки, строка выводов, элементы C-сегментов…),
+   * по ним можно кликнуть мышью, но клавиатурой до них не добраться —— а таких мест было 16, каждое написано по-своему,
+   * и по-разному (где-то только role, где-то забыт Space).
+   * После сведения к одной фабрике новому кликабельному элементу достаточно `...clickable(fn, { label })` — и семантика полная.
    *
-   * 注意：**不要**用它包真正的 `<button>`（原生按钮自带全部语义）。
-   * @param onActivate - 激活回调（鼠标点击 / Enter / Space 都走它）。
-   * @param options - `{ label?, expanded? }`：label 进 aria-label，expanded 进 aria-expanded。
-   * @returns props 片段：role / tabIndex / onClick / onKeyDown / aria-*
+   * Внимание: **не** оборачивайте этим настоящий `<button>` (нативная кнопка уже имеет всю семантику).
+   * @param onActivate - колбэк активации (клик мышью / Enter / Space — всё через него).
+   * @param options - `{ label?, expanded? }`: label идёт в aria-label, expanded — в aria-expanded.
+   * @returns фрагмент props: role / tabIndex / onClick / onKeyDown / aria-*
    */
   const clickable = (onActivate, options = {}) => {
     const props = {
@@ -799,7 +799,7 @@ export const __dshPurgeDrill = (() => {
       tabIndex: 0,
       onClick: onActivate,
       onKeyDown: (e) => {
-        /* Enter 与 Space 是按钮的标准激活键；Space 还要阻止页面滚动 */
+        /* Enter и Space — стандартные клавиши активации кнопки; для Space ещё блокируем прокрутку страницы */
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           onActivate(e);
@@ -814,12 +814,12 @@ export const __dshPurgeDrill = (() => {
   };
 
   /**
-   * 复制文本到剪贴板，**返回真实的成功与否**。
+   * Копирует текст в буфер обмена и **возвращает реальный результат**.
    *
-   * clipboard API 在非安全上下文（http + 非 localhost）、页面失焦、权限被拒时都会
-   * 返回被拒绝的 Promise —— 同步 try/catch 抓不到，于是界面会显示"已复制"而剪贴板是空的。
-   * 这里 await 真实结果，并在不可用时退回 execCommand('copy')（老浏览器/非安全上下文仍可用）。
-   * @param text - 要复制的文本。
+   * clipboard API в небезопасном контексте (http + не localhost), при потере фокуса страницы или отказе в правах
+   * возвращает отклонённый Promise —— синхронный try/catch его не поймает, и интерфейс покажет «скопировано», а буфер пуст.
+   * Здесь мы await реальный результат и при недоступности откатываемся на execCommand('copy') (старые браузеры и небезопасный контекст всё ещё работают).
+   * @param text - текст для копирования.
    * @returns Promise<boolean>
    */
   const copyText = async (text) => {
@@ -834,9 +834,9 @@ export const __dshPurgeDrill = (() => {
         return true;
       }
     } catch (e) {
-      /* 落到下面的兜底方案 */
+      /* доходим до резервного варианта ниже */
     }
-    /* 兜底：临时 textarea + execCommand —— 非安全上下文里唯一还能用的办法 */
+    /* Резерв: временный textarea + execCommand —— единственный работающий способ в небезопасном контексте */
     try {
       const ta = document.createElement("textarea");
       ta.value = value;
@@ -854,22 +854,22 @@ export const __dshPurgeDrill = (() => {
   };
 
   /**
-   * 复制并给出**如实**的界面反馈（成功/失败文案统一）。
-   * @param text - 要复制的文本。
-   * @param label - 成功时提示里显示的名字。
-   * @param onResult - 可选回调：`(ok, message) => void`；不传时返回 Promise<boolean>。
+   * Копирует и даёт **честную** обратную связь в интерфейсе (единый текст успеха/ошибки).
+   * @param text - текст для копирования.
+   * @param label - имя, показываемое в сообщении об успехе.
+   * @param onResult - необязательный колбэк: `(ok, message) => void`; без него возвращается Promise<boolean>.
    */
   const copyWithFeedback = async (text, label, onResult) => {
     const okFlag = await copyText(text);
     const message = okFlag
-      ? "已复制：" + label
-      : "复制失败（浏览器未授权剪贴板）—— 请手动选中文本复制";
+      ? "Скопировано: " + label
+      : "Копирование не удалось (браузер не дал доступ к буферу) —— выделите текст и скопируйте вручную";
     if (typeof onResult === "function") onResult(okFlag, message);
     return okFlag;
   };
 
   function ProvTag(props) {
-    if (!props.p) return h("span", { className: "rt-tag" }, "未知");
+    if (!props.p) return h("span", { className: "rt-tag" }, "Неизвестно");
     return h(
       "span",
       { className: "rt-tag rt-tag-" + props.p },
@@ -878,18 +878,18 @@ export const __dshPurgeDrill = (() => {
   }
 
   const TEST_LABEL = {
-    untested: "未测试",
-    testing: "测试中",
-    tested: "已测试",
-    blocked: "被封禁",
-    abandoned: "已放弃",
-    no_surface: "无攻击面",
+    untested: "Не тестировался",
+    testing: "Тестируется",
+    tested: "Протестирован",
+    blocked: "Заблокирован",
+    abandoned: "Заброшен",
+    no_surface: "Нет поверхности атаки",
   };
-  const PRI_LABEL = { high: "高", medium: "中", low: "低" };
+  const PRI_LABEL = { high: "Высокий", medium: "Средний", low: "Низкий" };
 
-  /** 资产易打性徽章。 */
+  /** Бейдж простоты атаки на актив. */
   function PriTag(props) {
-    if (!props.p) return h("span", { className: "rt-tag" }, "未评");
+    if (!props.p) return h("span", { className: "rt-tag" }, "Не оценён");
     return h(
       "span",
       { className: "rt-pri rt-pri-" + props.p, title: props.title || "" },
@@ -897,7 +897,7 @@ export const __dshPurgeDrill = (() => {
     );
   }
 
-  /** 资产测试状态徽章。 */
+  /** Бейдж статуса тестирования актива. */
   function TestTag(props) {
     const st = props.s || "untested";
     return h(
@@ -907,7 +907,7 @@ export const __dshPurgeDrill = (() => {
     );
   }
 
-  /* ---------------------------------------------------------- 资产测绘 */
+  /* ---------------------------------------------------------- Карта активов */
   function AssetsTab(props) {
     const eng = props.engagement;
     const snapshot = props.snapshot;
@@ -936,7 +936,7 @@ export const __dshPurgeDrill = (() => {
     const [web, setWeb] = React.useState(null);
     const [openId, setOpenId] = React.useState(null);
     const [detail, setDetail] = React.useState(null);
-    /* 左侧「外网 C 段 / 内网 C 段」两组各自折叠，状态按靶标记住 */
+    /* Две группы слева — «внешний C-сегмент / внутренний C-сегмент» — сворачиваются независимо, состояние запоминается по цели */
     const sideCollapse = useCollapse("assets-side:" + eng);
     const seq = React.useRef(0);
     const onData = props.onData;
@@ -965,7 +965,7 @@ export const __dshPurgeDrill = (() => {
           if (!r || r.ok === false) {
             setState({
               loading: false,
-              error: (r && r.error) || "查询失败",
+              error: (r && r.error) || "Ошибка запроса",
               total: 0,
               items: [],
             });
@@ -977,7 +977,7 @@ export const __dshPurgeDrill = (() => {
             total: r.total,
             items: r.items || [],
           });
-          /* C 段/统计可能因本轮采集新增：让外层重新拉一次快照，左侧分类立即更新 */
+          /* C-сегменты и статистика могли пополниться в этом раунде сбора: просим внешний слой перезабрать снимок, левая классификация обновится сразу */
           if (onData) onData();
         },
         (e) => {
@@ -1057,13 +1057,13 @@ export const __dshPurgeDrill = (() => {
               setCidr(null);
             },
             {
-              label: "全部 C 段",
+              label: "Все C-сегменты",
               expanded: cidr === null && view !== "testing",
             },
           ),
         ),
-        h("div", { className: "rt-seg-cidr" }, "全部 C 段"),
-        h("div", { className: "rt-seg-meta" }, segs.length + " 个网段"),
+        h("div", { className: "rt-seg-cidr" }, "Все C-сегменты"),
+        h("div", { className: "rt-seg-meta" }, segs.length + " подсетей"),
       ),
     );
     sideChildren.push(
@@ -1073,14 +1073,14 @@ export const __dshPurgeDrill = (() => {
           {
             key: "testing",
             className: "rt-seg" + (view === "testing" ? " on" : ""),
-            title: "正在跑的扫描 / 探测与进度（5 秒自动刷新）",
+            title: "Идущие сканы / пробы и прогресс (автообновление каждые 5 с)",
           },
           clickable(
             () => {
               setView("testing");
               setCidr(null);
             },
-            { label: "当前测试", expanded: view === "testing" },
+            { label: "Текущее тестирование", expanded: view === "testing" },
           ),
         ),
         h(
@@ -1093,18 +1093,18 @@ export const __dshPurgeDrill = (() => {
             "span",
             {
               className: "rt-scope rt-scope-testing",
-              title: "当前测试（既非内网也非外网）",
+              title: "Текущее тестирование (ни внутренняя, ни внешняя сеть)",
             },
-            "测",
+            "Т",
           ),
-          h("span", { style: { flex: 1 } }, "当前测试"),
+          h("span", { style: { flex: 1 } }, "Текущее тестирование"),
         ),
-        h("div", { className: "rt-seg-meta" }, "正在跑的扫描与探测"),
+        h("div", { className: "rt-seg-meta" }, "Идущие сканы и пробы"),
       ),
     );
-    /* C 段按内外网分组：先外网（互联网可达，通常是入口）再内网（打进去之后才看得到） */
+    /* C-сегменты группируются по внутренней/внешней сети: сначала внешняя (доступна из интернета, обычно это вход), затем внутренняя (видна только после проникновения) */
     const segBlock = (title, list, kind) => {
-      /* 外网 / 内网两组各自可折叠（状态按靶标记住），默认展开 */
+      /* Обе группы — внешняя / внутренняя — сворачиваемые (состояние запоминается по цели), по умолчанию раскрыты */
       const open = sideCollapse.isOpen("scope:" + kind, true);
       const toggle = sideCollapse.toggle("scope:" + kind, true);
       const out = [
@@ -1116,7 +1116,7 @@ export const __dshPurgeDrill = (() => {
             role: "button",
             tabIndex: 0,
             "aria-expanded": open ? "true" : "false",
-            title: (open ? "收起本组" : "展开本组") + "（并切回资产列表）",
+            title: (open ? "Свернуть группу" : "Развернуть группу") + " (и вернуться к списку активов)",
             onClick: () => {
               setView("list");
               toggle();
@@ -1133,20 +1133,20 @@ export const __dshPurgeDrill = (() => {
           h(
             "span",
             { className: "rt-scope rt-scope-" + kind },
-            kind === "internal" ? "内网" : "外网",
+            kind === "internal" ? "Внутренняя" : "Внешняя",
           ),
-          h("span", null, title + " · " + list.length + " 个 C 段"),
+          h("span", null, title + " · " + list.length + " C-сегментов"),
           h("span", { className: "rt-spacer" }),
           h(
             "span",
             { style: { fontWeight: 400 } },
-            list.reduce((n, x) => n + (x.assets || 0), 0) + " 资产",
+            list.reduce((n, x) => n + (x.assets || 0), 0) + " активов",
           ),
         ),
       ];
       if (!open) return out;
       for (const s of list) {
-        /* 一段一行：只给 C 段 + 资产数（端口数不再占位，归属与存活放进悬浮提示） */
+        /* Один сегмент — одна строка: только C-сегмент + число активов (порты больше не занимают место, принадлежность и живость — в подсказке) */
         out.push(
           h(
             "div",
@@ -1155,12 +1155,12 @@ export const __dshPurgeDrill = (() => {
                 key: s.cidr,
                 className: "rt-seg" + (cidr === s.cidr ? " on" : ""),
                 title:
-                  (s.org || "未知归属") +
-                  " · 存活 " +
+                  (s.org || "Принадлежность неизвестна") +
+                  " · живых " +
                   (s.live || 0) +
                   "/" +
                   (s.assets || 0) +
-                  " 台",
+                  " хостов",
               },
               clickable(
                 () => {
@@ -1168,7 +1168,7 @@ export const __dshPurgeDrill = (() => {
                   setCidr(s.cidr);
                 },
                 {
-                  label: "筛选 C 段 " + s.cidr,
+                  label: "Фильтр по C-сегменту " + s.cidr,
                   expanded: cidr === s.cidr && view !== "testing",
                 },
               ),
@@ -1182,7 +1182,7 @@ export const __dshPurgeDrill = (() => {
               h(
                 "span",
                 { className: "rt-scope rt-scope-" + kind },
-                kind === "internal" ? "内" : "外",
+                kind === "internal" ? "int" : "ext",
               ),
               h("span", { style: { flex: 1 } }, s.cidr),
               h(
@@ -1191,7 +1191,7 @@ export const __dshPurgeDrill = (() => {
                   className: "rt-seg-meta",
                   style: { margin: 0, whiteSpace: "nowrap" },
                 },
-                s.assets + " 台",
+                s.assets + " хостов",
               ),
             ),
           ),
@@ -1202,9 +1202,9 @@ export const __dshPurgeDrill = (() => {
     const segExternal = segs.filter((x) => x.scope !== "internal");
     const segInternal = segs.filter((x) => x.scope === "internal");
     if (segExternal.length)
-      sideChildren.push(...segBlock("外网资产", segExternal, "external"));
+      sideChildren.push(...segBlock("Активы внешней сети", segExternal, "external"));
     if (segInternal.length)
-      sideChildren.push(...segBlock("内网资产", segInternal, "internal"));
+      sideChildren.push(...segBlock("Активы внутренней сети", segInternal, "internal"));
     const side = h("div", { className: "rt-side" }, sideChildren);
 
     const toolbar = h(
@@ -1213,7 +1213,7 @@ export const __dshPurgeDrill = (() => {
       h("input", {
         className: "rt-input",
         style: { flex: "1 1 150px" },
-        placeholder: "搜索 IP / 域名 / 指纹（回车）",
+        placeholder: "Поиск по IP / домену / фингерпринту (Enter)",
         value: q,
         onChange: (e) => setQ(e.target.value),
         onKeyDown: (e) => {
@@ -1223,19 +1223,19 @@ export const __dshPurgeDrill = (() => {
       h(
         "button",
         { className: "rt-btn", onClick: () => setQApplied(q) },
-        "搜索",
+        "Поиск",
       ),
       h("input", {
         className: "rt-input",
         style: { width: "78px" },
-        placeholder: "服务",
+        placeholder: "Сервис",
         value: service,
         onChange: (e) => setService(e.target.value),
       }),
       h("input", {
         className: "rt-input",
         style: { width: "60px" },
-        placeholder: "端口",
+        placeholder: "Порт",
         value: port,
         onChange: (e) => setPort(e.target.value),
       }),
@@ -1246,9 +1246,9 @@ export const __dshPurgeDrill = (() => {
           value: scope,
           onChange: (e) => setScope(e.target.value),
         },
-        h("option", { value: "" }, "内外网不限"),
-        h("option", { value: "external" }, "仅外网资产"),
-        h("option", { value: "internal" }, "仅内网资产"),
+        h("option", { value: "" }, "Любая сеть"),
+        h("option", { value: "external" }, "Только внешние активы"),
+        h("option", { value: "internal" }, "Только внутренние активы"),
       ),
       h(
         "select",
@@ -1256,11 +1256,11 @@ export const __dshPurgeDrill = (() => {
           className: "rt-input",
           value: prov,
           onChange: (e) => setProv(e.target.value),
-          title: "按端口来源过滤（列表已不再单列显示，详情里可见）",
+          title: "Фильтр по источнику порта (в списке отдельной колонки больше нет, видно в деталях)",
         },
-        h("option", { value: "" }, "来源不限"),
-        h("option", { value: "passive" }, "仅被动"),
-        h("option", { value: "active" }, "仅主动"),
+        h("option", { value: "" }, "Любой источник"),
+        h("option", { value: "passive" }, "Только пассивные"),
+        h("option", { value: "active" }, "Только активные"),
       ),
       h(
         "select",
@@ -1269,10 +1269,10 @@ export const __dshPurgeDrill = (() => {
           value: priority,
           onChange: (e) => setPriority(e.target.value),
         },
-        h("option", { value: "" }, "易打性不限"),
-        h("option", { value: "high" }, "易打（高）"),
-        h("option", { value: "medium" }, "一般（中）"),
-        h("option", { value: "low" }, "难打（低）"),
+        h("option", { value: "" }, "Любая простота атаки"),
+        h("option", { value: "high" }, "Лёгкая (высокая)"),
+        h("option", { value: "medium" }, "Средняя (умеренная)"),
+        h("option", { value: "low" }, "Трудная (низкая)"),
       ),
       h(
         "select",
@@ -1281,25 +1281,25 @@ export const __dshPurgeDrill = (() => {
           value: testStatus,
           onChange: (e) => setTestStatus(e.target.value),
         },
-        h("option", { value: "" }, "测试状态不限"),
-        h("option", { value: "untested" }, "未测试"),
-        h("option", { value: "testing" }, "测试中"),
-        h("option", { value: "tested" }, "已测试"),
-        h("option", { value: "blocked" }, "被封禁"),
-        h("option", { value: "abandoned" }, "已放弃"),
-        h("option", { value: "no_surface" }, "无攻击面"),
+        h("option", { value: "" }, "Любой статус тестирования"),
+        h("option", { value: "untested" }, "Не тестировался"),
+        h("option", { value: "testing" }, "Тестируется"),
+        h("option", { value: "tested" }, "Протестирован"),
+        h("option", { value: "blocked" }, "Заблокирован"),
+        h("option", { value: "abandoned" }, "Заброшен"),
+        h("option", { value: "no_surface" }, "Нет поверхности атаки"),
       ),
       h("div", { className: "rt-spacer" }),
       h(
         "button",
         {
           className: "rt-btn",
-          title: "重新拉取快照与当前视图数据",
+          title: "Перезабрать снимок и данные текущего вида",
           onClick: () => {
             if (onRefresh) onRefresh();
           },
         },
-        "刷新",
+        "Обновить",
       ),
       h(
         "button",
@@ -1307,16 +1307,16 @@ export const __dshPurgeDrill = (() => {
           className: "rt-btn" + (view === "list" ? " rt-btn-primary" : ""),
           onClick: () => setView("list"),
         },
-        "列表",
+        "Список",
       ),
       h(
         "button",
         {
           className: "rt-btn" + (view === "timeline" ? " rt-btn-primary" : ""),
-          title: "按发现时间看资产（什么时候发现、哪天收了多少）",
+          title: "Смотреть активы по времени обнаружения (когда найден, сколько собрано за день)",
           onClick: () => setView("timeline"),
         },
-        "发现时间",
+        "Время обнаружения",
       ),
       h(
         "button",
@@ -1324,7 +1324,7 @@ export const __dshPurgeDrill = (() => {
           className: "rt-btn" + (view === "domain" ? " rt-btn-primary" : ""),
           onClick: () => setView("domain"),
         },
-        "域名",
+        "Домен",
       ),
       h(
         "button",
@@ -1336,7 +1336,7 @@ export const __dshPurgeDrill = (() => {
       ),
     );
 
-    /* ── 结论行：一屏看清家底，数字点一下就是筛选 ───────────────────── */
+    /* ── Строка выводов: весь арсенал на одном экране, клик по числу — это фильтр ───────────────────── */
     const tests = (snapshot && snapshot.tests) || {};
     const snapStats = (snapshot && snapshot.stats) || {};
     const noFilter =
@@ -1348,10 +1348,10 @@ export const __dshPurgeDrill = (() => {
           {
             key: key,
             className: "rt-concl-i" + (active ? " on" : ""),
-            title: "点击筛选 / 再点取消",
+            title: "Клик фильтрует / повторный клик снимает",
           },
           clickable(onClick, {
-            label: "按「" + label + "」筛选（" + (value || 0) + "）",
+            label: "Фильтр по «" + label + "» (" + (value || 0) + ") ",
             expanded: active,
           }),
         ),
@@ -1365,7 +1365,7 @@ export const __dshPurgeDrill = (() => {
     const conclusion = h(
       "div",
       { className: "rt-concl" },
-      conclItem("all", "台资产", snapStats.assets, noFilter, () => {
+      conclItem("all", "хостов", snapStats.assets, noFilter, () => {
         setTestStatus("");
         setPriority("");
         setScope("");
@@ -1375,7 +1375,7 @@ export const __dshPurgeDrill = (() => {
       }),
       conclItem(
         "live",
-        "存活",
+        "Живых",
         snapStats.liveAssets,
         assetState === "live",
         () => {
@@ -1385,24 +1385,24 @@ export const __dshPurgeDrill = (() => {
       ),
       conclItem(
         "untested",
-        "待测",
+        "К тесту",
         tests.untested,
         testStatus === "untested",
         () => toggleTest("untested"),
       ),
       conclItem(
         "testing",
-        "测试中",
+        "Тестируется",
         tests.testing,
         testStatus === "testing",
         () => toggleTest("testing"),
       ),
-      conclItem("tested", "已测", tests.tested, testStatus === "tested", () =>
+      conclItem("tested", "Протестировано", tests.tested, testStatus === "tested", () =>
         toggleTest("tested"),
       ),
       conclItem(
         "giveup",
-        "放弃",
+        "Заброшено",
         (tests.abandoned || 0) + (tests.blocked || 0),
         testStatus === "abandoned,blocked",
         () => toggleTest("abandoned,blocked"),
@@ -1414,13 +1414,13 @@ export const __dshPurgeDrill = (() => {
           className: "rt-input",
           value: sort,
           onChange: (e) => setSort(e.target.value),
-          title: "列表排序方式",
+          title: "Способ сортировки списка",
         },
-        h("option", { value: "priority" }, "排序：易打性优先"),
-        h("option", { value: "todo" }, "排序：待测优先"),
-        h("option", { value: "discovered" }, "排序：最近发现优先"),
-        h("option", { value: "ports" }, "排序：端口多优先"),
-        h("option", { value: "ip" }, "排序：按 IP"),
+        h("option", { value: "priority" }, "Сортировка: сначала простые"),
+        h("option", { value: "todo" }, "Сортировка: сначала непротестированные"),
+        h("option", { value: "discovered" }, "Сортировка: сначала недавно найденные"),
+        h("option", { value: "ports" }, "Сортировка: сначала с большим числом портов"),
+        h("option", { value: "ip" }, "Сортировка: по IP"),
       ),
     );
 
@@ -1428,10 +1428,10 @@ export const __dshPurgeDrill = (() => {
       "div",
       { className: "rt-row head" },
       h("span", null, "IP"),
-      h("span", null, "易打"),
-      h("span", null, "测试状态"),
-      h("span", null, "开放端口 / 服务"),
-      h("span", null, "指纹"),
+      h("span", null, "Простота"),
+      h("span", null, "Статус теста"),
+      h("span", null, "Открытые порты / сервисы"),
+      h("span", null, "Фингерпринт"),
     );
 
     const rowNodes = [];
@@ -1447,7 +1447,7 @@ export const __dshPurgeDrill = (() => {
             [f.vendor, f.product, f.version].filter(Boolean).join(" "),
           )
           .join(" / ") || "—";
-      /* 端口最多列 3 个，其余用 +N；主被动来源不再占列，进详情 */
+      /* Показываем максимум 3 порта, остальные через +N; источник (пассивный/активный) больше не в колонке, ушёл в детали */
       const shownPorts = openPorts
         .slice(0, 3)
         .map((p) => p.port + (p.service ? "/" + p.service : ""))
@@ -1463,7 +1463,7 @@ export const __dshPurgeDrill = (() => {
               className: "rt-row",
             },
             clickable(() => toggleRow(it.id), {
-              label: "展开资产 " + it.ip,
+              label: "Раскрыть актив " + it.ip,
               expanded: openId === it.id,
             }),
           ),
@@ -1485,10 +1485,10 @@ export const __dshPurgeDrill = (() => {
                   "rt-scope rt-scope-" +
                   (it.scope === "internal" ? "internal" : "external"),
               },
-              it.scope === "internal" ? "内" : "外",
+              it.scope === "internal" ? "int" : "ext",
             ),
             h("span", {
-              title: it.state === "live" ? "存活" : String(it.state),
+              title: it.state === "live" ? "Живой" : String(it.state),
               style: {
                 width: 7,
                 height: 7,
@@ -1503,7 +1503,7 @@ export const __dshPurgeDrill = (() => {
               { style: { overflow: "hidden", textOverflow: "ellipsis" } },
               it.ip,
             ),
-            /* 发现时间挂在 IP 下面一行：IP 列宽度有限，不另开列（列宽一改整表要跟着调） */
+            /* Время обнаружения выводим строкой под IP: колонка IP узкая, отдельную не заводим (при смене ширины колонок пришлось бы править всю таблицу) */
             h(
               "span",
               {
@@ -1513,11 +1513,11 @@ export const __dshPurgeDrill = (() => {
                   whiteSpace: "nowrap",
                 },
                 title:
-                  "发现时间：" +
-                  (it.discovered_at ? fmt(it.discovered_at) : "未记录") +
-                  (it.last_seen ? "\n最近采集：" + fmt(it.last_seen) : ""),
+                  "Обнаружен: " +
+                  (it.discovered_at ? fmt(it.discovered_at) : "не записано") +
+                  (it.last_seen ? "\nПоследний сбор: " + fmt(it.last_seen) : ""),
               },
-              it.discovered_at ? fmtShort(it.discovered_at) : "发现时间未知",
+              it.discovered_at ? fmtShort(it.discovered_at) : "Время обнаружения неизвестно",
             ),
           ),
           h(
@@ -1540,7 +1540,7 @@ export const __dshPurgeDrill = (() => {
                       marginLeft: 4,
                     },
                   },
-                  "封" + it.blocked_count,
+                  "Блок." + it.blocked_count,
                 )
               : null,
           ),
@@ -1570,7 +1570,7 @@ export const __dshPurgeDrill = (() => {
                 "span",
                 null,
                 [p.service, p.product, p.version].filter(Boolean).join(" ") ||
-                  "未知服务",
+                  "Неизвестный сервис",
               ),
               p.url
                 ? h(
@@ -1606,7 +1606,7 @@ export const __dshPurgeDrill = (() => {
                 "span",
                 null,
                 [f.vendor, f.product, f.version].filter(Boolean).join(" ") +
-                  (f.evidence ? "（" + f.evidence + "）" : ""),
+                  (f.evidence ? "(" + f.evidence + ")" : ""),
               ),
               h(ProvTag, { p: f.provenance }),
             ),
@@ -1630,7 +1630,7 @@ export const __dshPurgeDrill = (() => {
                 null,
                 (o.value || "") +
                   " · " +
-                  (o.tool || "未知工具") +
+                  (o.tool || "Неизвестный инструмент") +
                   " · " +
                   fmt(o.collected_at),
               ),
@@ -1639,7 +1639,7 @@ export const __dshPurgeDrill = (() => {
           );
         }
       }
-      /* 详情分三层：3 行必读 → 「展开全部」后才是溯源、原始记录与备注全文 */
+      /* Детали в три слоя: 3 обязательные строки → только после «Развернуть всё» идут источники, исходные записи и полный текст примечаний */
       const all = showAll === it.id;
       const noteLines =
         d && d.test_notes ? d.test_notes.split("\n").filter(Boolean) : [];
@@ -1647,11 +1647,11 @@ export const __dshPurgeDrill = (() => {
         ? h(
             "div",
             null,
-            /* 必读三行 */
+            /* Три обязательные строки */
             h(
               "div",
               { className: "rt-kv" },
-              h("b", null, "测试"),
+              h("b", null, "Тест"),
               h(
                 "span",
                 null,
@@ -1667,7 +1667,7 @@ export const __dshPurgeDrill = (() => {
                           borderColor: "#ef444455",
                         },
                       },
-                      "被封 " + d.blocked_count + " 次",
+                      "Заблокирован " + d.blocked_count + " раз",
                     )
                   : null,
                 h(
@@ -1678,7 +1678,7 @@ export const __dshPurgeDrill = (() => {
                       color: "var(--dsw-alias-label-secondary)",
                     },
                   },
-                  (d.test_updated_at ? fmt(d.test_updated_at) : "未测过") +
+                  (d.test_updated_at ? fmt(d.test_updated_at) : "не тестировался") +
                     (d.test_updated_by ? " · " + d.test_updated_by : ""),
                 ),
               ),
@@ -1686,7 +1686,7 @@ export const __dshPurgeDrill = (() => {
             h(
               "div",
               { className: "rt-kv" },
-              h("b", null, "易打性"),
+              h("b", null, "Простота атаки"),
               h(
                 "span",
                 null,
@@ -1694,7 +1694,7 @@ export const __dshPurgeDrill = (() => {
                 h(
                   "span",
                   { style: { marginLeft: 8 } },
-                  d.potential || "未评估",
+                  d.potential || "Не оценено",
                 ),
                 d.assess_reason
                   ? h(
@@ -1713,12 +1713,12 @@ export const __dshPurgeDrill = (() => {
             h(
               "div",
               { className: "rt-kv" },
-              h("b", null, "攻击面"),
+              h("b", null, "Поверхность атаки"),
               h(
                 "span",
                 null,
                 d.test_surface ||
-                  (portRows.length ? "未记录（开放端口见下）" : "无开放端口"),
+                  (portRows.length ? "Не записано (открытые порты ниже)" : "Нет открытых портов"),
                 d.scope
                   ? h(
                       "span",
@@ -1728,7 +1728,7 @@ export const __dshPurgeDrill = (() => {
                           (d.scope === "internal" ? "internal" : "external"),
                         style: { marginLeft: 8 },
                       },
-                      d.scope === "internal" ? "内网资产" : "外网资产",
+                      d.scope === "internal" ? "Актив внутренней сети" : "Актив внешней сети",
                     )
                   : null,
               ),
@@ -1738,13 +1738,13 @@ export const __dshPurgeDrill = (() => {
               Object.assign(
                 { className: "rt-more" },
                 clickable(() => setShowAll(all ? null : it.id), {
-                  label: all ? "收起资产详情" : "展开资产详情",
+                  label: all ? "Свернуть детали актива" : "Развернуть детали актива",
                   expanded: all,
                 }),
               ),
               all
-                ? "收起全部 ▲"
-                : "展开全部（端口 · 指纹 · 采集溯源 · 测试记录）▼",
+                ? "Свернуть всё ▲"
+                : "Развернуть всё (порты · фингерпринт · источники сбора · записи тестов)▼",
             ),
             all
               ? h(
@@ -1753,7 +1753,7 @@ export const __dshPurgeDrill = (() => {
                   h(
                     "div",
                     { className: "rt-kv" },
-                    h("b", null, "主机名"),
+                    h("b", null, "Имя хоста"),
                     h(
                       "span",
                       null,
@@ -1763,89 +1763,89 @@ export const __dshPurgeDrill = (() => {
                   h(
                     "div",
                     { className: "rt-kv" },
-                    h("b", null, "发现时间"),
+                    h("b", null, "Время обнаружения"),
                     h(
                       "span",
                       {
                         title:
-                          '本条资产第一次进入资产库的时刻（重复采集只刷新"最近采集"）',
+                          'Момент, когда этот актив впервые попал в базу (повторный сбор обновляет только "последний сбор")',
                       },
                       fmt(d.discovered_at),
                     ),
                     h(
                       "b",
                       { style: { minWidth: 0, marginLeft: 8 } },
-                      "最近采集",
+                      "Последний сбор",
                     ),
                     h("span", null, fmt(d.last_seen)),
                     h(
                       "b",
                       { style: { minWidth: 0, marginLeft: 8 } },
-                      "数据源首见",
+                      "Первое появление в источнике",
                     ),
                     h("span", null, fmt(d.first_seen)),
                   ),
                   h(
                     "div",
                     { className: "rt-kv" },
-                    h("b", null, "C 段"),
+                    h("b", null, "C-сегмент"),
                     h("span", null, d.segment_cidr),
                   ),
                   h(
                     "div",
                     { className: "rt-kv" },
-                    h("b", null, "易打性"),
+                    h("b", null, "Простота атаки"),
                     h(
                       "span",
                       null,
-                      (d.priority || "未评估") +
-                        (d.potential ? " · 预期：" + d.potential : "") +
-                        (d.assess_reason ? " · 依据：" + d.assess_reason : "") +
-                        (d.assessed_at ? "（" + fmt(d.assessed_at) + "）" : ""),
+                      (d.priority || "Не оценено") +
+                        (d.potential ? " · Ожидаемо: " + d.potential : "") +
+                        (d.assess_reason ? " · Основание: " + d.assess_reason : "") +
+                        (d.assessed_at ? "(" + fmt(d.assessed_at) + ")" : ""),
                     ),
                   ),
                   h(
                     "div",
                     { className: "rt-kv" },
-                    h("b", null, "来源"),
+                    h("b", null, "Источник"),
                     h(
                       "span",
                       null,
-                      "被动端口 " +
+                      "Пассивных портов " +
                         (d.passive || 0) +
-                        " · 主动端口 " +
+                        " · активных портов " +
                         (d.active || 0),
                     ),
                   ),
                   h(
                     "div",
                     { style: { margin: "6px 0 3px", fontWeight: 600 } },
-                    "开放端口 / 服务",
+                    "Открытые порты / сервисы",
                   ),
                   h("div", null, portRows.length ? portRows : "—"),
                   h(
                     "div",
                     { style: { margin: "6px 0 3px", fontWeight: 600 } },
-                    "指纹",
+                    "Фингерпринт",
                   ),
                   h("div", null, fpRows.length ? fpRows : "—"),
                   noteLines.length
                     ? h(Clip, {
                         key: "notes",
-                        label: "测试记录（" + noteLines.length + " 条）",
+                        label: "Записи тестов (" + noteLines.length + " шт.)",
                         text: noteLines.join("\n"),
                       })
                     : null,
                   h(
                     "div",
                     { style: { margin: "6px 0 3px", fontWeight: 600 } },
-                    "采集溯源（最近 8 条）",
+                    "Источники сбора (последние 8)",
                   ),
                   h("div", null, obsRows.length ? obsRows : "—"),
                 )
               : null,
           )
-        : h("div", null, "加载中…");
+        : h("div", null, "Загрузка…");
       rowNodes.push(
         h(
           "div",
@@ -1865,16 +1865,16 @@ export const __dshPurgeDrill = (() => {
       head,
       rowNodes,
       !state.loading && !state.items.length
-        ? h("div", { className: "rt-empty" }, "没有匹配的资产")
+        ? h("div", { className: "rt-empty" }, "Нет подходящих активов")
         : null,
     );
 
-    /* 域名维度：域名 → 关联资产 */
+    /* Разрез по доменам: домен → связанные активы */
     const domainPane = h(
       "div",
       { className: "rt-table" },
       domains === null
-        ? h("div", { className: "rt-empty" }, "加载中…")
+        ? h("div", { className: "rt-empty" }, "Загрузка…")
         : domains.length
           ? domains.map((g) =>
               h(
@@ -1899,7 +1899,7 @@ export const __dshPurgeDrill = (() => {
                   h(
                     "span",
                     { className: "rt-tag", style: { marginLeft: 8 } },
-                    g.count + " 个资产",
+                    g.count + " активов",
                   ),
                 ),
                 g.assets.map((a) =>
@@ -1930,7 +1930,7 @@ export const __dshPurgeDrill = (() => {
                             "rt-tag rt-tag-" +
                             (a.state === "live" ? "live" : "dead"),
                         },
-                        a.state === "live" ? "存活" : a.state,
+                        a.state === "live" ? "Живой" : a.state,
                       ),
                     ),
                     h(
@@ -1951,12 +1951,12 @@ export const __dshPurgeDrill = (() => {
               "div",
               { className: "rt-empty" },
               cidr
-                ? "该 C 段下暂无域名（切换到「全部 C 段」看全量）"
-                : "暂无域名数据（信息收集阶段会写入域名）",
+                ? "В этом C-сегменте пока нет доменов (переключитесь на «Все C-сегменты», чтобы увидеть всё)"
+                : "Данных по доменам пока нет (на этапе разведки домены записываются)",
             ),
     );
 
-    /* Web 资产：标题 + 可直接点击的 URL */
+    /* Web-активы: заголовок + кликабельный URL */
     const webPane = h(
       "div",
       { className: "rt-table" },
@@ -1966,10 +1966,10 @@ export const __dshPurgeDrill = (() => {
           className: "rt-row head",
           style: { gridTemplateColumns: "1.6fr 1.2fr 130px 110px" },
         },
-        h("span", null, "URL（可点击）"),
-        h("span", null, "标题"),
-        h("span", null, "资产"),
-        h("span", null, "服务"),
+        h("span", null, "URL (кликабельный)"),
+        h("span", null, "Заголовок"),
+        h("span", null, "Актив"),
+        h("span", null, "Сервис"),
       ),
       (web || []).map((w) => {
         const url =
@@ -2010,14 +2010,14 @@ export const __dshPurgeDrill = (() => {
         );
       }),
       web === null
-        ? h("div", { className: "rt-empty" }, "加载中…")
+        ? h("div", { className: "rt-empty" }, "Загрузка…")
         : !web.length
           ? h(
               "div",
               { className: "rt-empty" },
               cidr
-                ? "该 C 段下暂无 Web 资产"
-                : "暂无 Web 资产（HTTP 探测后会写入 URL 与标题）",
+                ? "В этом C-сегменте пока нет Web-активов"
+                : "Web-активов пока нет (после HTTP-пробы записываются URL и заголовок)",
             )
           : null,
     );
@@ -2027,7 +2027,7 @@ export const __dshPurgeDrill = (() => {
       pane = h(TestingTab, { engagement: eng, refreshKey: refreshKey });
     else if (view === "domain") pane = domainPane;
     else if (view === "web") pane = webPane;
-    /* 发现时间视图自带滚动容器，直接放进 rt-main 的 flex 里 */
+    /* У вида «время обнаружения» свой контейнер со скроллом, кладём его прямо в flex rt-main */
     else if (view === "timeline")
       pane = h(DiscoveryView, { engagement: eng, refreshKey: refreshKey });
 
@@ -2046,12 +2046,12 @@ export const __dshPurgeDrill = (() => {
     );
   }
 
-  /* ---------------------------------------------------------- 资产发现时间线 */
+  /* ---------------------------------------------------------- Таймлайн обнаружения активов */
   /**
-   * 资产发现时间线：什么时候发现了什么、哪天收了多少。
-   * ⚠️ 这个组件曾在"移除图谱视图"时被连带删掉 —— 删除区间的结束标记选得太宽
-   *    （图谱画布的收尾与它挨着），bundle 自检的 "client.js 有资产「发现时间」视图"
-   *    因此变红。恢复时把插入点固定成"资产测绘注释块之前"，避免再被别的删除波及。
+   * Таймлайн обнаружения активов: что и когда найдено, сколько собрано за день.
+   * ⚠️ Этот компонент однажды зацепило при "удалении граф-представления" —— метка конца удаляемого диапазона оказалась слишком широкой
+   *    (конец граф-канвы был рядом), и самопроверка бандла "в client.js есть вид активов «время обнаружения»"
+   *    поэтому стала красной. При восстановлении точка вставки зафиксирована "перед блоком комментария карты активов", чтобы её снова не задело чужое удаление.
    */
   function DiscoveryView(props) {
     const eng = props.engagement;
@@ -2064,7 +2064,7 @@ export const __dshPurgeDrill = (() => {
       setData(null);
       api({ op: "discoveryTimeline", engagement: eng, limit: 200 }).then(
         (r) => {
-          if (!r || r.ok === false) setErr((r && r.error) || "加载失败");
+          if (!r || r.ok === false) setErr((r && r.error) || "Ошибка загрузки");
           else {
             setErr(null);
             setData(r);
@@ -2079,7 +2079,7 @@ export const __dshPurgeDrill = (() => {
         { className: "rt-pane" },
         h("div", { className: "rt-err" }, err),
       );
-    if (!data) return h("div", { className: "rt-empty" }, "加载中…");
+    if (!data) return h("div", { className: "rt-empty" }, "Загрузка…");
     const recent = (data.recent || []).filter(
       (a) => day === "" || String(a.discovered_at || "").slice(0, 10) === day,
     );
@@ -2089,23 +2089,23 @@ export const __dshPurgeDrill = (() => {
       h(
         "div",
         { className: "rt-card" },
-        h("h4", null, "资产发现时间线"),
+        h("h4", null, "Таймлайн обнаружения активов"),
         h(
           "div",
           {
             style: { fontSize: 12, color: "var(--dsw-alias-label-secondary)" },
           },
-          "共 " +
+          "Всего " +
             ((data.span && data.span.total) || 0) +
-            " 台 · 最早 " +
+            " хостов · раньше всех " +
             (data.span && data.span.first ? fmt(data.span.first) : "—") +
-            " · 最近 " +
+            " · последний " +
             (data.span && data.span.last ? fmt(data.span.last) : "—") +
-            '（发现时间 = 第一次进入资产库的时刻；重复采集只刷新"最近采集"）',
+            '(время обнаружения = момент первого попадания в базу активов; повторный сбор обновляет только "последний сбор")',
         ),
       ),
       (data.days || []).length === 0
-        ? h("div", { className: "rt-empty" }, "还没有资产。")
+        ? h("div", { className: "rt-empty" }, "Активов пока нет.")
         : null,
       h(
         "div",
@@ -2113,7 +2113,7 @@ export const __dshPurgeDrill = (() => {
         h(
           "h4",
           null,
-          "按天统计",
+          "По дням",
           day
             ? h(
                 "span",
@@ -2123,10 +2123,10 @@ export const __dshPurgeDrill = (() => {
                     style: { marginLeft: 6, cursor: "pointer" },
                   },
                   clickable(() => setDay(""), {
-                    label: "清除按天筛选：" + day,
+                    label: "Сбросить фильтр по дню: " + day,
                   }),
                 ),
-                "清除筛选：" + day,
+                "Сбросить фильтр: " + day,
               )
             : null,
         ),
@@ -2143,16 +2143,16 @@ export const __dshPurgeDrill = (() => {
                   style: { marginBottom: 0, cursor: "pointer" },
                   title:
                     d.day +
-                    "：新增 " +
+                    ": добавлено " +
                     d.assets +
-                    " 台（内网 " +
+                    " хостов (внутренних " +
                     d.internal +
-                    " / 外网 " +
+                    " / внешних " +
                     d.external +
-                    "）",
+                    ")",
                 },
                 clickable(() => setDay(day === d.day ? "" : d.day), {
-                  label: "筛选 " + d.day + " 发现的资产",
+                  label: "Фильтр: " + d.day + " — активы, найденные в этот день",
                   expanded: day === d.day,
                 }),
               ),
@@ -2160,7 +2160,7 @@ export const __dshPurgeDrill = (() => {
               h(
                 "div",
                 { className: "rt-seg-meta" },
-                d.assets + " 台 · 内 " + d.internal + " / 外 " + d.external,
+                d.assets + " хостов · внутр. " + d.internal + " / внеш. " + d.external,
               ),
             ),
           ),
@@ -2173,11 +2173,11 @@ export const __dshPurgeDrill = (() => {
           "h4",
           null,
           day
-            ? day + " 发现的资产（" + recent.length + "）"
-            : "最近发现的资产（" + recent.length + "）",
+            ? day + " — найденные активы (" + recent.length + ")"
+            : "Недавно найденные активы (" + recent.length + ")",
         ),
         recent.length === 0
-          ? h("div", { className: "rt-empty" }, "这一天没有新增资产。")
+          ? h("div", { className: "rt-empty" }, "За этот день новых активов нет.")
           : null,
         recent.map((a) =>
           h(
@@ -2194,7 +2194,7 @@ export const __dshPurgeDrill = (() => {
                     (a.scope === "internal" ? "internal" : "external"),
                   style: { marginRight: 4 },
                 },
-                a.scope === "internal" ? "内" : "外",
+                a.scope === "internal" ? "int" : "ext",
               ),
               a.ip,
             ),
@@ -2207,13 +2207,13 @@ export const __dshPurgeDrill = (() => {
                   color: "var(--dsw-alias-label-secondary)",
                 },
               },
-              a.discovered_at ? fmt(a.discovered_at) : "时间未知",
+              a.discovered_at ? fmt(a.discovered_at) : "Время неизвестно",
             ),
             h(
               "span",
               { style: { flex: 1 } },
               (a.primary_name || "—") +
-                (a.open_ports ? " · " + a.open_ports + " 端口" : ""),
+                (a.open_ports ? " · " + a.open_ports + " портов" : ""),
             ),
             h(PriTag, { p: a.priority }),
           ),
@@ -2222,7 +2222,7 @@ export const __dshPurgeDrill = (() => {
     );
   }
 
-  /* ---------------------------------------------------------- 智能体提示词 */
+  /* ---------------------------------------------------------- Промпты агента */
   function PromptsTab(props) {
     const eng = props.engagement;
     const refreshKey = props.refreshKey || 0;
@@ -2233,11 +2233,11 @@ export const __dshPurgeDrill = (() => {
     const [busy, setBusy] = React.useState(false);
 
     React.useEffect(() => {
-      /* 无靶标也允许：服务端回内置默认，不再报 engagement required */
+      /* Допустимо и без цели: сервер отдаёт встроенный дефолт и больше не сообщает engagement required */
       api(eng ? { op: "prompts", engagement: eng } : { op: "prompts" }).then(
         (r) => {
           if (!r || r.ok === false) {
-            setMsg({ err: (r && r.error) || "读取失败" });
+            setMsg({ err: (r && r.error) || "Ошибка чтения" });
             return;
           }
           setRoles(r.roles || []);
@@ -2245,7 +2245,7 @@ export const __dshPurgeDrill = (() => {
             setActive((cur) => cur || r.roles[0].role);
           if (r.builtin)
             setMsg({
-              ok: "当前为内置默认提示词（创建靶标后可按靶标保存修改）",
+              ok: "Сейчас используется встроенный промпт по умолчанию (после создания цели можно сохранить свои изменения для цели)",
             });
         },
         (e) => setMsg({ err: String((e && e.message) || e) }),
@@ -2259,7 +2259,7 @@ export const __dshPurgeDrill = (() => {
 
     const save = () => {
       if (!eng) {
-        setMsg({ err: "请先创建靶标，再保存提示词" });
+        setMsg({ err: "Сначала создайте цель, затем сохраняйте промпт" });
         return;
       }
       setBusy(true);
@@ -2273,7 +2273,7 @@ export const __dshPurgeDrill = (() => {
         (r) => {
           setBusy(false);
           if (!r || r.ok === false) {
-            setMsg({ err: (r && r.error) || "保存失败" });
+            setMsg({ err: (r && r.error) || "Ошибка сохранения" });
             return;
           }
           setRoles((list) =>
@@ -2286,7 +2286,7 @@ export const __dshPurgeDrill = (() => {
                 : x,
             ),
           );
-          setMsg({ ok: "已保存" });
+          setMsg({ ok: "Сохранено" });
         },
         (e) => {
           setBusy(false);
@@ -2295,10 +2295,10 @@ export const __dshPurgeDrill = (() => {
       );
     };
 
-    /* 老靶标的提示词是旧版模板；这里可以把当前角色（或全部）恢复成内置最新版 */
+    /* У старых целей промпты по старому шаблону; здесь можно вернуть текущую роль (или все) к последней встроенной версии */
     const reset = (all) => {
       if (!eng) {
-        setMsg({ err: "请先创建靶标，再恢复默认提示词" });
+        setMsg({ err: "Сначала создайте цель, затем восстанавливайте промпт по умолчанию" });
         return;
       }
       setBusy(true);
@@ -2311,10 +2311,10 @@ export const __dshPurgeDrill = (() => {
         (r) => {
           setBusy(false);
           if (!r || r.ok === false) {
-            setMsg({ err: (r && r.error) || "恢复失败" });
+            setMsg({ err: (r && r.error) || "Ошибка восстановления" });
             return;
           }
-          setMsg({ ok: "已恢复内置默认：" + (r.reset || []).join("、") });
+          setMsg({ ok: "Встроенные значения восстановлены: " + (r.reset || []).join(", ") });
           api({ op: "prompts", engagement: eng }).then(
             (rr) => {
               if (rr && rr.ok) {
@@ -2348,7 +2348,7 @@ export const __dshPurgeDrill = (() => {
               setMsg(null);
             },
             {
-              label: "查看「" + r.title + "」提示词",
+              label: "Открыть промпт: «" + r.title + "»",
               expanded: active === r.role,
             },
           ),
@@ -2357,7 +2357,7 @@ export const __dshPurgeDrill = (() => {
         h(
           "div",
           { className: "rt-item-desc" },
-          (r.content || "").replace(/[#*`]/g, "").slice(0, 60) || "（空）",
+          (r.content || "").replace(/[#*`]/g, "").slice(0, 60) || "(пусто)",
         ),
       ),
     );
@@ -2372,11 +2372,11 @@ export const __dshPurgeDrill = (() => {
         h(
           "div",
           { className: "rt-toolbar" },
-          h("span", { style: { fontWeight: 600 } }, cur ? cur.title : "提示词"),
+          h("span", { style: { fontWeight: 600 } }, cur ? cur.title : "Промпт"),
           h(
             "span",
             { className: "rt-tag" },
-            "更新 " + fmt(cur && cur.updated_at),
+            "Обновлён " + fmt(cur && cur.updated_at),
           ),
           h("div", { className: "rt-spacer" }),
           h(
@@ -2384,20 +2384,20 @@ export const __dshPurgeDrill = (() => {
             {
               className: "rt-btn",
               disabled: busy || !active,
-              title: "把当前角色恢复成内置最新版提示词",
+              title: "Вернуть для текущей роли последнюю встроенную версию промпта",
               onClick: () => reset(false),
             },
-            "恢复默认为当前",
+            "Сбросить текущую",
           ),
           h(
             "button",
             {
               className: "rt-btn",
               disabled: busy,
-              title: "四个角色全部恢复成内置最新版提示词",
+              title: "Вернуть все четыре роли к последней встроенной версии промпта",
               onClick: () => reset(true),
             },
-            "全部恢复默认",
+            "Сбросить все",
           ),
           h(
             "button",
@@ -2406,7 +2406,7 @@ export const __dshPurgeDrill = (() => {
               disabled: busy || !active,
               onClick: save,
             },
-            busy ? "保存中…" : "保存",
+            busy ? "Сохранение…" : "Сохранить",
           ),
         ),
         msg
@@ -2424,7 +2424,7 @@ export const __dshPurgeDrill = (() => {
             value: draft,
             spellCheck: false,
             onChange: (e) => setDraft(e.target.value),
-            placeholder: "该角色的系统提示词（Markdown）",
+            placeholder: "Системный промпт этой роли (Markdown)",
           }),
           h(
             "div",
@@ -2435,16 +2435,16 @@ export const __dshPurgeDrill = (() => {
                 marginTop: 6,
               },
             },
-            "保存后写入 agents/" +
+            "После сохранения пишется в agents/" +
               (active || "role") +
-              ".md。子会话任务第一行写 redteamRole: recon、assess、vuln-scan、exploit 或 internal 后，对应文件进入系统提示词。",
+              ".md. Если в первой строке задачи дочерней сессии указать redteamRole: recon, assess, vuln-scan, exploit или internal, соответствующий файл попадает в системный промпт.",
           ),
         ),
       ),
     );
   }
 
-  /* ---------------------------------------------------------- 技能库（DSH 原生） */
+  /* ---------------------------------------------------------- Библиотека навыков (нативная в DSH) */
   function SkillsTab(props) {
     const refreshKey = props.refreshKey || 0;
     const [items, setItems] = React.useState([]);
@@ -2457,14 +2457,14 @@ export const __dshPurgeDrill = (() => {
     const [busy, setBusy] = React.useState(false);
     const [brokenOnly, setBrokenOnly] = React.useState(false);
 
-    /* refresh=true 跳过后端 30 秒可用性缓存（技能正文/环境变量可能刚改过） */
+    /* refresh=true обходит 30-секундный кэш доступности на бэкенде (текст навыка или переменные окружения могли только что измениться) */
     const load = (force) => {
       setBusy(true);
       api({ op: "skillCatalog", refresh: force === true }).then(
         (r) => {
           setBusy(false);
           if (!r || r.ok === false) {
-            setErr((r && r.error) || "读取失败");
+            setErr((r && r.error) || "Ошибка чтения");
             return;
           }
           setErr(null);
@@ -2497,7 +2497,7 @@ export const __dshPurgeDrill = (() => {
       }).then(
         (r) => {
           if (r && r.ok) setDetail(r);
-          else setErr((r && r.error) || "读取失败");
+          else setErr((r && r.error) || "Ошибка чтения");
         },
         (e) => setErr(String((e && e.message) || e)),
       );
@@ -2522,7 +2522,7 @@ export const __dshPurgeDrill = (() => {
           s.library !== "official" &&
           (s.availability === "broken" || s.availability === "unknown"),
       );
-    /* 目录聚合：一眼看出"这么多技能是哪来的"（本项目/别的插件/自带根…） */
+    /* Агрегация по каталогам: сразу видно, «откуда столько навыков» (этот проект / другой плагин / собственный корень…) */
     const dirs = (meta.byDir || []).filter((d) => d.n > 0).slice(0, 6);
     const availSummary = meta.availability ? meta.availability.summary : null;
     const needRestart = err !== null && String(err).indexOf("unknown op") >= 0;
@@ -2538,7 +2538,7 @@ export const __dshPurgeDrill = (() => {
               (active === (s.library || "redteam") + ":" + s.name ? " on" : ""),
           },
           clickable(() => open(s), {
-            label: "查看技能 " + s.name,
+            label: "Открыть навык " + s.name,
             expanded: active === (s.library || "redteam") + ":" + s.name,
           }),
         ),
@@ -2550,7 +2550,7 @@ export const __dshPurgeDrill = (() => {
             ? h(
                 "span",
                 { className: "rt-tag", style: { marginLeft: 6 } },
-                "仅人工",
+                "Только вручную",
               )
             : null,
           s.library === "official"
@@ -2559,9 +2559,9 @@ export const __dshPurgeDrill = (() => {
                 {
                   className: "rt-tag",
                   style: { marginLeft: 6 },
-                  title: "官方技能目录，不按红队工具路径检查",
+                  title: "Официальный каталог навыков, проверка по путям red-team инструментов не выполняется",
                 },
-                "官方",
+                "Официальный",
               )
             : h(
                 "span",
@@ -2571,26 +2571,26 @@ export const __dshPurgeDrill = (() => {
                   style: { marginLeft: 6 },
                   title:
                     s.availability === "available"
-                      ? "可用：技能正文可以加载。缺的外部工具或密钥记在详情里，不阻止调用。"
-                      : (s.problems || []).join("\n") || "未知",
+                      ? "Доступен: текст навыка загружается. Отсутствующие внешние инструменты или ключи фиксируются в деталях и не блокируют вызов."
+                      : (s.problems || []).join("\n") || "Неизвестно",
                 },
                 s.availability === "available"
-                  ? "可用"
+                  ? "Доступен"
                   : s.availability === "broken"
-                    ? "不可用"
-                    : "未知",
+                    ? "Недоступен"
+                    : "Неизвестно",
               ),
           h(
             "div",
             { className: "rt-item-desc" },
-            s.description || "（无描述）",
+            s.description || "(без описания)",
           ),
           h(
             "div",
             { className: "rt-kb-sub" },
             [
-              s.source ? "来源 " + s.source : null,
-              s.fromPlugin ? "本插件自带" : null,
+              s.source ? "Источник " + s.source : null,
+              s.fromPlugin ? "Входит в этот плагин" : null,
               s.provider ? s.provider : null,
               s.dir ? s.dir : null,
             ]
@@ -2629,7 +2629,7 @@ export const __dshPurgeDrill = (() => {
             className: "rt-kb-sub",
             style: { margin: "8px 0 4px", fontWeight: 600 },
           },
-          "红队技能",
+          "Red-team навыки",
         ),
       );
       listItems.push.apply(listItems, redteamRows);
@@ -2643,7 +2643,7 @@ export const __dshPurgeDrill = (() => {
             className: "rt-kb-sub",
             style: { margin: "8px 0 4px", fontWeight: 600 },
           },
-          "官方技能",
+          "Официальные навыки",
         ),
       );
       listItems.push.apply(listItems, officialRows);
@@ -2658,7 +2658,7 @@ export const __dshPurgeDrill = (() => {
         h("input", {
           className: "rt-input",
           style: { width: "100%", marginBottom: 8, boxSizing: "border-box" },
-          placeholder: "过滤技能",
+          placeholder: "Фильтр навыков",
           value: q,
           onChange: (e) => setQ(e.target.value),
         }),
@@ -2673,7 +2673,7 @@ export const __dshPurgeDrill = (() => {
             checked: srcOnly,
             onChange: (e) => setSrcOnly(e.target.checked),
           }),
-          "只看本插件自带（" + (meta.fromPlugin || 0) + " 个）",
+          "Только встроенные в этот плагин (" + (meta.fromPlugin || 0) + " шт.)",
         ),
         availSummary && (availSummary.broken > 0 || availSummary.unknown > 0)
           ? h(
@@ -2682,16 +2682,16 @@ export const __dshPurgeDrill = (() => {
                 className: "rt-kb-check",
                 style: { display: "flex", margin: "0 0 8px" },
                 title:
-                  "只看有明确缺口（缺 key / 缺本机路径 / 基础设施还是占位符）或判不了可用性的技能",
+                  "Только навыки с явными пробелами (нет key / нет локального пути / инфраструктура всё ещё плейсхолдер) или с неопределимой доступностью",
               },
               h("input", {
                 type: "checkbox",
                 checked: brokenOnly,
                 onChange: (e) => setBrokenOnly(e.target.checked),
               }),
-              "只看不可用/未知（" +
+              "Только недоступные/неизвестные (" +
                 ((availSummary.broken || 0) + (availSummary.unknown || 0)) +
-                " 个）",
+                " шт.)",
             )
           : null,
         availSummary
@@ -2708,20 +2708,20 @@ export const __dshPurgeDrill = (() => {
               h(
                 "span",
                 { className: "rt-avail rt-avail-available" },
-                "可用 " + (availSummary.available || 0),
+                "Доступно " + (availSummary.available || 0),
               ),
               availSummary.broken > 0
                 ? h(
                     "span",
                     { className: "rt-avail rt-avail-broken" },
-                    "不可用 " + availSummary.broken,
+                    "Недоступно " + availSummary.broken,
                   )
                 : null,
               availSummary.unknown > 0
                 ? h(
                     "span",
                     { className: "rt-avail rt-avail-unknown" },
-                    "未知 " + availSummary.unknown,
+                    "Неизвестно " + availSummary.unknown,
                   )
                 : null,
               h(
@@ -2730,11 +2730,11 @@ export const __dshPurgeDrill = (() => {
                   {
                     className: "rt-tag",
                     style: { cursor: "pointer" },
-                    title: "技能正文或环境变量刚改过？点这里跳过 30 秒缓存重查",
+                    title: "Текст навыка или переменные окружения только что изменились? Нажмите, чтобы обойти 30-секундный кэш и перепроверить",
                   },
-                  clickable(() => load(true), { label: "重新检查技能可用性" }),
+                  clickable(() => load(true), { label: "Перепроверить доступность навыков" }),
                 ),
-                "重查可用性",
+                "Перепроверить",
               ),
             )
           : null,
@@ -2747,17 +2747,17 @@ export const __dshPurgeDrill = (() => {
               marginBottom: 6,
             },
           },
-          "红队 " +
+          "Red-team " +
             ((meta.libraries && meta.libraries.redteam) || 0) +
-            " · 官方 " +
+            " · официальных " +
             ((meta.libraries && meta.libraries.official) || 0),
           items.length > 100
             ? h(
                 "div",
                 { style: { marginTop: 3 } },
-                "（技能多来自其它插件注册的根或你自己的技能目录；本插件只自带 " +
+                "(навыки в основном из корней, зарегистрированных другими плагинами, или из вашего каталога навыков; этот плагин содержит всего " +
                   (meta.fromPlugin || 0) +
-                  " 个）",
+                  " шт.)",
               )
             : null,
         ),
@@ -2772,13 +2772,13 @@ export const __dshPurgeDrill = (() => {
           h(
             "span",
             { style: { fontWeight: 600 } },
-            detail ? detail.name : "技能目录（DSH 原生）",
+            detail ? detail.name : "Каталог навыков (нативный в DSH)",
           ),
           h("div", { className: "rt-spacer" }),
           h(
             "button",
             { className: "rt-btn", disabled: busy, onClick: () => load(true) },
-            busy ? "刷新中…" : "刷新",
+            busy ? "Обновление…" : "Обновить",
           ),
         ),
         err
@@ -2786,7 +2786,7 @@ export const __dshPurgeDrill = (() => {
             ? h(
                 "div",
                 { className: "rt-empty" },
-                "该模块的宿主代码已更新，需重启一次当前宿主（官方 exe / 社区版 / dsh web）后生效",
+                "Код хоста этого модуля обновился: чтобы изменения вступили в силу, один раз перезапустите текущий хост (официальный exe / Community Edition / dsh web)",
               )
             : h("div", { className: "rt-err" }, err)
           : null,
@@ -2797,19 +2797,19 @@ export const __dshPurgeDrill = (() => {
               h(
                 "div",
                 { className: "rt-kv" },
-                h("b", null, "描述"),
+                h("b", null, "Описание"),
                 h("span", null, detail.description || "—"),
               ),
               h(
                 "div",
                 { className: "rt-kv" },
-                h("b", null, "何时使用"),
+                h("b", null, "Когда использовать"),
                 h("span", null, detail.whenToUse || "—"),
               ),
               h(
                 "div",
                 { className: "rt-kv" },
-                h("b", null, "来源"),
+                h("b", null, "Источник"),
                 h(
                   "span",
                   null,
@@ -2825,11 +2825,11 @@ export const __dshPurgeDrill = (() => {
                   return h(
                     "div",
                     { className: "rt-kv" },
-                    h("b", null, "类型"),
+                    h("b", null, "Тип"),
                     h(
                       "span",
                       null,
-                      "官方技能。由宿主按任务调用，不按红队工具路径检查。",
+                      "Официальный навык. Вызывается хостом по задаче, проверка по путям red-team инструментов не выполняется.",
                     ),
                   );
                 }
@@ -2840,15 +2840,15 @@ export const __dshPurgeDrill = (() => {
                   h(
                     "div",
                     { className: "rt-kv" },
-                    h("b", null, "可用性"),
+                    h("b", null, "Доступность"),
                     h(
                       "span",
                       { className: "rt-avail rt-avail-" + avail },
                       avail === "available"
-                        ? "可用"
+                        ? "Доступен"
                         : avail === "broken"
-                          ? "不可用（有明确缺口）"
-                          : "未知（正文读不到）",
+                          ? "Недоступен (есть явные пробелы)"
+                          : "Неизвестно (текст не читается)",
                     ),
                   ),
                   (s2.problems || []).length > 0
@@ -2858,7 +2858,7 @@ export const __dshPurgeDrill = (() => {
                         h(
                           "b",
                           null,
-                          avail === "available" ? "未装上的外部工具" : "缺口",
+                          avail === "available" ? "Недоступные внешние инструменты" : "Пробел",
                         ),
                         h(
                           "span",
@@ -2873,7 +2873,7 @@ export const __dshPurgeDrill = (() => {
                     ? h(
                         "div",
                         { className: "rt-kv" },
-                        h("b", null, "需要你提供"),
+                        h("b", null, "Что нужно указать"),
                         h(
                           "span",
                           {
@@ -2894,7 +2894,7 @@ export const __dshPurgeDrill = (() => {
                 ? h(
                     "div",
                     { className: "rt-kv" },
-                    h("b", null, "文件"),
+                    h("b", null, "Файл"),
                     h(
                       "span",
                       {
@@ -2915,7 +2915,7 @@ export const __dshPurgeDrill = (() => {
                     maxHeight: "52vh",
                   },
                 },
-                detail.content || "（空）",
+                detail.content || "(пусто)",
               ),
             )
           : h(
@@ -2931,7 +2931,7 @@ export const __dshPurgeDrill = (() => {
                   },
                 },
                 meta.note ||
-                  "技能由 DSH 原生 skill 体系管理，红队智能体通过 skill 工具调用。",
+                  "Навыками управляет нативная система skill в DSH, red-team агент вызывает их инструментом skill.",
               ),
               availSummary
                 ? h(
@@ -2949,33 +2949,33 @@ export const __dshPurgeDrill = (() => {
                     h(
                       "span",
                       { className: "rt-avail rt-avail-available" },
-                      "可用 " + (availSummary.available || 0),
+                      "Доступно " + (availSummary.available || 0),
                     ),
                     availSummary.broken > 0
                       ? h(
                           "span",
                           { className: "rt-avail rt-avail-broken" },
-                          "不可用 " + availSummary.broken,
+                          "Недоступно " + availSummary.broken,
                         )
                       : null,
                     availSummary.unknown > 0
                       ? h(
                           "span",
                           { className: "rt-avail rt-avail-unknown" },
-                          "未知 " + availSummary.unknown,
+                          "Неизвестно " + availSummary.unknown,
                         )
                       : null,
                     h(
                       "span",
                       { style: { color: "var(--dsw-alias-label-secondary)" } },
-                      "（" +
+                      "(" +
                         (meta.availability && meta.availability.cached
-                          ? "缓存于 "
-                          : "检查于 ") +
+                          ? "кэш от "
+                          : "проверено ") +
                         (meta.availability && meta.availability.checked_at
                           ? fmt(meta.availability.checked_at)
                           : "—") +
-                        "）",
+                        ")",
                     ),
                   )
                 : null,
@@ -2986,7 +2986,7 @@ export const __dshPurgeDrill = (() => {
                     h(
                       "div",
                       { style: { fontWeight: 600, marginBottom: 4 } },
-                      "现在跑不起来的技能：",
+                      "Навыки, которые сейчас не работают:",
                     ),
                     meta.availability.broken
                       .slice(0, 12)
@@ -3015,7 +3015,7 @@ export const __dshPurgeDrill = (() => {
                       overflowWrap: "anywhere",
                     },
                   },
-                  d.n + " 个 · " + d.key,
+                  d.n + " шт. · " + d.key,
                 ),
               ),
               (meta.byDir || []).length > 6
@@ -3027,37 +3027,37 @@ export const __dshPurgeDrill = (() => {
                         color: "var(--dsw-alias-label-secondary)",
                       },
                     },
-                    "…另有 " +
+                    "…ещё " +
                       ((meta.byDir || []).length - 6) +
-                      " 个目录（共 " +
+                      " каталогов (всего " +
                       items.length +
-                      " 个技能）",
+                      " навыков)",
                   )
                 : null,
-              h("div", { className: "rt-empty" }, "左侧选择技能查看内容"),
+              h("div", { className: "rt-empty" }, "Выберите навык слева, чтобы увидеть содержимое"),
             ),
       ),
     );
   }
 
-  /* ---------------------------------------------------------- 漏洞战果 */
+  /* ---------------------------------------------------------- Результаты по уязвимостям */
   const SEV_LABEL = {
-    critical: "严重",
-    high: "高危",
-    medium: "中危",
-    low: "低危",
-    info: "信息",
+    critical: "Критический",
+    high: "Высокий",
+    medium: "Средний",
+    low: "Низкий",
+    info: "Информационный",
   };
   const STATUS_LABEL = {
-    candidate: "待验证",
-    confirmed: "已确认",
-    "false-positive": "误报",
-    exploited: "已利用",
-    fixed: "已修复",
+    candidate: "К проверке",
+    confirmed: "Подтверждена",
+    "false-positive": "Ложное срабатывание",
+    exploited: "Проэксплуатирована",
+    fixed: "Исправлена",
   };
   const sevClass = (s) => "rt-sev rt-sev-" + (SEV_LABEL[s] ? s : "info");
 
-  /** 目标归并：按「scheme://host:port」聚合，避免带路径的 URL 把分组打散。 */
+  /** Объединение целей: агрегируем по «scheme://host:port», чтобы URL с путём не разбивал группы. */
   function targetKeyOf(v) {
     const t = String(v.target || "").trim();
     if (t !== "") {
@@ -3067,11 +3067,11 @@ export const __dshPurgeDrill = (() => {
       if (head) return head[1];
       return t;
     }
-    return v.asset_ip || "(未指定目标)";
+    return v.asset_ip || "(цель не указана)";
   }
 
-  /* ---------------------------------------------------------- 证据渲染 */
-  /** 把一段原始 HTTP 报文按「请求行/状态行 + 头 + 体」着色，便于人眼扫读。 */
+  /* ---------------------------------------------------------- Отрисовка доказательств */
+  /** Раскрашивает сырой HTTP-пакет по «строка запроса/статуса + заголовки + тело», чтобы было удобно читать глазами. */
   function HttpBlock(props) {
     const text = String(props.text || "");
     if (!text) return null;
@@ -3107,7 +3107,7 @@ export const __dshPurgeDrill = (() => {
     );
   }
 
-  /** 漏洞详情里的证据区：结构化证据文本 + 该漏洞的原始 HTTP 请求/响应记录。 */
+  /** Блок доказательств в деталях уязвимости: структурированный текст доказательств + сырые HTTP-запрос/ответ по этой уязвимости. */
   function detailEvidence(v) {
     const evi = String(v.evidence || "").trim();
     const looksHttp =
@@ -3122,8 +3122,8 @@ export const __dshPurgeDrill = (() => {
           h(
             "div",
             { className: "rt-evi-head" },
-            "证据摘要",
-            h("span", { className: "rt-tag" }, looksHttp ? "原始报文" : "文本"),
+            "Сводка доказательств",
+            h("span", { className: "rt-tag" }, looksHttp ? "Сырой пакет" : "Текст"),
             h("div", { className: "rt-spacer" }),
             h(
               "button",
@@ -3135,7 +3135,7 @@ export const __dshPurgeDrill = (() => {
                   copyText(evi);
                 },
               },
-              "复制",
+              "Копировать",
             ),
           ),
           looksHttp
@@ -3153,7 +3153,7 @@ export const __dshPurgeDrill = (() => {
           h(
             "div",
             { className: "rt-evi-head" },
-            e.label || "HTTP 证据",
+            e.label || "HTTP-доказательство",
             h(
               "span",
               { className: "rt-tag" },
@@ -3180,7 +3180,7 @@ export const __dshPurgeDrill = (() => {
                 h(
                   "div",
                   { className: "rt-evi-head", style: { borderTop: "none" } },
-                  "▸ 请求（可直接粘进 Burp Repeater）",
+                  "▸ Запрос (можно вставить прямо в Burp Repeater)",
                 ),
                 h(HttpBlock, { text: e.request, compact: true }),
               )
@@ -3189,7 +3189,7 @@ export const __dshPurgeDrill = (() => {
             ? h(
                 "div",
                 null,
-                h("div", { className: "rt-evi-head" }, "▸ 响应"),
+                h("div", { className: "rt-evi-head" }, "▸ Ответ"),
                 h(HttpBlock, { text: e.response }),
               )
             : null,
@@ -3208,11 +3208,11 @@ export const __dshPurgeDrill = (() => {
         h(
           "div",
           { key: "none", className: "rt-kv" },
-          h("b", null, "证据"),
+          h("b", null, "Доказательства"),
           h(
             "span",
             { style: { color: "var(--dsw-alias-state-error-primary)" } },
-            "缺失 —— 未验证/无证据的漏洞不计入报告，请补 redteam_http_evidence_add",
+            "Отсутствует —— уязвимости без проверки и доказательств в отчёт не попадают, добавьте через redteam_http_evidence_add",
           ),
         ),
       );
@@ -3239,9 +3239,9 @@ export const __dshPurgeDrill = (() => {
     const [files, setFiles] = React.useState([]);
     const [openId, setOpenId] = React.useState(null);
     const [msg, setMsg] = React.useState(null);
-    /* 子页签：漏洞 / 凭据 / 访问会话（凭据不再铺在漏洞页底部） */
+    /* Подвкладки: уязвимости / учётные данные / сессии доступа (учётные данные больше не лежат внизу страницы уязвимостей) */
     const [subTab, setSubTab] = React.useState("vulns");
-    /* 默认按目标聚合：322 条平铺没法读，先看"哪台被打下什么" */
+    /* По умолчанию группируем по цели: 322 записи плоским списком не читаются, сначала смотрим «что с какой машины взято» */
     const [grouped, setGrouped] = React.useState(true);
     const collapse = useCollapse("findings:" + eng);
 
@@ -3259,7 +3259,7 @@ export const __dshPurgeDrill = (() => {
           if (!r || r.ok === false) {
             setState({
               loading: false,
-              error: (r && r.error) || "查询失败",
+              error: (r && r.error) || "Ошибка запроса",
               total: 0,
               items: [],
               stats: null,
@@ -3308,10 +3308,10 @@ export const __dshPurgeDrill = (() => {
       }).then(
         (r) => {
           if (!r || r.ok === false) {
-            setMsg({ err: (r && r.error) || "更新失败" });
+            setMsg({ err: (r && r.error) || "Ошибка обновления" });
             return;
           }
-          setMsg({ ok: "已更新为「" + (STATUS_LABEL[next] || next) + "」" });
+          setMsg({ ok: "Обновлено на «" + (STATUS_LABEL[next] || next) + "»" });
           load();
         },
         (e) => setMsg({ err: String((e && e.message) || e) }),
@@ -3343,7 +3343,7 @@ export const __dshPurgeDrill = (() => {
       filesByVuln.get(vid).push(f);
     }
 
-    /* ── 结论行：只给结论，数字点一下就是筛选 ─────────────────────── */
+    /* ── Строка выводов: только выводы, клик по числу — это фильтр ─────────────────────── */
     const concl = (key, label, value, active, onClick) =>
       h(
         "span",
@@ -3351,10 +3351,10 @@ export const __dshPurgeDrill = (() => {
           {
             key: key,
             className: "rt-concl-i" + (active ? " on" : ""),
-            title: "点击筛选 / 再点取消",
+            title: "Клик фильтрует / повторный клик снимает",
           },
           clickable(onClick, {
-            label: "按「" + label + "」筛选（" + (value || 0) + "）",
+            label: "Фильтр по «" + label + "» (" + (value || 0) + ") ",
             expanded: active,
           }),
         ),
@@ -3366,52 +3366,52 @@ export const __dshPurgeDrill = (() => {
       { className: "rt-concl" },
       concl(
         "conf",
-        "已确认",
+        "Подтверждено",
         stats.byStatus.confirmed || 0,
         status === "confirmed",
         () => setStatus((v) => (v === "confirmed" ? "" : "confirmed")),
       ),
       concl(
         "exp",
-        "已利用",
+        "Проэксплуатировано",
         stats.byStatus.exploited || 0,
         status === "exploited",
         () => setStatus((v) => (v === "exploited" ? "" : "exploited")),
       ),
       concl(
         "crit",
-        "严重",
+        "Критические",
         stats.bySeverity.critical || 0,
         sev === "critical",
         () => setSev((v) => (v === "critical" ? "" : "critical")),
       ),
-      concl("high", "高危", stats.bySeverity.high || 0, sev === "high", () =>
+      concl("high", "Высокие", stats.bySeverity.high || 0, sev === "high", () =>
         setSev((v) => (v === "high" ? "" : "high")),
       ),
-      concl("med", "中危", stats.bySeverity.medium || 0, sev === "medium", () =>
+      concl("med", "Средние", stats.bySeverity.medium || 0, sev === "medium", () =>
         setSev((v) => (v === "medium" ? "" : "medium")),
       ),
-      concl("gain", "拿到权限", stats.withGained || 0, false, () => {}),
+      concl("gain", "Получен доступ", stats.withGained || 0, false, () => {}),
       h("div", { className: "rt-spacer" }),
       h(
         "span",
         { style: { fontSize: 11, color: "var(--dsw-alias-label-secondary)" } },
-        "默认按目标聚合 · 共 " + (stats.targetGroups || 0) + " 个目标",
+        "По умолчанию сгруппировано по цели · всего " + (stats.targetGroups || 0) + " целей",
       ),
     );
 
     const head = h(
       "div",
       { className: "rt-vrow head" },
-      h("span", null, "等级"),
-      h("span", null, "漏洞 / 编号"),
-      h("span", null, "目标"),
-      h("span", null, "拿到什么"),
-      h("span", null, "状态"),
-      h("span", null, "置信"),
+      h("span", null, "Уровень"),
+      h("span", null, "Уязвимость / номер"),
+      h("span", null, "Цель"),
+      h("span", null, "Что получено"),
+      h("span", null, "Статус"),
+      h("span", null, "Достоверность"),
     );
 
-    /* 单条漏洞（行 + 展开详情），聚合视图与平铺视图共用 */
+    /* Одна уязвимость (строка + раскрываемые детали), используется и в групповом, и в плоском виде */
     const vulnRows = (v, compact) => {
       const out = [];
       const gainedList = String(v.gained || "")
@@ -3525,7 +3525,7 @@ export const __dshPurgeDrill = (() => {
             h(
               "div",
               { className: "rt-kv" },
-              h("b", null, "拿到什么"),
+              h("b", null, "Что получено"),
               gainedList.length
                 ? h(
                     "span",
@@ -3545,13 +3545,13 @@ export const __dshPurgeDrill = (() => {
                 : h(
                     "span",
                     { style: { color: "var(--dsw-alias-label-secondary)" } },
-                    "未记录 —— 拿到权限/成果后请用 redteam_vuln_update 补 gained（例：服务器权限、内网隧道、后台管理员账号）",
+                    "Не записано —— после получения доступа или результата добавьте gained через redteam_vuln_update (пример: права на сервере, туннель во внутреннюю сеть, учётная запись администратора панели)",
                   ),
             ),
             h(
               "div",
               { className: "rt-kv" },
-              h("b", null, "目标"),
+              h("b", null, "Цель"),
               h(
                 "span",
                 { className: "rt-mono", style: { wordBreak: "break-all" } },
@@ -3561,7 +3561,7 @@ export const __dshPurgeDrill = (() => {
             h(
               "div",
               { className: "rt-kv" },
-              h("b", null, "资产"),
+              h("b", null, "Актив"),
               h(
                 "span",
                 null,
@@ -3571,7 +3571,7 @@ export const __dshPurgeDrill = (() => {
             h(
               "div",
               { className: "rt-kv" },
-              h("b", null, "来源"),
+              h("b", null, "Источник"),
               h(
                 "span",
                 null,
@@ -3588,7 +3588,7 @@ export const __dshPurgeDrill = (() => {
               return h(
                 "div",
                 { className: "rt-kv" },
-                h("b", null, "攻击文件"),
+                h("b", null, "Файлы атаки"),
                 mine.length
                   ? h(
                       "span",
@@ -3599,7 +3599,7 @@ export const __dshPurgeDrill = (() => {
                           { key: "af" + fi, style: { marginBottom: 3 } },
                           "· " +
                             (f.kind ? "[" + f.kind + "] " : "") +
-                            (f.name || "(未命名)") +
+                            (f.name || "(без имени)") +
                             (f.description ? " — " + f.description : ""),
                           h(
                             "div",
@@ -3620,7 +3620,7 @@ export const __dshPurgeDrill = (() => {
                   : h(
                       "span",
                       { style: { color: "var(--dsw-alias-label-secondary)" } },
-                      "（无）用 redteam_attack_file_add 把这条漏洞打通的脚本/马/EXP 归档，并带上 vuln_id",
+                      "(нет) Заархивируйте скрипт/шелл/EXP, которым пробита эта уязвимость, через redteam_attack_file_add и укажите vuln_id",
                     ),
               );
             })(),
@@ -3636,7 +3636,7 @@ export const __dshPurgeDrill = (() => {
                     setVulnStatus(v.id, "confirmed");
                   },
                 },
-                "确认",
+                "Подтвердить",
               ),
               h(
                 "button",
@@ -3647,7 +3647,7 @@ export const __dshPurgeDrill = (() => {
                     setVulnStatus(v.id, "exploited");
                   },
                 },
-                "已利用",
+                "Проэксплуатирована",
               ),
               h(
                 "button",
@@ -3658,7 +3658,7 @@ export const __dshPurgeDrill = (() => {
                     setVulnStatus(v.id, "false-positive");
                   },
                 },
-                "误报",
+                "Ложное срабатывание",
               ),
               h(
                 "button",
@@ -3669,7 +3669,7 @@ export const __dshPurgeDrill = (() => {
                     setVulnStatus(v.id, "fixed");
                   },
                 },
-                "已修复",
+                "Исправлена",
               ),
             ),
           ),
@@ -3680,7 +3680,7 @@ export const __dshPurgeDrill = (() => {
 
     const rows = [];
     if (grouped) {
-      /* 按目标聚合成组：先看"哪台被打下什么"，再点进去看具体漏洞 */
+      /* Группировка по цели: сначала смотрим «что с какой машины взято», затем проваливаемся в конкретные уязвимости */
       const groups = new Map();
       for (const v of state.items) {
         const key = targetKeyOf(v);
@@ -3725,12 +3725,12 @@ export const __dshPurgeDrill = (() => {
               key: "sec:" + g.key,
               tone: "target",
               title: g.key,
-              count: g.vulns.length + " 个漏洞",
+              count: g.vulns.length + " уязвимостей",
               sub: [
                 SEV_LABEL[g.top.severity] || g.top.severity,
-                g.exploited ? "已利用 " + g.exploited : null,
+                g.exploited ? "Проэксплуатировано " + g.exploited : null,
                 g.top.asset_ip && g.top.asset_ip !== g.key
-                  ? "资产 " + g.top.asset_ip
+                  ? "Актив " + g.top.asset_ip
                   : null,
               ]
                 .filter(Boolean)
@@ -3738,7 +3738,7 @@ export const __dshPurgeDrill = (() => {
               right: g.gained.length
                 ? g.gained.slice(0, 2).join(" / ") +
                   (g.gained.length > 2 ? " +" + (g.gained.length - 2) : "")
-                : "未记录权限",
+                : "Права не записаны",
               open: collapse.isOpen(key, defOpen),
               onToggle: collapse.toggle(key, defOpen),
             },
@@ -3748,7 +3748,7 @@ export const __dshPurgeDrill = (() => {
       }
       if (!list.length && !state.loading && !state.error) {
         rows.push(
-          h("div", { key: "none", className: "rt-empty" }, "暂无漏洞记录"),
+          h("div", { key: "none", className: "rt-empty" }, "Записей об уязвимостях пока нет"),
         );
       }
     } else {
@@ -3761,7 +3761,7 @@ export const __dshPurgeDrill = (() => {
       h("input", {
         className: "rt-input",
         style: { flex: "1 1 140px" },
-        placeholder: "搜索标题 / CVE / 目标（回车）",
+        placeholder: "Поиск по заголовку / CVE / цели (Enter)",
         value: q,
         onChange: (e) => setQ(e.target.value),
         onKeyDown: (e) => {
@@ -3771,7 +3771,7 @@ export const __dshPurgeDrill = (() => {
       h(
         "button",
         { className: "rt-btn", onClick: () => setQApplied(q) },
-        "搜索",
+        "Поиск",
       ),
       h(
         "select",
@@ -3780,12 +3780,12 @@ export const __dshPurgeDrill = (() => {
           value: sev,
           onChange: (e) => setSev(e.target.value),
         },
-        h("option", { value: "" }, "全部等级"),
-        h("option", { value: "critical" }, "严重"),
-        h("option", { value: "high" }, "高危"),
-        h("option", { value: "medium" }, "中危"),
-        h("option", { value: "low" }, "低危"),
-        h("option", { value: "info" }, "信息"),
+        h("option", { value: "" }, "Все уровни"),
+        h("option", { value: "critical" }, "Критический"),
+        h("option", { value: "high" }, "Высокий"),
+        h("option", { value: "medium" }, "Средний"),
+        h("option", { value: "low" }, "Низкий"),
+        h("option", { value: "info" }, "Информационный"),
       ),
       h(
         "select",
@@ -3794,12 +3794,12 @@ export const __dshPurgeDrill = (() => {
           value: status,
           onChange: (e) => setStatus(e.target.value),
         },
-        h("option", { value: "" }, "全部状态"),
-        h("option", { value: "candidate" }, "待验证"),
-        h("option", { value: "confirmed" }, "已确认"),
-        h("option", { value: "exploited" }, "已利用"),
-        h("option", { value: "false-positive" }, "误报"),
-        h("option", { value: "fixed" }, "已修复"),
+        h("option", { value: "" }, "Все статусы"),
+        h("option", { value: "candidate" }, "К проверке"),
+        h("option", { value: "confirmed" }, "Подтверждена"),
+        h("option", { value: "exploited" }, "Проэксплуатирована"),
+        h("option", { value: "false-positive" }, "Ложное срабатывание"),
+        h("option", { value: "fixed" }, "Исправлена"),
       ),
     );
 
@@ -3809,9 +3809,9 @@ export const __dshPurgeDrill = (() => {
       h(
         "div",
         { className: "rt-section" },
-        "凭据 · " +
+        "Учётные данные · " +
           creds.length +
-          (creds.length ? "（明文直显，注意屏幕分享/录屏）" : ""),
+          (creds.length ? "(показываются в открытом виде — учтите демонстрацию экрана и запись)" : ""),
       ),
       creds.length
         ? h(
@@ -3851,27 +3851,27 @@ export const __dshPurgeDrill = (() => {
                         copyText(String(c.secret_value || ""));
                       },
                     },
-                    "复制",
+                    "Копировать",
                   ),
                 ),
                 c.secret_value
                   ? h(
                       "div",
-                      { className: "rt-secret", title: "点击可全选" },
+                      { className: "rt-secret", title: "Клик — выделить всё" },
                       c.secret_value,
                     )
                   : h(
                       "div",
                       { className: "rt-secret-none" },
-                      "未记明文 —— 请用 redteam_credential_add 的 secret_value 补上，面板才能直显",
+                      "Открытый текст не записан —— добавьте его в secret_value через redteam_credential_add, и панель покажет его напрямую",
                     ),
                 h(
                   "div",
                   { className: "rt-cred-meta" },
                   [
-                    c.source ? "来源 " + c.source : null,
-                    c.tool ? "工具 " + c.tool : null,
-                    c.secret_ref ? "证据 " + c.secret_ref : null,
+                    c.source ? "Источник " + c.source : null,
+                    c.tool ? "Инструмент " + c.tool : null,
+                    c.secret_ref ? "Доказательство " + c.secret_ref : null,
                     c.found_by_agent ? "by " + c.found_by_agent : null,
                     c.found_at ? fmt(c.found_at) : null,
                   ]
@@ -3879,7 +3879,7 @@ export const __dshPurgeDrill = (() => {
                     .join(" · "),
                 ),
                 c.note
-                  ? h("div", { className: "rt-cred-meta" }, "备注：" + c.note)
+                  ? h("div", { className: "rt-cred-meta" }, "Примечание: " + c.note)
                   : null,
               ),
             ),
@@ -3887,7 +3887,7 @@ export const __dshPurgeDrill = (() => {
         : h(
             "div",
             { className: "rt-empty" },
-            "暂无凭据（拿到口令/密钥/Hash 后用 redteam_credential_add 落库，秒级可复用）",
+            "Учётных данных пока нет (получив пароль/ключ/hash, сохраните его через redteam_credential_add — переиспользовать можно за секунды)",
           ),
     );
 
@@ -3897,7 +3897,7 @@ export const __dshPurgeDrill = (() => {
       h(
         "div",
         { className: "rt-section" },
-        "已获得访问会话 · " + accesses.length,
+        "Полученные сессии доступа · " + accesses.length,
       ),
       accesses.length
         ? accesses.map((a) =>
@@ -3930,7 +3930,7 @@ export const __dshPurgeDrill = (() => {
               ),
             ),
           )
-        : h("div", { className: "rt-empty" }, "暂无"),
+        : h("div", { className: "rt-empty" }, "Пока нет"),
     );
 
     const subTabBtn = (key, label, n) =>
@@ -3941,7 +3941,7 @@ export const __dshPurgeDrill = (() => {
             className: "rt-subtab" + (subTab === key ? " on" : ""),
           },
           clickable(() => setSubTab(key), {
-            label: label + "（" + n + "）",
+            label: label + "(" + n + ")",
             expanded: subTab === key,
           }),
         ),
@@ -3956,24 +3956,24 @@ export const __dshPurgeDrill = (() => {
       h(
         "div",
         { className: "rt-subtabs" },
-        subTabBtn("vulns", "漏洞", state.total || 0),
-        subTabBtn("files", "攻击文件", allFiles.length),
-        subTabBtn("creds", "凭据", creds.length),
-        subTabBtn("access", "访问会话", accesses.length),
+        subTabBtn("vulns", "Уязвимости", state.total || 0),
+        subTabBtn("files", "Файлы атаки", allFiles.length),
+        subTabBtn("creds", "Учётные данные", creds.length),
+        subTabBtn("access", "Сессии доступа", accesses.length),
         h("div", { className: "rt-spacer" }),
         grouped
           ? h(
               "button",
               {
                 className: "rt-btn",
-                title: "展开所有目标",
+                title: "Развернуть все цели",
                 onClick: () =>
                   collapse.setAll(
                     (state.items || []).map((v) => "target:" + targetKeyOf(v)),
                     true,
                   ),
               },
-              "全部展开",
+              "Развернуть все",
             )
           : null,
         grouped
@@ -3981,14 +3981,14 @@ export const __dshPurgeDrill = (() => {
               "button",
               {
                 className: "rt-btn",
-                title: "收起所有目标",
+                title: "Свернуть все цели",
                 onClick: () =>
                   collapse.setAll(
                     (state.items || []).map((v) => "target:" + targetKeyOf(v)),
                     false,
                   ),
               },
-              "全部收起",
+              "Свернуть все",
             )
           : null,
         h(
@@ -3996,11 +3996,11 @@ export const __dshPurgeDrill = (() => {
           {
             className: "rt-btn" + (grouped ? " rt-btn-primary" : ""),
             title: grouped
-              ? "当前：按目标聚合（先看哪台被打下什么）"
-              : "当前：平铺每条漏洞",
+              ? "Сейчас: группировка по цели (сначала видно, что с какой машины взято)"
+              : "Сейчас: плоский список уязвимостей",
             onClick: () => setGrouped((g) => !g),
           },
-          grouped ? "按目标聚合" : "平铺列表",
+          grouped ? "По целям" : "Плоский список",
         ),
       ),
       msg
@@ -4014,7 +4014,7 @@ export const __dshPurgeDrill = (() => {
         ? h(
             "div",
             { className: "rt-empty" },
-            "该模块的宿主代码已更新，需重启一次当前宿主（官方 exe / 社区版 / dsh web）后生效",
+            "Код хоста этого модуля обновился: чтобы изменения вступили в силу, один раз перезапустите текущий хост (официальный exe / Community Edition / dsh web)",
           )
         : null,
       state.error && !needRestart
@@ -4027,11 +4027,11 @@ export const __dshPurgeDrill = (() => {
             h(
               "div",
               { className: "rt-hint", style: { marginBottom: 8 } },
-              "攻击文件按靶标目录组织（原「攻击文件」页签）；每条漏洞的关联文件也能在该漏洞详情里直接看到。" +
+              "Файлы атаки организованы по каталогам целей (бывшая вкладка «Файлы атаки»); связанные файлы каждой уязвимости видны и в её деталях." +
                 (orphanFiles.length
-                  ? " 目前有 " +
+                  ? " Сейчас " +
                     orphanFiles.length +
-                    " 个文件没挂 vuln_id，建议补上以便与漏洞对应。"
+                    " файлов без vuln_id — стоит дописать, чтобы связать их с уязвимостями."
                   : ""),
             ),
             h(AttackFilesTab, { engagement: eng, refreshKey: refreshKey }),
@@ -4054,29 +4054,29 @@ export const __dshPurgeDrill = (() => {
                 grouped ? null : head,
                 rows,
                 !state.loading && !state.items.length && !state.error
-                  ? h("div", { className: "rt-empty" }, "暂无漏洞记录")
+                  ? h("div", { className: "rt-empty" }, "Записей об уязвимостях пока нет")
                   : null,
               ),
     );
   }
 
-  /* ---------------------------------------------------------- 攻击链 */
+  /* ---------------------------------------------------------- Цепочка атаки */
   const STAGE_LABEL = {
-    recon: "信息收集",
-    vuln: "漏洞发现",
-    exploit: "漏洞利用",
-    access: "获得权限",
-    pivot: "内网突破",
-    data: "敏感数据",
-    other: "其他",
+    recon: "Разведка",
+    vuln: "Поиск уязвимостей",
+    exploit: "Эксплуатация уязвимостей",
+    access: "Получение доступа",
+    pivot: "Прорыв во внутреннюю сеть",
+    data: "Чувствительные данные",
+    other: "Прочее",
   };
 
-  /* ---------------------------------------------------------- 攻击链（五阶段） */
+  /* ---------------------------------------------------------- Цепочка атаки (пять этапов) */
   /**
-   * 按攻击面位置串成一条链：
-   * ① 信息收集 → ② 互联网资产权限 → ③ 边界突破 → ④ 内网资产权限 → ⑤ 靶标权限。
-   * 每阶段只讲两件事：这一步拿到多少分（累计多少）、涉及的资产/隧道是哪些。
-   * A = 竖向链（详细）；B = 横向链（一屏看完）。
+   * Выстраиваем в одну цепочку по расположению поверхности атаки:
+   * ① Разведка → ② Доступ к интернет-активам → ③ Прорыв периметра → ④ Доступ к активам внутренней сети → ⑤ Доступ к цели.
+   * На каждом этапе говорим только о двух вещах: сколько баллов дал шаг (и сколько накоплено) и какие активы/туннели задействованы.
+   * A = вертикальная цепочка (подробно); B = горизонтальная цепочка (всё на одном экране).
    */
   function ChainTab(props) {
     const eng = props.engagement;
@@ -4094,7 +4094,7 @@ export const __dshPurgeDrill = (() => {
         (r) => {
           setLoading(false);
           if (!r || r.ok === false) {
-            setErr((r && r.error) || "读取失败");
+            setErr((r && r.error) || "Ошибка чтения");
             return;
           }
           setErr(null);
@@ -4113,7 +4113,7 @@ export const __dshPurgeDrill = (() => {
     const toggle = (id) => setOpenId((cur) => (cur === id ? null : id));
     const CIRCLED = ["①", "②", "③", "④", "⑤", "⑥"];
 
-    /* 单次得分的详情 */
+    /* Детали одного начисления */
     const hitDetail = (x) =>
       h(
         "div",
@@ -4121,7 +4121,7 @@ export const __dshPurgeDrill = (() => {
         h(
           "div",
           { className: "rt-kv" },
-          h("b", null, "目标"),
+          h("b", null, "Цель"),
           h(
             "span",
             { className: "rt-mono", style: { wordBreak: "break-all" } },
@@ -4132,7 +4132,7 @@ export const __dshPurgeDrill = (() => {
           ? h(
               "div",
               { className: "rt-kv" },
-              h("b", null, "资产"),
+              h("b", null, "Актив"),
               h("span", { className: "rt-mono" }, x.asset_ip),
             )
           : null,
@@ -4140,7 +4140,7 @@ export const __dshPurgeDrill = (() => {
           ? h(
               "div",
               { className: "rt-kv" },
-              h("b", null, "利用漏洞"),
+              h("b", null, "Использованная уязвимость"),
               h(
                 "span",
                 null,
@@ -4151,24 +4151,24 @@ export const __dshPurgeDrill = (() => {
         h(
           "div",
           { className: "rt-kv" },
-          h("b", null, "次数"),
+          h("b", null, "Раз"),
           h(
             "span",
             null,
-            "同类第 " + x.nth_of_point + " 次 · +" + (x.points || 0) + " 分",
+            "Повтор того же типа №" + x.nth_of_point + " · +" + (x.points || 0) + " баллов",
           ),
         ),
         h(
           "div",
           { className: "rt-kv" },
-          h("b", null, "记录"),
+          h("b", null, "Запись"),
           h(
             "span",
             null,
             fmt(x.recorded_at) + (x.recorded_by ? " · " + x.recorded_by : ""),
           ),
         ),
-        x.evidence ? h(Clip, { label: "结果与证据", text: x.evidence }) : null,
+        x.evidence ? h(Clip, { label: "Результат и доказательства", text: x.evidence }) : null,
       );
 
     const hitRow = (x) =>
@@ -4205,16 +4205,16 @@ export const __dshPurgeDrill = (() => {
                 {
                   className: "rt-tag rt-tag-warn",
                   title:
-                    x.capped_reason || "同一资产同一端口只算分值最高的一条",
+                    x.capped_reason || "По одному активу и порту учитывается только запись с наибольшими баллами",
                 },
-                "服务已拿满 · 不计分",
+                "Сервис взят полностью · без баллов",
               )
             : null,
           x.nth_of_point > 1
             ? h(
                 "span",
                 { className: "rt-ap-nth" },
-                "第 " + x.nth_of_point + " 次",
+                "Попытка " + x.nth_of_point + ","
               )
             : null,
           h(
@@ -4229,15 +4229,15 @@ export const __dshPurgeDrill = (() => {
               {
                 className: "rt-ap-act" + (x.action_inferred ? " inferred" : ""),
               },
-              "动作：" +
-                (x.action.title || "（未命名步骤）") +
-                (x.action_inferred ? "（推断）" : ""),
+              "Действие: " +
+                (x.action.title || "(шаг без названия)") +
+                (x.action_inferred ? " (предположительно)" : ""),
             )
           : null,
         openId === x.id ? hitDetail(x) : null,
       );
 
-    /* 资产行（信息收集阶段 / 各阶段涉及资产） */
+    /* Строка актива (этап разведки / активы, задействованные на этапе) */
     const assetRow = (a) =>
       h(
         "div",
@@ -4249,28 +4249,28 @@ export const __dshPurgeDrill = (() => {
               "rt-scope rt-scope-" +
               (a.scope === "internal" ? "internal" : "external"),
           },
-          a.scope === "internal" ? "内" : "外",
+          a.scope === "internal" ? "int" : "ext",
         ),
         h("span", { className: "rt-mono", style: { fontWeight: 600 } }, a.ip),
         a.segment_cidr
           ? h("span", { className: "rt-ap-nth" }, a.segment_cidr)
           : null,
-        h("span", { className: "rt-ap-nth" }, "端口 " + (a.open_ports || 0)),
+        h("span", { className: "rt-ap-nth" }, "Портов " + (a.open_ports || 0)),
         a.vulns
-          ? h("span", { className: "rt-ap-nth" }, "漏洞 " + a.vulns)
+          ? h("span", { className: "rt-ap-nth" }, "Уязвимостей " + a.vulns)
           : null,
         a.priority
-          ? h("span", { className: "rt-tag" }, "易打 " + a.priority)
+          ? h("span", { className: "rt-tag" }, "Простота " + a.priority)
           : null,
         h("div", { className: "rt-spacer" }),
-        h("span", { className: "rt-ap-pts" }, "+" + (a.points || 0) + " 分"),
-        h("span", { className: "rt-ap-nth" }, (a.hits || 0) + " 次"),
+        h("span", { className: "rt-ap-pts" }, "+" + (a.points || 0) + " баллов"),
+        h("span", { className: "rt-ap-nth" }, (a.hits || 0) + " раз"),
       );
 
-    /* 攻击链只讲"打到哪了、拿了多少分"：不展示打法要点与工具清单，
-         那些是执行细节，混在链路里会淹没得分与资产信息。 */
+    /* Цепочка атаки говорит только «до чего дошли и сколько баллов взяли»: не показываем приёмы и список инструментов,
+         это детали исполнения, в цепочке они утопили бы баллы и информацию об активах. */
 
-    /* ── A：竖向攻击链 ─────────────────────────────────────────── */
+    /* ── A: вертикальная цепочка ─────────────────────────────────────────── */
     const stageA = (st, i) => {
       const isRecon = st.code === "recon";
       const body = [];
@@ -4279,7 +4279,7 @@ export const __dshPurgeDrill = (() => {
           h(
             "div",
             { key: "at", className: "rt-ap-sub" },
-            "拿到分数的资产 · " + st.assetCount + " 台",
+            "Активы с баллами · " + st.assetCount + " хостов",
           ),
         );
         body.push(
@@ -4288,7 +4288,7 @@ export const __dshPurgeDrill = (() => {
             { key: "al", className: "rt-ap-assets" },
             st.assets.length
               ? st.assets.map(assetRow)
-              : h("div", { className: "rt-ap-none" }, "还没有产生得分的资产"),
+              : h("div", { className: "rt-ap-none" }, "Активов с баллами пока нет"),
           ),
         );
       } else {
@@ -4296,10 +4296,10 @@ export const __dshPurgeDrill = (() => {
           h(
             "div",
             { key: "ht", className: "rt-ap-sub" },
-            "本阶段命中 " +
+            "Попаданий на этапе " +
               st.hits +
-              " 次" +
-              (st.points ? " · +" + st.points + " 分" : ""),
+              " раз" +
+              (st.points ? " · +" + st.points + " баллов" : ""),
           ),
         );
         body.push(
@@ -4308,7 +4308,7 @@ export const __dshPurgeDrill = (() => {
             { key: "hl", className: "rt-ap-hits" },
             st.items.length
               ? st.items.map(hitRow)
-              : h("div", { className: "rt-ap-none" }, "本阶段还没有得分"),
+              : h("div", { className: "rt-ap-none" }, "На этом этапе баллов пока нет"),
           ),
         );
         if (st.code === "boundary") {
@@ -4317,13 +4317,13 @@ export const __dshPurgeDrill = (() => {
             h(
               "div",
               { key: "tt", className: "rt-ap-sub" },
-              "跨越靶标边界的通道 · " +
+              "Каналы, пересекающие границу цели · " +
                 st.tunnels.length +
-                " 条" +
+                " шт." +
                 (selfOnly
-                  ? "（另有 " +
+                  ? " (ещё " +
                     selfOnly +
-                    " 条只在自己 VPS/自建服务器上，不算突破）"
+                    " на своём VPS/собственном сервере — это не считается прорывом)"
                   : ""),
             ),
           );
@@ -4332,7 +4332,7 @@ export const __dshPurgeDrill = (() => {
               h(
                 "div",
                 { key: "tw", className: "rt-ap-none" },
-                "⚠️ 现有的通道都在自己的服务器上，没有碰到目标 —— 不计边界突破。需要目标侧发起的通道（反弹 shell 到我这 / 目标上跑 frp 客户端 / 经目标 WebShell 的 suo5）。",
+                "⚠️ Все имеющиеся каналы только на своих серверах и цели не касаются —— прорыв периметра не засчитывается. Нужен канал, инициируемый со стороны цели (reverse shell ко мне / запуск frp-клиента на цели / suo5 через WebShell на цели).",
               ),
             );
           }
@@ -4363,7 +4363,7 @@ export const __dshPurgeDrill = (() => {
                             (t.status === "active" ? "rt-tag-live" : ""),
                           style: t.status === "active" ? {} : { opacity: 0.7 },
                         },
-                        t.status === "active" ? "可用" : t.status || "未知",
+                        t.status === "active" ? "Работает" : t.status || "Неизвестно",
                       ),
                       h(
                         "span",
@@ -4375,14 +4375,14 @@ export const __dshPurgeDrill = (() => {
                             textOverflow: "ellipsis",
                           },
                         },
-                        "可达 " + (t.reach || "—"),
+                        "Доступно " + (t.reach || "—"),
                       ),
                     ),
                   )
                 : h(
                     "div",
                     { className: "rt-ap-none" },
-                    "还没有建立隧道（建好后用 redteam_tunnel_add 登记）",
+                    "Туннелей пока нет (после создания зарегистрируйте его через redteam_tunnel_add)",
                   ),
             ),
           );
@@ -4392,7 +4392,7 @@ export const __dshPurgeDrill = (() => {
             h(
               "div",
               { key: "at", className: "rt-ap-sub" },
-              "涉及资产 · " + st.assetCount + " 台",
+              "Задействовано активов · " + st.assetCount + " хостов",
             ),
           );
           body.push(
@@ -4438,7 +4438,7 @@ export const __dshPurgeDrill = (() => {
           h(
             "span",
             { className: "rt-ap-cum" },
-            "累计 " + st.cumulative + " 分",
+            "Накоплено " + st.cumulative + " баллов",
           ),
         ),
         h(
@@ -4450,7 +4450,7 @@ export const __dshPurgeDrill = (() => {
               className: "rt-ap-goal-tag",
               style: { color: st.color, borderColor: st.color + "66" },
             },
-            "阶段目标",
+            "Цель этапа",
           ),
           h("span", null, st.goal),
         ),
@@ -4470,7 +4470,7 @@ export const __dshPurgeDrill = (() => {
               h(
                 "span",
                 { className: "rt-ap-trans-t", style: { marginLeft: "auto" } },
-                "累计 " + st.cumulative + " 分",
+                "Накоплено " + st.cumulative + " баллов",
               ),
             )
           : h(
@@ -4480,13 +4480,13 @@ export const __dshPurgeDrill = (() => {
               h(
                 "span",
                 { className: "rt-ap-trans-t" },
-                "合计 " + ((summary && summary.points) || 0) + " 分",
+                "Итого " + ((summary && summary.points) || 0) + " баллов",
               ),
             ),
       );
     };
 
-    /* ── B：横向攻击链（一屏看完） ─────────────────────────────── */
+    /* ── B: горизонтальная цепочка атаки (всё на одном экране) ─────────────────────────────── */
     const stageB = (st, i) =>
       h(
         "div",
@@ -4541,7 +4541,7 @@ export const __dshPurgeDrill = (() => {
                     h(
                       "span",
                       { className: "rt-hcol-name" },
-                      "隧道 " + st.tunnels.length + " 条",
+                      "Туннелей " + st.tunnels.length + " шт.",
                     ),
                   ),
                   st.tunnels
@@ -4562,7 +4562,7 @@ export const __dshPurgeDrill = (() => {
                       "div",
                       { className: "rt-hcol-hit" },
                       h("span", { className: "rt-hcol-pts" }, st.assetCount),
-                      h("span", { className: "rt-hcol-name" }, "台资产拿到分"),
+                      h("span", { className: "rt-hcol-name" }, "хостов получили баллы"),
                     ),
                     st.assets.slice(0, 6).map((a) =>
                       h(
@@ -4570,9 +4570,9 @@ export const __dshPurgeDrill = (() => {
                         {
                           key: "a" + a.id,
                           className: "rt-hcol-sub",
-                          title: a.ip + "  +" + a.points + " 分",
+                          title: a.ip + "  +" + a.points + " баллов",
                         },
-                        (a.scope === "internal" ? "内 " : "外 ") +
+                        (a.scope === "internal" ? "внутр. " : "внеш. ") +
                           a.ip +
                           "  +" +
                           a.points,
@@ -4589,7 +4589,7 @@ export const __dshPurgeDrill = (() => {
                       h(
                         "span",
                         { className: "rt-hcol-name" },
-                        st.hits + " 次命中",
+                        st.hits + " попаданий",
                       ),
                     ),
                     st.items.slice(0, 6).map((x) =>
@@ -4608,14 +4608,14 @@ export const __dshPurgeDrill = (() => {
                       ? h(
                           "div",
                           { className: "rt-hcol-none" },
-                          "…另有 " + (st.items.length - 6) + " 次",
+                          "…ещё " + (st.items.length - 6) + " попаданий",
                         )
                       : null,
                     st.assetCount
                       ? h(
                           "div",
                           { className: "rt-hcol-none" },
-                          "涉及 " + st.assetCount + " 台资产",
+                          "Задействовано активов: " + st.assetCount + "",
                         )
                       : null,
                   ),
@@ -4629,17 +4629,17 @@ export const __dshPurgeDrill = (() => {
       h(
         "div",
         { className: "rt-toolbar" },
-        h("span", { style: { fontWeight: 600 } }, "攻击链"),
+        h("span", { style: { fontWeight: 600 } }, "Цепочка атаки"),
         h(
           "span",
           { className: "rt-tag", style: { fontSize: 10.5 } },
-          "信息收集 → 互联网资产权限 → 边界突破 → 内网资产权限 → 靶标权限",
+          "Разведка → Доступ к интернет-активам → Прорыв периметра → Доступ к активам внутренней сети → Доступ к цели",
         ),
         summary
           ? h(
               "span",
               { className: "rt-tag rt-tag-live" },
-              "总分 " + summary.points + " 分",
+              "Всего " + summary.points + " баллов",
             )
           : null,
         h("div", { className: "rt-spacer" }),
@@ -4647,24 +4647,24 @@ export const __dshPurgeDrill = (() => {
           "button",
           {
             className: "rt-btn" + (view === "A" ? " rt-btn-primary" : ""),
-            title: "竖向攻击链：逐阶段向下看细节",
+            title: "Вертикальная цепочка атаки: детали по этапам вниз",
             onClick: () => setView("A"),
           },
-          "链路 A",
+          "Цепочка A",
         ),
         h(
           "button",
           {
             className: "rt-btn" + (view === "B" ? " rt-btn-primary" : ""),
-            title: "横向攻击链：一屏看完五个阶段",
+            title: "Горизонтальная цепочка атаки: пять этапов на одном экране",
             onClick: () => setView("B"),
           },
-          "链路 B",
+          "Цепочка B",
         ),
         h(
           "button",
           { className: "rt-btn", disabled: loading, onClick: load },
-          loading ? "加载中…" : "刷新",
+          loading ? "Загрузка…" : "Обновить",
         ),
       ),
       err ? h("div", { className: "rt-err" }, err) : null,
@@ -4672,7 +4672,7 @@ export const __dshPurgeDrill = (() => {
         ? h(
             "div",
             { className: "rt-empty" },
-            "还没有得分记录。拿到成果后用 redteam_score_hit 记分，这条链才会长出来。",
+            "Записей о начислениях пока нет. Зафиксируйте результат через redteam_score_hit — тогда эта цепочка и появится.",
           )
         : view === "A"
           ? h("div", { className: "rt-ap" }, stages.map(stageA))
@@ -4680,12 +4680,12 @@ export const __dshPurgeDrill = (() => {
     );
   }
 
-  /* ---------------------------------------------------------- 得分复现报告 */
+  /* ---------------------------------------------------------- Отчёт о воспроизведении начислений */
   /**
-   * 报告分组兜底：host 只给平铺条目时，用 scoreChain 的阶段信息把条目按攻击链顺序分组。
-   * 依据是两边共同的 score_hit id —— scoreChain 的每条 item 都带 stage_code，
-   * scoreReport 的每条 item 带同样的 id。这样即使 host 侧版本较旧或阶段行缺失，
-   * 报告页也能正常显示，而不是误报"还没有可交付的成果"。
+   * Резервная группировка отчёта: если host отдаёт только плоский список, группируем записи по этапам из scoreChain в порядке цепочки атаки.
+   * Основание — общий score_hit id: каждый item в scoreChain несёт stage_code,
+   * а каждый item в scoreReport несёт тот же id. Так даже при старом host или отсутствии строк этапов
+   * страница отчёта показывается нормально, а не выдаёт ложное «пока нет результатов для сдачи».
    */
   function groupByStage(reportItems, chain) {
     const byId = new Map((reportItems || []).map((x) => [x.id, x]));
@@ -4704,7 +4704,7 @@ export const __dshPurgeDrill = (() => {
         items,
       });
     });
-    /* scoreChain 完全没有阶段信息时，至少把得分归到「其他」，不要让条目凭空消失 */
+    /* Если в scoreChain совсем нет данных об этапах, относим начисления хотя бы в «Прочее», чтобы записи не исчезали */
     const grouped = new Set(
       groups.reduce((acc, g) => acc.concat(g.items.map((x) => x.id)), []),
     );
@@ -4712,7 +4712,7 @@ export const __dshPurgeDrill = (() => {
     if (rest.length > 0) {
       groups.push({
         code: "other",
-        name: "其他得分",
+        name: "Прочие начисления",
         color: "#64748b",
         ordinal: groups.length + 1,
         points: rest.reduce((n, x) => n + (x.counted ? x.points : 0), 0),
@@ -4730,7 +4730,7 @@ export const __dshPurgeDrill = (() => {
     const [err, setErr] = React.useState(null);
     const [busy, setBusy] = React.useState(false);
     const [msg, setMsg] = React.useState(null);
-    /* 报告按阶段折叠：默认全开，折叠状态按靶标记住（阶段多时便于逐段交付） */
+    /* Отчёт сворачивается по этапам: по умолчанию всё раскрыто, состояние запоминается по цели (при многих этапах удобно сдавать по частям) */
     const collapse = useCollapse("report:" + eng);
 
     const load = () => {
@@ -4741,11 +4741,11 @@ export const __dshPurgeDrill = (() => {
         (r) => {
           if (!r || r.ok === false) {
             setBusy(false);
-            setErr((r && r.error) || "生成失败");
+            setErr((r && r.error) || "Ошибка генерации");
             return;
           }
-          /* 老 host 只给平铺条目、不给阶段分组（或阶段行缺失）：自己按攻击链分组，
-             否则报告页会误报"还没有可交付的成果"。分组数据取自 scoreChain。 */
+          /* Старый host отдаёт только плоский список без группировки по этапам (или строки этапов отсутствуют): группируем по цепочке атаки сами,
+             иначе страница отчёта выдаст ложное «пока нет результатов для сдачи». Данные для группировки берём из scoreChain. */
           if (
             (!r.stages || r.stages.length === 0) &&
             (r.items || []).length > 0
@@ -4778,8 +4778,8 @@ export const __dshPurgeDrill = (() => {
     };
     React.useEffect(load, [eng, refreshKey]);
 
-    /* 复制结果必须是真实的：clipboard API 失败时（非安全上下文/失焦/被拒）要如实提示，
-         否则用户以为复制成功、粘到 Yakit 里是空的。 */
+    /* Результат копирования должен быть настоящим: если clipboard API отказал (небезопасный контекст/потеря фокуса/отказ), сообщаем честно,
+         иначе пользователь решит, что скопировал, а в Yakit вставится пусто. */
     const copy = (text, label) =>
       copyWithFeedback(text, label, (okFlag, message) => {
         setMsg(okFlag ? { ok: message } : { err: message });
@@ -4795,7 +4795,7 @@ export const __dshPurgeDrill = (() => {
           String(label || "score").replace(/[^\w.\-]/g, "_") +
           ".md";
         a.click();
-        /* 立刻 revoke 会在部分浏览器里让 click 启动的下载断流,延后一拍 */
+        /* Немедленный revoke в некоторых браузерах обрывает скачивание, запущенное через click, поэтому откладываем на такт */
         setTimeout(() => {
           try {
             URL.revokeObjectURL(url);
@@ -4803,9 +4803,9 @@ export const __dshPurgeDrill = (() => {
             /* ignore */
           }
         }, 1000);
-        setMsg({ ok: "已下载：" + label });
+        setMsg({ ok: "Скачано: " + label });
       } catch (e) {
-        setMsg({ err: "下载失败：" + ((e && e.message) || e) });
+        setMsg({ err: "Ошибка скачивания: " + ((e && e.message) || e) });
       }
     };
 
@@ -4836,7 +4836,7 @@ export const __dshPurgeDrill = (() => {
       "⑳",
     ];
 
-    /* 每项一条，平铺不折叠：目标 → 拿到什么 → 复现请求（可直接粘进 Yakit）→ 响应 */
+    /* По одной записи на пункт, плоский список без сворачивания: цель → что получено → запрос для воспроизведения (можно вставить прямо в Yakit) → ответ */
     const card = (x) =>
       h(
         "div",
@@ -4846,12 +4846,12 @@ export const __dshPurgeDrill = (() => {
           { className: "rt-rep-head" },
           h("span", { className: "rt-rep-idx" }, String(x.seq)),
           h("span", { className: "rt-rep-name" }, x.point_name),
-          h("span", { className: "rt-flow-pts" }, "+" + x.points + " 分"),
+          h("span", { className: "rt-flow-pts" }, "+" + x.points + " баллов"),
           x.nth_of_point > 1
             ? h(
                 "span",
                 { className: "rt-tag" },
-                "同类第 " + x.nth_of_point + " 次",
+                "Повтор того же типа №" + x.nth_of_point + "",
               )
             : null,
           h("div", { className: "rt-spacer" }),
@@ -4866,23 +4866,23 @@ export const __dshPurgeDrill = (() => {
                     .map((v) => v.request || "")
                     .filter(Boolean)
                     .join("\n\n"),
-                  "第 " + x.seq + " 项请求",
+                  "Запрос №" + x.seq + "",
                 ),
             },
-            "复制请求",
+            "Копировать запрос",
           ),
         ),
         h(
           "div",
           { className: "rt-rep-meta" },
-          h("span", null, h("b", null, "目标 ")),
+          h("span", null, h("b", null, "Цель ")),
           h("span", { className: "rt-mono" }, x.target || x.asset_ip || "—"),
         ),
         x.gained
           ? h(
               "div",
               { className: "rt-rep-meta" },
-              h("b", null, "拿到 "),
+              h("b", null, "Получено "),
               h("span", null, x.gained),
             )
           : null,
@@ -4890,7 +4890,7 @@ export const __dshPurgeDrill = (() => {
           ? h(
               "div",
               { className: "rt-rep-meta" },
-              h("b", null, "利用漏洞 "),
+              h("b", null, "Использованная уязвимость "),
               h(
                 "span",
                 null,
@@ -4902,7 +4902,7 @@ export const __dshPurgeDrill = (() => {
           ? h(
               "div",
               { className: "rt-rep-meta" },
-              h("b", null, "结果 "),
+              h("b", null, "Результат "),
               h("span", null, String(x.evidence).replace(/\n+/g, " ")),
             )
           : null,
@@ -4910,13 +4910,13 @@ export const __dshPurgeDrill = (() => {
           ? h(
               "div",
               { className: "rt-rep-meta" },
-              h("b", null, "取得时间 "),
+              h("b", null, "Когда получено "),
               h(
                 "span",
                 null,
                 fmt(x.recorded_at) +
                   (x.recorded_by
-                    ? "（" + (ROLE_LABEL[x.recorded_by] || x.recorded_by) + "）"
+                    ? "(" + (ROLE_LABEL[x.recorded_by] || x.recorded_by) + ")"
                     : ""),
               ),
             )
@@ -4925,10 +4925,10 @@ export const __dshPurgeDrill = (() => {
           eng: eng,
           shots: x.shots,
           total: x.shot_total,
-          title: "证据截图",
+          title: "Скриншоты доказательств",
         }),
-        /* ── 复现步骤：动作记录（含实际命令与回显）+ 凭据 + 隧道 + WebShell ─────
-           报告的交付价值全在这块：账号密码怎么来的、隧道怎么搭的，用户照着就能复现。 */
+        /* ── Шаги воспроизведения: записи действий (с реальными командами и выводом) + учётные данные + туннели + WebShell ─────
+           Вся ценность сдаваемого отчёта здесь: откуда взялись логины и пароли, как построен туннель — по этому пользователь воспроизведёт всё сам. */
         h(
           "details",
           {
@@ -4941,32 +4941,32 @@ export const __dshPurgeDrill = (() => {
             h(
               "span",
               { className: "rt-rep-trace-title" },
-              "复现步骤（点击展开）",
+              "Шаги воспроизведения (клик — раскрыть)",
             ),
             (x.steps || []).length
               ? h(
                   "span",
                   { className: "rt-tag" },
-                  (x.steps || []).length + " 个动作",
+                  (x.steps || []).length + " действий",
                 )
               : null,
             (x.credentials || []).length
               ? h(
                   "span",
                   { className: "rt-tag" },
-                  (x.credentials || []).length + " 条凭据",
+                  (x.credentials || []).length + " учётных данных",
                 )
               : null,
             (x.tunnels || []).length
               ? h(
                   "span",
                   { className: "rt-tag" },
-                  (x.tunnels || []).length + " 条隧道",
+                  (x.tunnels || []).length + " туннелей",
                 )
               : null,
             x.incomplete
-              ? h("span", { className: "rt-tag rt-tag-warn" }, "复现材料待补")
-              : h("span", { className: "rt-tag rt-tag-live" }, "可复现"),
+              ? h("span", { className: "rt-tag rt-tag-warn" }, "Материалы для воспроизведения неполные")
+              : h("span", { className: "rt-tag rt-tag-live" }, "Воспроизводимо"),
           ),
           h(
             "div",
@@ -4976,7 +4976,7 @@ export const __dshPurgeDrill = (() => {
               ? h(
                   "div",
                   { className: "rt-rep-missing" },
-                  "⚠️ 没有关联的攻击步骤：说不清这一步是怎么做的。请用 redteam_chain_add 补上动作（title / detail / tool / result），记分时也可以带 point_code + evidence 一次完成。",
+                  "⚠️ Нет связанных шагов атаки: непонятно, как сделан этот шаг. Добавьте действие через redteam_chain_add (title / detail / tool / result); при начислении можно сразу передать point_code + evidence.",
                 )
               : (x.steps || []).map((s, si) =>
                   h(
@@ -4993,7 +4993,7 @@ export const __dshPurgeDrill = (() => {
                       h(
                         "span",
                         { className: "rt-rep-step-title" },
-                        s.title || "(未命名动作)",
+                        s.title || "(действие без названия)",
                       ),
                       s.agent
                         ? h(
@@ -5006,7 +5006,7 @@ export const __dshPurgeDrill = (() => {
                         ? h("span", { className: "rt-tag" }, s.stage_code)
                         : null,
                       s.inferred
-                        ? h("span", { className: "rt-tag" }, "按同资产推断")
+                        ? h("span", { className: "rt-tag" }, "Выведено по тому же активу")
                         : null,
                       h("div", { className: "rt-spacer" }),
                       s.recorded_at
@@ -5028,7 +5028,7 @@ export const __dshPurgeDrill = (() => {
                     h(
                       "div",
                       { className: "rt-rep-step-cmd" },
-                      h("b", null, "执行 "),
+                      h("b", null, "Выполнено "),
                       s.tool
                         ? h("span", { className: "rt-mono" }, s.tool)
                         : h(
@@ -5039,7 +5039,7 @@ export const __dshPurgeDrill = (() => {
                                   "var(--dsw-alias-state-warn-primary, #f59e0b)",
                               },
                             },
-                            "未记录实际命令（redteam_chain_add 的 tool）",
+                            "Реальная команда не записана (tool в redteam_chain_add)",
                           ),
                     ),
                     s.tool
@@ -5054,10 +5054,10 @@ export const __dshPurgeDrill = (() => {
                               onClick: () =>
                                 copy(
                                   String(s.tool),
-                                  "第 " + (si + 1) + " 步命令",
+                                  "Шаг " + (si + 1) + ": команда",
                                 ),
                             },
-                            "复制命令",
+                            "Копировать команду",
                           ),
                         )
                       : null,
@@ -5065,7 +5065,7 @@ export const __dshPurgeDrill = (() => {
                       ? h(
                           "div",
                           { className: "rt-rep-step-result" },
-                          h("b", null, "结果 "),
+                          h("b", null, "Результат "),
                           String(s.result).replace(/\n+/g, " "),
                         )
                       : null,
@@ -5073,13 +5073,13 @@ export const __dshPurgeDrill = (() => {
                       ? h(
                           "div",
                           { className: "rt-rep-step-result" },
-                          h("b", null, "证据 "),
+                          h("b", null, "Доказательства "),
                           h("span", { className: "rt-mono" }, s.evidence_ref),
                         )
                       : null,
                   ),
                 ),
-            /* 账号密码怎么来的：凭据的来源 + 取得方式 */
+            /* Откуда взялись логины и пароли: источник учётных данных + способ получения */
             (x.credentials || []).length
               ? h(
                   "div",
@@ -5087,7 +5087,7 @@ export const __dshPurgeDrill = (() => {
                   h(
                     "div",
                     { className: "rt-rep-src-title" },
-                    "拿到的凭据（来源可追溯）",
+                    "Полученные учётные данные (источник отслеживается)",
                   ),
                   (x.credentials || []).map((c) =>
                     h(
@@ -5101,14 +5101,14 @@ export const __dshPurgeDrill = (() => {
                       h(
                         "span",
                         null,
-                        (c.username || "(无用户名)") +
+                        (c.username || "(без имени пользователя)") +
                           " / " +
                           (c.secret_type || "password") +
-                          (c.privilege ? " · 权限 " + c.privilege : "") +
-                          " · 来源 " +
-                          (c.source || "未标注") +
+                          (c.privilege ? " · права " + c.privilege : "") +
+                          " · источник " +
+                          (c.source || "не указан") +
                           (c.tool
-                            ? " · 取得方式 " +
+                            ? " · способ получения " +
                               String(c.tool).replace(/\n+/g, " ").slice(0, 160)
                             : ""),
                       ),
@@ -5116,7 +5116,7 @@ export const __dshPurgeDrill = (() => {
                   ),
                 )
               : null,
-            /* 隧道怎么搭的 */
+            /* Как построен туннель */
             (x.tunnels || []).length
               ? h(
                   "div",
@@ -5124,7 +5124,7 @@ export const __dshPurgeDrill = (() => {
                   h(
                     "div",
                     { className: "rt-rep-src-title" },
-                    "用到的隧道 / 通道",
+                    "Использованные туннели / каналы",
                   ),
                   (x.tunnels || []).map((t) =>
                     h(
@@ -5138,15 +5138,15 @@ export const __dshPurgeDrill = (() => {
                       h(
                         "span",
                         null,
-                        "入口 " +
-                          (t.entry || "未登记") +
-                          (t.reach ? " · 可达 " + t.reach : "") +
-                          " · 目标侧 " +
-                          (t.entry_kind || "未声明") +
-                          (t.legit === false ? " · ⚠️ 不算跨越靶标边界" : "") +
+                        "Вход " +
+                          (t.entry || "не зарегистрирован") +
+                          (t.reach ? " · доступно " + t.reach : "") +
+                          " · сторона цели " +
+                          (t.entry_kind || "не указано") +
+                          (t.legit === false ? " · ⚠️ не считается пересечением границы цели" : "") +
                           (t.status ? " · " + t.status : "") +
                           (t.command
-                            ? " · 命令 " +
+                            ? " · команда " +
                               String(t.command)
                                 .replace(/\n+/g, " ")
                                 .slice(0, 160)
@@ -5163,7 +5163,7 @@ export const __dshPurgeDrill = (() => {
                   h(
                     "div",
                     { className: "rt-rep-src-title" },
-                    "用到的 WebShell",
+                    "Использованные WebShell",
                   ),
                   (x.webshells || []).map((w) =>
                     h(
@@ -5178,8 +5178,8 @@ export const __dshPurgeDrill = (() => {
                         "span",
                         null,
                         (w.url || "") +
-                          (w.pass_key ? " · 口令/密钥 " + w.pass_key : "") +
-                          (w.privilege ? " · 权限 " + w.privilege : "") +
+                          (w.pass_key ? " · пароль/ключ " + w.pass_key : "") +
+                          (w.privilege ? " · права " + w.privilege : "") +
                           (w.status ? " · " + w.status : ""),
                       ),
                     ),
@@ -5190,7 +5190,7 @@ export const __dshPurgeDrill = (() => {
               ? h(
                   "div",
                   { className: "rt-rep-missing" },
-                  "⚠️ 复现缺口：" + x.gaps.join("；"),
+                  "⚠️ Пробелы воспроизведения: " + x.gaps.join("; "),
                 )
               : null,
           ),
@@ -5198,7 +5198,7 @@ export const __dshPurgeDrill = (() => {
             ? h(
                 "div",
                 { className: "rt-rep-missing" },
-                "⚠️ 这一项没有原始请求记录，无法直接复现 —— 请用 redteam_http_evidence_add 补上",
+                "⚠️ У этого пункта нет записи исходного запроса, воспроизвести напрямую нельзя —— добавьте через redteam_http_evidence_add",
               )
             : (x.requests || []).map((r, ri) =>
                 h(
@@ -5210,10 +5210,10 @@ export const __dshPurgeDrill = (() => {
                     h(
                       "span",
                       null,
-                      "复现请求 " +
+                      "Запрос для воспроизведения " +
                         (ri + 1) +
                         (r.source === "auto"
-                          ? "（按目标路径自动匹配，请核对）"
+                          ? " (подобран автоматически по пути цели, сверьте)"
                           : ""),
                     ),
                     h(
@@ -5232,9 +5232,9 @@ export const __dshPurgeDrill = (() => {
                         className: "rt-btn",
                         style: { padding: "0 6px", fontSize: 11 },
                         onClick: () =>
-                          copy(String(r.request || ""), "请求 " + (ri + 1)),
+                          copy(String(r.request || ""), "Запрос " + (ri + 1)),
                       },
-                      "复制到 Yakit",
+                      "Копировать в Yakit",
                     ),
                   ),
                   h(
@@ -5250,7 +5250,7 @@ export const __dshPurgeDrill = (() => {
                         h(
                           "div",
                           { className: "rt-rep-req-head" },
-                          h("span", null, "响应摘要"),
+                          h("span", null, "Краткий ответ"),
                         ),
                         h(
                           "pre",
@@ -5268,7 +5268,7 @@ export const __dshPurgeDrill = (() => {
             ? h(
                 "div",
                 { className: "rt-rep-meta" },
-                h("b", null, "备注 "),
+                h("b", null, "Примечание "),
                 h("span", null, x.note),
               )
             : null,
@@ -5281,16 +5281,16 @@ export const __dshPurgeDrill = (() => {
       h(
         "div",
         { className: "rt-toolbar" },
-        h("span", { style: { fontWeight: 600 } }, "攻击得分链路复现报告"),
+        h("span", { style: { fontWeight: 600 } }, "Отчёт о воспроизведении цепочки начислений"),
         summary
           ? h(
               "span",
               { className: "rt-tag rt-tag-live" },
-              "合计 " + summary.points + " 分",
+              "Итого " + summary.points + " баллов",
             )
           : null,
         summary
-          ? h("span", { className: "rt-tag" }, summary.count + " 项得分")
+          ? h("span", { className: "rt-tag" }, summary.count + " начислений")
           : null,
         summary
           ? h(
@@ -5299,7 +5299,7 @@ export const __dshPurgeDrill = (() => {
                 className:
                   "rt-tag" + (summary.missingRequests ? "" : " rt-tag-live"),
               },
-              summary.withRequests + "/" + summary.count + " 项带原始请求",
+              summary.withRequests + "/" + summary.count + " с исходными запросами",
             )
           : null,
         summary
@@ -5310,9 +5310,9 @@ export const __dshPurgeDrill = (() => {
                   "rt-tag" +
                   (summary.incomplete ? " rt-tag-warn" : " rt-tag-live"),
                 title:
-                  "复现链是否完整：有攻击步骤、写了实际命令、关联了漏洞/凭据/隧道",
+                  "Полнота цепочки воспроизведения: есть шаги атаки, записаны реальные команды, связаны уязвимость/учётные данные/туннель",
               },
-              "可复现 " +
+              "Воспроизводимо " +
                 (summary.count - (summary.incomplete || 0)) +
                 "/" +
                 summary.count,
@@ -5325,11 +5325,11 @@ export const __dshPurgeDrill = (() => {
                 className: "rt-tag rt-tag-warn",
                 title:
                   (summary.serviceCapped || [])
-                    .map((x) => (x.service || "") + "｜" + (x.point_name || ""))
+                    .map((x) => (x.service || "") + "|" + (x.point_name || ""))
                     .join("\n") ||
-                  "同一资产同一端口的重复账号/数据库权限命中：服务已拿满，不计分、不进报告",
+                  "Повторные попадания по учётным записям/правам БД того же актива и порта: сервис взят полностью, баллы не начисляются и в отчёт не идут",
               },
-              "同服务已拿满不计分 " + summary.serviceCappedExcluded,
+              "Сервис взят полностью, без баллов: " + summary.serviceCappedExcluded,
             )
           : null,
         h("div", { className: "rt-spacer" }),
@@ -5338,9 +5338,9 @@ export const __dshPurgeDrill = (() => {
           {
             className: "rt-btn",
             disabled: busy || !mdText,
-            onClick: () => copy(mdText, "整份报告"),
+            onClick: () => copy(mdText, "весь отчёт"),
           },
-          "复制全文",
+          "Копировать целиком",
         ),
         h(
           "button",
@@ -5349,12 +5349,12 @@ export const __dshPurgeDrill = (() => {
             disabled: busy || !mdText,
             onClick: () => download(mdText, (data && data.target) || eng),
           },
-          "下载 .md",
+          "Скачать .md",
         ),
         h(
           "button",
           { className: "rt-btn", disabled: busy, onClick: load },
-          busy ? "生成中…" : "重新生成",
+          busy ? "Генерация…" : "Сгенерировать заново",
         ),
       ),
       msg
@@ -5385,7 +5385,7 @@ export const __dshPurgeDrill = (() => {
                         true,
                       ),
                   },
-                  "全部展开",
+                  "Развернуть все",
                 ),
                 h(
                   "button",
@@ -5397,7 +5397,7 @@ export const __dshPurgeDrill = (() => {
                         false,
                       ),
                   },
-                  "全部折叠",
+                  "Свернуть все",
                 ),
               ),
               stages.map((st) => {
@@ -5435,7 +5435,7 @@ export const __dshPurgeDrill = (() => {
                     h(
                       "span",
                       { className: "rt-rep-stage-n" },
-                      st.items.length + " 项",
+                      st.items.length + " шт.",
                     ),
                     h("div", { className: "rt-spacer" }),
                     h(
@@ -5448,12 +5448,12 @@ export const __dshPurgeDrill = (() => {
                           borderColor: st.color + "66",
                         },
                       },
-                      "+" + st.points + " 分",
+                      "+" + st.points + " баллов",
                     ),
                     h(
                       "span",
                       { className: "rt-ap-cum" },
-                      "累计 " + st.cumulative + " 分",
+                      "Накоплено " + st.cumulative + " баллов",
                     ),
                   ),
                   open
@@ -5463,15 +5463,15 @@ export const __dshPurgeDrill = (() => {
               }),
             )
           : data === null
-            ? h("div", { className: "rt-empty" }, "加载中…")
+            ? h("div", { className: "rt-empty" }, "Загрузка…")
             : h(
                 "div",
                 { className: "rt-empty" },
-                h("div", null, "还没有可交付的成果。"),
+                h("div", null, "Результатов для сдачи пока нет."),
                 h(
                   "div",
                   { style: { marginTop: 6, fontSize: 12 } },
-                  '本报告只收录"拿到了分"的成果；没有得分的漏洞不进报告。拿到成果后用 redteam_score_hit 记分（目标资产 + 拿到的东西），并补 redteam_http_evidence_add 以便复现。',
+                  'В отчёт попадают только результаты "с баллами"; уязвимости без баллов в него не входят. Получив результат, зафиксируйте его через redteam_score_hit (актив цели + что получено) и добавьте redteam_http_evidence_add для воспроизведения.',
                 ),
               ),
       ),
@@ -5481,19 +5481,19 @@ export const __dshPurgeDrill = (() => {
         h(
           "span",
           null,
-          "口径：只收录得分成果，每条附带可粘进 Yakit Repeater 的原始请求",
+          "Правило: только результаты с баллами, к каждому прилагается исходный запрос, который можно вставить в Yakit Repeater",
         ),
       ),
     );
   }
 
-  /* ---------------------------------------------------------- 攻击文件 */
+  /* ---------------------------------------------------------- Файлы атаки */
   const FILE_KIND = {
     poc: "POC",
     exp: "EXP",
-    script: "脚本",
-    wordlist: "字典",
-    other: "其他",
+    script: "Скрипт",
+    wordlist: "Словарь",
+    other: "Прочее",
   };
 
   function AttackFilesTab(props) {
@@ -5512,7 +5512,7 @@ export const __dshPurgeDrill = (() => {
         (r) => {
           setBusy(false);
           if (!r || r.ok === false) {
-            setErr((r && r.error) || "读取失败");
+            setErr((r && r.error) || "Ошибка чтения");
             return;
           }
           setErr(null);
@@ -5535,7 +5535,7 @@ export const __dshPurgeDrill = (() => {
       api({ op: "readAttackFile", engagement: eng, id: f.id }).then(
         (r) => {
           if (r && r.ok) setDetail(r);
-          else setErr((r && r.error) || "读取失败");
+          else setErr((r && r.error) || "Ошибка чтения");
         },
         (e) => setErr(String((e && e.message) || e)),
       );
@@ -5609,13 +5609,13 @@ export const __dshPurgeDrill = (() => {
               h(
                 "div",
                 { className: "rt-kv" },
-                h("b", null, "效果"),
+                h("b", null, "Эффект"),
                 h("span", null, detail.evidence || "—"),
               ),
               h(
                 "div",
                 { className: "rt-kv" },
-                h("b", null, "路径"),
+                h("b", null, "Путь"),
                 h(
                   "span",
                   { className: "rt-mono", style: { wordBreak: "break-all" } },
@@ -5625,7 +5625,7 @@ export const __dshPurgeDrill = (() => {
               h(
                 "div",
                 { className: "rt-kv" },
-                h("b", null, "记录"),
+                h("b", null, "Запись"),
                 h(
                   "span",
                   null,
@@ -5644,7 +5644,7 @@ export const __dshPurgeDrill = (() => {
                     padding: "10px 12px",
                   },
                 },
-                detail.content || "（空）",
+                detail.content || "(пусто)",
               ),
             ),
           ),
@@ -5657,13 +5657,13 @@ export const __dshPurgeDrill = (() => {
             key: "sec:" + folder.folder,
             tone: "folder",
             title: folder.folder + "/",
-            count: folder.count + " 个文件",
+            count: folder.count + " файлов",
             open: collapse.isOpen(fKey, true),
             onToggle: collapse.toggle(fKey, true),
           },
           fileNodes.length
             ? fileNodes
-            : h("div", { className: "rt-atest-meta" }, "（空）"),
+            : h("div", { className: "rt-atest-meta" }, "(пусто)"),
         ),
       );
     }
@@ -5675,17 +5675,17 @@ export const __dshPurgeDrill = (() => {
       h(
         "div",
         { className: "rt-toolbar" },
-        h("span", { style: { fontWeight: 600 } }, "攻击文件"),
+        h("span", { style: { fontWeight: 600 } }, "Файлы атаки"),
         h(
           "span",
           { className: "rt-tag" },
-          folders.length + " 个目标 / " + total + " 个文件",
+          folders.length + " целей / " + total + " файлов",
         ),
         h("div", { className: "rt-spacer" }),
         h(
           "button",
           { className: "rt-btn", disabled: busy, onClick: load },
-          busy ? "刷新中…" : "刷新",
+          busy ? "Обновление…" : "Обновить",
         ),
       ),
       err ? h("div", { className: "rt-err" }, err) : null,
@@ -5697,7 +5697,7 @@ export const __dshPurgeDrill = (() => {
           ? h(
               "div",
               { className: "rt-empty" },
-              "暂无攻击文件（打通的脚本/POC/EXP 会按目标文件夹出现在这里）",
+              "Файлов атаки пока нет (пробившие скрипты/POC/EXP появятся здесь в папках целей)",
             )
           : null,
       ),
@@ -5707,31 +5707,31 @@ export const __dshPurgeDrill = (() => {
         h(
           "span",
           null,
-          "目录：attack-files/<IP|URL主机|C段>/ ｜ 只收录实际生效的文件",
+          "Каталог: attack-files/<IP|хост из URL|C-сегмент>/ | только реально сработавшие файлы",
         ),
       ),
     );
   }
 
-  /* ---------------------------------------------------------- 知识库（POC/EXP，全局共享） */
+  /* ---------------------------------------------------------- База знаний (POC/EXP, общая для всех) */
   /**
-   * 知识库页：打 Nday/1day 之前先在这里搜。检索框支持 CVE / 组件 / 关键字 / 正文关键词；
-   * 命中就展开拿全文（可直接复制去用），没有就说明要去互联网找或自己搓，验证后回填。
-   * 这里是**全局**的：不随靶标切换，一个靶标沉淀的通用 POC 后面所有靶标都能用。
+   * Страница базы знаний: перед работой по Nday/1day сначала ищите здесь. Поиск поддерживает CVE / компонент / ключевое слово / слова из текста;
+   * Нашли — раскрывайте и берите полный текст (можно сразу скопировать), нет — ищите в интернете или пишите сами, а после проверки заполняйте базу.
+   * Здесь всё **глобально**: база не переключается вместе с целью, универсальный POC, накопленный по одной цели, потом годится для всех.
    */
   const POC_KIND_LABEL = {
     poc: "POC",
     exp: "EXP",
-    script: "脚本",
-    template: "模板",
-    payload: "载荷",
+    script: "Скрипт",
+    template: "Шаблон",
+    payload: "Полезная нагрузка",
   };
   const POC_SOURCE_LABEL = {
-    web: "互联网",
-    self: "手搓",
-    manual: "人工",
-    "nuclei-template": "nuclei 模板",
-    kb: "知识库",
+    web: "Интернет",
+    self: "Своё",
+    manual: "Вручную",
+    "nuclei-template": "Шаблон nuclei",
+    kb: "База знаний",
   };
 
   function KnowledgeTab(props) {
@@ -5781,7 +5781,7 @@ export const __dshPurgeDrill = (() => {
         (r) => {
           setBusy(false);
           if (!r || r.ok === false) {
-            setErr((r && r.error) || "读取失败");
+            setErr((r && r.error) || "Ошибка чтения");
             return;
           }
           setErr(null);
@@ -5793,7 +5793,7 @@ export const __dshPurgeDrill = (() => {
         },
       );
     };
-    /* 首次进入与刷新键变化时拉全量（检索是显式动作，避免边打字边打接口） */
+    /* Полную выборку тянем при первом входе и при смене ключа обновления (поиск — явное действие, чтобы не дёргать API на каждый символ) */
     React.useEffect(() => {
       query({
         q: undefined,
@@ -5818,7 +5818,7 @@ export const __dshPurgeDrill = (() => {
         (r) => {
           setDetailBusy(false);
           if (!r || r.ok === false) {
-            setMsg({ err: (r && r.error) || "读取失败" });
+            setMsg({ err: (r && r.error) || "Ошибка чтения" });
             return;
           }
           setDetail(r);
@@ -5830,15 +5830,15 @@ export const __dshPurgeDrill = (() => {
       );
     };
 
-    /* 同报告页：await 真实结果再提示 */
+    /* Как и на странице отчёта: сначала await реального результата, потом сообщение */
     const copy = (text, label) =>
       copyWithFeedback(text, label, (okFlag, message) => {
         setMsg(okFlag ? { ok: message } : { err: message });
       });
     const useIt = (row) => {
-      api({ op: "pocUse", id: row.id, used_on: "控制台手动标记" }).then(
+      api({ op: "pocUse", id: row.id, used_on: "отмечено вручную в консоли" }).then(
         () => {
-          setMsg({ ok: "已记一次复用：" + row.title });
+          setMsg({ ok: "Отмечено повторное использование: " + row.title });
           query();
         },
         (e) => setMsg({ err: String((e && e.message) || e) }),
@@ -5907,8 +5907,8 @@ export const __dshPurgeDrill = (() => {
             : null,
           x.component ? h("span", { className: "rt-tag" }, x.component) : null,
           x.verified === 1
-            ? h("span", { className: "rt-tag rt-tag-live" }, "已验证")
-            : h("span", { className: "rt-tag rt-tag-warn" }, "未验证"),
+            ? h("span", { className: "rt-tag rt-tag-live" }, "Проверено")
+            : h("span", { className: "rt-tag rt-tag-warn" }, "Не проверено"),
           h("div", { className: "rt-spacer" }),
           h(
             "span",
@@ -5916,30 +5916,30 @@ export const __dshPurgeDrill = (() => {
             POC_SOURCE_LABEL[x.source] || x.source || "—",
           ),
           x.hit_count
-            ? h("span", { className: "rt-tag" }, "复用 " + x.hit_count)
+            ? h("span", { className: "rt-tag" }, "Использований " + x.hit_count)
             : null,
         ),
-        /* 来源行：归类 · 影响版本 · 建立时间 · 来源靶标 · 发现资产 —— 一条知识"什么时候、
-             在哪个单位的哪台资产上发现的"一眼可见 */
+        /* Строка источника: категория · затронутые версии · когда создано · цель-источник · найденный актив —— чтобы было видно, «когда
+             и на каком активе какой организации это найдено» */
         h(
           "div",
           { className: "rt-kb-sub" },
           [
             x.category
-              ? "归类 " + (POC_CAT_NAME[x.category] || x.category)
+              ? "Категория " + (POC_CAT_NAME[x.category] || x.category)
               : null,
-            x.versions ? "影响版本 " + x.versions : null,
+            x.versions ? "Затронутые версии " + x.versions : null,
             x.language || null,
             x.tags || null,
-            "建立时间 " + fmt(x.created_at),
+            "Создано " + fmt(x.created_at),
             x.engagement_name || x.engagement_id
-              ? "来源靶标 " + (x.engagement_name || x.engagement_id)
+              ? "Цель-источник " + (x.engagement_name || x.engagement_id)
               : null,
-            x.asset_target ? "发现资产 " + x.asset_target : null,
+            x.asset_target ? "Найденный актив " + x.asset_target : null,
             x.found_by_agent
-              ? "发现角色 " + (ROLE_LABEL[x.found_by_agent] || x.found_by_agent)
+              ? "Роль при находке " + (ROLE_LABEL[x.found_by_agent] || x.found_by_agent)
               : null,
-            x.source_url ? "来源 " + x.source_url : null,
+            x.source_url ? "Источник " + x.source_url : null,
           ]
             .filter(Boolean)
             .join(" · "),
@@ -5949,7 +5949,7 @@ export const __dshPurgeDrill = (() => {
               "div",
               { className: "rt-kb-body" },
               detailBusy && !d
-                ? h("div", { className: "rt-empty" }, "读取中…")
+                ? h("div", { className: "rt-empty" }, "Чтение…")
                 : null,
               d
                 ? h(
@@ -5959,7 +5959,7 @@ export const __dshPurgeDrill = (() => {
                       ? h(
                           "div",
                           { className: "rt-kv" },
-                          h("b", null, "用法"),
+                          h("b", null, "Использование"),
                           h("span", { className: "rt-mono" }, d.usage),
                         )
                       : null,
@@ -5967,7 +5967,7 @@ export const __dshPurgeDrill = (() => {
                       ? h(
                           "div",
                           { className: "rt-kv" },
-                          h("b", null, "说明"),
+                          h("b", null, "Описание"),
                           h("span", null, d.description),
                         )
                       : null,
@@ -5975,7 +5975,7 @@ export const __dshPurgeDrill = (() => {
                       ? h(
                           "div",
                           { className: "rt-kv" },
-                          h("b", null, "验证证据"),
+                          h("b", null, "Доказательства проверки"),
                           h("span", null, d.verified_note),
                         )
                       : null,
@@ -5983,7 +5983,7 @@ export const __dshPurgeDrill = (() => {
                       ? h(
                           "div",
                           { className: "rt-kv" },
-                          h("b", null, "最近使用"),
+                          h("b", null, "Последнее использование"),
                           h("span", null, d.used_on),
                         )
                       : null,
@@ -5991,7 +5991,7 @@ export const __dshPurgeDrill = (() => {
                       ? h(
                           "div",
                           { className: "rt-kv" },
-                          h("b", null, "落盘"),
+                          h("b", null, "Файл на диске"),
                           h("span", { className: "rt-mono" }, d.path),
                         )
                       : null,
@@ -6003,23 +6003,23 @@ export const __dshPurgeDrill = (() => {
                         {
                           className: "rt-btn",
                           disabled: !d.content,
-                          onClick: () => copy(d.content || "", "POC 正文"),
+                          onClick: () => copy(d.content || "", "текст POC"),
                         },
-                        "复制正文",
+                        "Копировать текст",
                       ),
                       h(
                         "button",
                         { className: "rt-btn", onClick: () => useIt(x) },
-                        "记一次复用",
+                        "Отметить использование",
                       ),
                       d.source_url
                         ? h(
                             "button",
                             {
                               className: "rt-btn",
-                              onClick: () => copy(d.source_url, "来源链接"),
+                              onClick: () => copy(d.source_url, "ссылка на источник"),
                             },
-                            "复制来源",
+                            "Копировать источник",
                           )
                         : null,
                     ),
@@ -6029,13 +6029,13 @@ export const __dshPurgeDrill = (() => {
                           { className: "rt-rep-http" },
                           d.content.length > 12000
                             ? d.content.slice(0, 12000) +
-                                "\n…（已截断，完整内容见落盘文件）"
+                                "\n…(обрезано, полный текст в файле на диске)"
                             : d.content,
                         )
                       : h(
                           "div",
                           { className: "rt-empty" },
-                          "这条只有元数据，没有正文 —— 拿到正文后用 redteam_poc_update 补上",
+                          "У этой записи только метаданные без текста —— получив текст, добавьте его через redteam_poc_update",
                         ),
                   )
                 : null,
@@ -6050,14 +6050,14 @@ export const __dshPurgeDrill = (() => {
       h(
         "div",
         { className: "rt-toolbar" },
-        h("span", { style: { fontWeight: 600 } }, "知识库 · POC / EXP"),
-        h("span", { className: "rt-tag" }, stats.total + " 条"),
+        h("span", { style: { fontWeight: 600 } }, "База знаний · POC / EXP"),
+        h("span", { className: "rt-tag" }, stats.total + " шт."),
         h(
           "span",
           { className: "rt-tag rt-tag-live" },
-          "已验证 " + stats.verified,
+          "Проверено " + stats.verified,
         ),
-        h("span", { className: "rt-tag" }, "累计复用 " + (stats.reused || 0)),
+        h("span", { className: "rt-tag" }, "Всего использований " + (stats.reused || 0)),
         (stats.uncategorized || 0) > 0 &&
           (stats.uncategorized || 0) !== stats.total
           ? h(
@@ -6065,16 +6065,16 @@ export const __dshPurgeDrill = (() => {
               {
                 className: "rt-tag rt-tag-warn",
                 title:
-                  "这些条目还没归类：智能体回填时用 redteam_poc_add 的 category 参数标一下",
+                  "Эти записи без категории: при заполнении агентом укажите параметр category в redteam_poc_add",
               },
-              "未归类 " + stats.uncategorized,
+              "Без категории " + stats.uncategorized,
             )
           : null,
         tpl.total
           ? h(
               "span",
               { className: "rt-tag rt-tag-passive" },
-              "本机模板 " + tpl.total,
+              "Локальные шаблоны " + tpl.total,
             )
           : null,
         h("div", { className: "rt-spacer" }),
@@ -6082,18 +6082,18 @@ export const __dshPurgeDrill = (() => {
           "button",
           {
             className: "rt-btn" + (grouped ? " rt-btn-primary" : ""),
-            title: "按归类分组显示 / 平铺显示",
+            title: "Группировать по категориям / плоским списком",
             onClick: () => setGrouped(!grouped),
           },
-          grouped ? "按归类分组" : "平铺显示",
+          grouped ? "По категориям" : "Плоский список",
         ),
         h(
           "button",
           { className: "rt-btn", disabled: busy, onClick: () => query() },
-          busy ? "检索中…" : "刷新",
+          busy ? "Поиск…" : "Обновить",
         ),
       ),
-      /* 归类总览：点一下就是按该类筛选，一眼看清"哪类武器攒了多少、哪类还是空的" */
+      /* Обзор категорий: клик фильтрует по категории, сразу видно, «какого оружия сколько накоплено и где пока пусто» */
       h(
         "div",
         { className: "rt-kb-cats" },
@@ -6107,11 +6107,11 @@ export const __dshPurgeDrill = (() => {
                 className: "rt-concl-i" + (category === c.code ? " on" : ""),
                 title:
                   (c.hint || POC_CAT_NAME[c.code] || c.code) +
-                  " · 本机模板 " +
+                  " · локальных шаблонов " +
                   (tplByCat.get(c.code) || 0) +
-                  " · 知识库 " +
+                  " · в базе знаний " +
                   (c.n || 0) +
-                  (c.verified ? "（已验证 " + c.verified + "）" : ""),
+                  (c.verified ? " (проверено " + c.verified + ")" : ""),
                 onClick: () => {
                   const next = category === c.code ? "" : c.code;
                   setCategory(next);
@@ -6123,7 +6123,7 @@ export const __dshPurgeDrill = (() => {
                 "span",
                 null,
                 (POC_CAT_NAME[c.code] || c.code) +
-                  (c.verified ? "（已验证 " + c.verified + "）" : ""),
+                  (c.verified ? " (проверено " + c.verified + ")" : ""),
               ),
             ),
           ),
@@ -6134,7 +6134,7 @@ export const __dshPurgeDrill = (() => {
         h("input", {
           className: "rt-input",
           style: { flex: 1, minWidth: 140 },
-          placeholder: "搜 CVE / 组件 / 关键字（正文也会搜）",
+          placeholder: "Поиск по CVE / компоненту / ключевому слову (ищет и по тексту)",
           value: q,
           onChange: (e) => setQ(e.target.value),
           onKeyDown: (e) => {
@@ -6152,7 +6152,7 @@ export const __dshPurgeDrill = (() => {
               query({ category: e.target.value || undefined });
             },
           },
-          h("option", { value: "" }, "全部归类"),
+          h("option", { value: "" }, "Все категории"),
           POC_CAT_ORDER.map((k) =>
             h("option", { key: k, value: k }, POC_CAT_NAME[k]),
           ),
@@ -6168,19 +6168,19 @@ export const __dshPurgeDrill = (() => {
               query({ engagement: e.target.value || undefined });
             },
           },
-          h("option", { value: "" }, "全部来源靶标"),
+          h("option", { value: "" }, "Все цели-источники"),
           (stats.byEngagement || []).map((e) =>
             h(
               "option",
               { key: e.engagement, value: e.engagement },
-              e.engagement + "（" + e.n + "）",
+              e.engagement + "(" + e.n + ")",
             ),
           ),
         ),
         h("input", {
           className: "rt-input",
           style: { width: 120 },
-          placeholder: "发现资产筛选",
+          placeholder: "Фильтр по найденному активу",
           value: assetTarget,
           onChange: (e) => setAssetTarget(e.target.value),
           onKeyDown: (e) => {
@@ -6198,7 +6198,7 @@ export const __dshPurgeDrill = (() => {
               query({ kind: e.target.value || undefined });
             },
           },
-          h("option", { value: "" }, "全部类型"),
+          h("option", { value: "" }, "Все типы"),
           Object.keys(POC_KIND_LABEL).map((k) =>
             h("option", { key: k, value: k }, POC_KIND_LABEL[k]),
           ),
@@ -6214,12 +6214,12 @@ export const __dshPurgeDrill = (() => {
               query({ verified: e.target.checked || undefined });
             },
           }),
-          "只看已验证",
+          "Только проверенные",
         ),
         h(
           "button",
           { className: "rt-btn rt-btn-primary", onClick: () => query() },
-          "检索",
+          "Поиск",
         ),
       ),
       msg
@@ -6234,8 +6234,8 @@ export const __dshPurgeDrill = (() => {
             "div",
             { className: "rt-err" },
             /engagement required|unknown op/i.test(err)
-              ? /* 老 host 还没有知识库接口：讲清怎么恢复，别让人对着 "engagement required" 发懵 */
-                "知识库接口由 host 侧提供，当前宿主还是旧进程 —— 请完全退出后重新打开（官方 exe / 社区版 / dsh web 任一），再刷新页面。"
+              ? /* У старого host ещё нет API базы знаний: объясняем, как восстановить, чтобы человек не тупил перед "engagement required" */
+                "API базы знаний предоставляет host, а текущий хост — старый процесс —— полностью выйдите и откройте заново (официальный exe / Community Edition / dsh web), затем обновите страницу."
               : err,
           )
         : null,
@@ -6243,9 +6243,9 @@ export const __dshPurgeDrill = (() => {
         ? h(
             "div",
             { className: "rt-foot", style: { marginBottom: 6, fontSize: 11 } },
-            "知识库：" +
+            "База знаний: " +
               data.dbPath +
-              (data.root ? "（根目录 " + data.root + "）" : ""),
+              (data.root ? " (корень " + data.root + ")" : ""),
           )
         : null,
       h(
@@ -6253,7 +6253,7 @@ export const __dshPurgeDrill = (() => {
         { className: "rt-table" },
         (() => {
           if (!grouped) return items.map(card);
-          /* 分组渲染：按内置归类顺序，未知归类挂到末尾的「其它」 */
+          /* Отрисовка по группам: в порядке встроенных категорий, неизвестные попадают в «Прочее» в конце */
           const buckets = new Map();
           for (const x of items) {
             const code = POC_CAT_NAME[x.category] ? x.category : "other";
@@ -6275,11 +6275,11 @@ export const __dshPurgeDrill = (() => {
                   { className: "rt-kb-cat-name" },
                   POC_CAT_NAME[code] || code,
                 ),
-                h("span", { className: "rt-tag" }, list.length + " 条"),
+                h("span", { className: "rt-tag" }, list.length + " шт."),
                 h(
                   "span",
                   { className: "rt-tag rt-tag-live" },
-                  "已验证 " + list.filter((x) => x.verified === 1).length,
+                  "Проверено " + list.filter((x) => x.verified === 1).length,
                 ),
                 h("span", { className: "rt-spacer" }),
                 h(
@@ -6290,7 +6290,7 @@ export const __dshPurgeDrill = (() => {
                       color: "var(--dsw-alias-label-secondary)",
                     },
                   },
-                  "最近建立 " +
+                  "Последнее создание " +
                     fmt(
                       list
                         .map((x) => x.created_at)
@@ -6312,13 +6312,13 @@ export const __dshPurgeDrill = (() => {
               h(
                 "div",
                 { className: "rt-ap-sub" },
-                "本机 nuclei 模板 · " +
+                "Локальные шаблоны nuclei · " +
                   (tplStart + 1) +
                   "–" +
                   (tplStart + tplItems.length) +
                   " / " +
                   tplMatched +
-                  "（直接 `nuclei -t <模板路径>`）",
+                  " (напрямую `nuclei -t <путь к шаблону>`)",
               ),
               tplItems.map((t, i) =>
                 h(
@@ -6348,9 +6348,9 @@ export const __dshPurgeDrill = (() => {
                       className: "rt-btn",
                       style: { padding: "0 6px", fontSize: 10.5 },
                       onClick: () =>
-                        copy("nuclei -t " + t.path + " -u <目标>", "模板命令"),
+                        copy("nuclei -t " + t.path + " -u <цель>", "команда шаблона"),
                     },
-                    "复制命令",
+                    "Копировать команду",
                   ),
                 ),
               ),
@@ -6364,7 +6364,7 @@ export const __dshPurgeDrill = (() => {
                     disabled: busy || tplStart <= 0,
                     onClick: () => turnTpl(tplStart - tplPageSize),
                   },
-                  "上一页",
+                  "Назад",
                 ),
                 h(
                   "button",
@@ -6373,19 +6373,19 @@ export const __dshPurgeDrill = (() => {
                     disabled: busy || tplStart + tplItems.length >= tplMatched,
                     onClick: () => turnTpl(tplStart + tplPageSize),
                   },
-                  "下一页",
+                  "Вперёд",
                 ),
               ),
               tpl.dir
                 ? h(
                     "div",
                     { className: "rt-foot" },
-                    h("span", null, "模板目录：" + tpl.dir),
+                    h("span", null, "Каталог шаблонов: " + tpl.dir),
                   )
                 : null,
             )
           : null,
-        data === null ? h("div", { className: "rt-empty" }, "加载中…") : null,
+        data === null ? h("div", { className: "rt-empty" }, "Загрузка…") : null,
         data !== null && !items.length && !tplItems.length
           ? h(
               "div",
@@ -6394,19 +6394,19 @@ export const __dshPurgeDrill = (() => {
                 "div",
                 null,
                 q || kind || verifiedOnly
-                  ? "没有命中：换个关键字再试，或去互联网找 / 自己手搓后回填。"
+                  ? "Ничего не найдено: попробуйте другое ключевое слово либо ищите в интернете / напишите сами и заполните базу."
                   : tpl.total
-                    ? "POC/EXP 库还是空的；本机已有 " +
+                    ? "Библиотека POC/EXP пока пуста; локально уже есть " +
                       tpl.total +
-                      " 个 nuclei 模板，但这一页没有列出来。请完全退出后重新打开客户端。"
+                      " шаблонов nuclei, но эта страница их не показывает. Полностью выйдите и откройте клиент заново."
                     : tpl.dir
-                      ? "知识库还是空的（本机模板目录存在但没有 yaml，请跑 nuclei -update-templates）。"
-                      : "知识库还是空的。本机也还没有 nuclei 模板库 —— 在演练机上跑 setup.sh 或 `nuclei -update-templates`，装好后这里会出现「本机模板 N」。",
+                      ? "База знаний пока пуста (каталог локальных шаблонов есть, но yaml нет — запустите nuclei -update-templates)."
+                      : "База знаний пока пуста. Локальной библиотеки шаблонов nuclei тоже нет —— на машине полигона запустите setup.sh или `nuclei -update-templates`; после установки здесь появится «локальных шаблонов N».",
               ),
               h(
                 "div",
                 { style: { marginTop: 6, fontSize: 12 } },
-                "打 Nday/1day 的标准顺序：① redteam_poc_search 先查这里（顺带搜本机 nuclei 模板库）→ ② 都没有就互联网搜索（web_search / GitHub / ExploitDB / 厂商公告）或自己手搓 → ③ 在真实目标上验证有效后 redteam_poc_add 回填，后面的靶标直接就能用。",
+                "Стандартный порядок работы по Nday/1day: ① ищем здесь через redteam_poc_search (заодно смотрит локальную библиотеку шаблонов nuclei) → ② если нет — ищем в интернете (web_search / GitHub / ExploitDB / бюллетени вендора) или пишем сами → ③ проверили на реальной цели — заливаем через redteam_poc_add, и следующие цели уже воспользуются.",
               ),
               data.dbPath
                 ? h(
@@ -6415,7 +6415,7 @@ export const __dshPurgeDrill = (() => {
                       style: { marginTop: 6, fontSize: 11 },
                       className: "rt-mono",
                     },
-                    "知识库文件：" + data.dbPath,
+                    "Файл базы знаний: " + data.dbPath,
                   )
                 : null,
               tpl.dir
@@ -6425,7 +6425,7 @@ export const __dshPurgeDrill = (() => {
                       style: { marginTop: 6, fontSize: 11 },
                       className: "rt-mono",
                     },
-                    "模板目录：" + tpl.dir,
+                    "Каталог шаблонов: " + tpl.dir,
                   )
                 : null,
             )
@@ -6437,16 +6437,16 @@ export const __dshPurgeDrill = (() => {
         h(
           "span",
           null,
-          "全局共享（跨靶标）｜ 落盘：pocs/<code>/ ｜ 只收录通用可复用的 POC/EXP，靶标专用脚本走「攻击文件」",
+          "Общая для всех (между целями) | на диске: pocs/<code>/ | только универсальные переиспользуемые POC/EXP, скрипты под конкретную цель идут в «Файлы атаки»",
         ),
       ),
     );
   }
 
-  /* ---------------------------------------------------------- 环境适配（Windows / 非 Kali） */
+  /* ---------------------------------------------------------- Адаптация окружения (Windows / не Kali) */
   /**
-   * 借鉴 Z3r0 的「系统配置」思路：路径与密钥进集中配置，不靠 bash/ps1。
-   * 落盘 $DSH_HOME/redteam/config.json —— 用户填工具绝对路径或整包搜索目录。
+   * По мотивам «системных настроек» Z3r0: пути и ключи в централизованном конфиге, без опоры на bash/ps1.
+   * Хранится в $DSH_HOME/redteam/config.json —— пользователь указывает абсолютные пути инструментов или общий каталог для поиска.
    */
   function EnvTab(props) {
     const refreshKey = props.refreshKey || 0;
@@ -6481,7 +6481,7 @@ export const __dshPurgeDrill = (() => {
         (r) => {
           setBusy(false);
           if (!r || r.ok === false) {
-            setErr((r && r.error) || "读取失败");
+            setErr((r && r.error) || "Ошибка чтения");
             return;
           }
           setErr(null);
@@ -6518,13 +6518,13 @@ export const __dshPurgeDrill = (() => {
         (r) => {
           setBusy(false);
           if (!r || r.ok === false) {
-            setMsg({ err: (r && r.error) || "保存失败" });
+            setMsg({ err: (r && r.error) || "Ошибка сохранения" });
             return;
           }
           setData(r);
           setMsg({
             ok:
-              "已保存到 " +
+              "Сохранено в " +
               ((r.config && r.config.path) || "$DSH_HOME/redteam/config.json"),
           });
           applyDraftFrom(r);
@@ -6541,7 +6541,7 @@ export const __dshPurgeDrill = (() => {
         folderPath || (draft && draft.toolkitDir) || "",
       ).trim();
       if (!dir) {
-        setMsg({ err: "请先填写工具所在文件夹路径" });
+        setMsg({ err: "Сначала укажите путь к папке с инструментами" });
         return;
       }
       setBusy(true);
@@ -6550,17 +6550,17 @@ export const __dshPurgeDrill = (() => {
         (r) => {
           setBusy(false);
           if (!r || r.ok === false) {
-            setMsg({ err: (r && r.error) || "自动分配失败" });
+            setMsg({ err: (r && r.error) || "Ошибка автоназначения" });
             return;
           }
           setData(r);
           applyDraftFrom(r);
           setMsg({
             ok:
-              "已从文件夹分配 " +
+              "Назначено из папки: " +
               (r.assignedCount || 0) +
-              " 个工具" +
-              (r.nucleiTemplatesDir ? "，并识别 nuclei-templates" : ""),
+              " инструментов" +
+              (r.nucleiTemplatesDir ? ", распознан nuclei-templates" : ""),
           });
         },
         (e) => {
@@ -6602,7 +6602,7 @@ export const __dshPurgeDrill = (() => {
       h(
         "div",
         { className: "rt-toolbar" },
-        h("span", { style: { fontWeight: 600 } }, "环境适配"),
+        h("span", { style: { fontWeight: 600 } }, "Адаптация окружения"),
         h(
           "span",
           { className: "rt-tag" },
@@ -6617,18 +6617,18 @@ export const __dshPurgeDrill = (() => {
             className:
               "rt-tag" + (adapt.ready ? " rt-tag-live" : " rt-tag-warn"),
           },
-          adapt.ready ? "就绪 · " + (adapt.reason || "") : "待配置",
+          adapt.ready ? "Готово · " + (adapt.reason || "") : "Требует настройки",
         ),
         h(
           "span",
           { className: "rt-tag" + (found ? " rt-tag-live" : " rt-tag-warn") },
-          "工具 " + found + "/" + tools.length,
+          "Инструментов " + found + "/" + tools.length,
         ),
         h("div", { className: "rt-spacer" }),
         h(
           "button",
           { className: "rt-btn", disabled: busy, onClick: load },
-          busy ? "读取中…" : "刷新",
+          busy ? "Чтение…" : "Обновить",
         ),
         h(
           "button",
@@ -6637,7 +6637,7 @@ export const __dshPurgeDrill = (() => {
             disabled: busy || !draft,
             onClick: save,
           },
-          "保存",
+          "Сохранить",
         ),
       ),
       h(
@@ -6658,7 +6658,7 @@ export const __dshPurgeDrill = (() => {
             style: { margin: "0 0 8px", fontSize: 12, lineHeight: 1.6 },
           },
           adapt.message ||
-            "均可选填：留空则用默认路径/自动查找。填了的覆盖默认。密钥类只在需要测绘/反弹时才填。",
+            "Все поля необязательны: пусто — используются пути по умолчанию и автопоиск. Заполненное перекрывает дефолт. Ключи нужны только для карты активов и reverse shell.",
         ),
         h(
           "div",
@@ -6669,12 +6669,12 @@ export const __dshPurgeDrill = (() => {
           h(
             "div",
             { style: { fontWeight: 600, marginBottom: 6 } },
-            "整包文件夹 → 自动分配工具",
+            "Каталог с набором → автоназначение инструментов",
           ),
           h(
             "div",
             { style: { marginBottom: 8, opacity: 0.9 } },
-            "工具都在同一个文件夹（含子目录）时，填路径后点「自动分配」：会写入 toolkitDir，并按文件名匹配 nmap / nuclei / fscan 等填到下方。",
+            "Если все инструменты в одной папке (включая подкаталоги), укажите путь и нажмите «Автоназначение»: путь запишется в toolkitDir, а nmap / nuclei / fscan и прочие подставятся ниже по именам файлов.",
           ),
           h(
             "div",
@@ -6682,7 +6682,7 @@ export const __dshPurgeDrill = (() => {
             h("input", {
               className: "rt-input",
               style: { flex: 1 },
-              placeholder: "例如 D:\\pentest-tools 或 /opt/toolkit",
+              placeholder: "например D:\\pentest-tools или /opt/toolkit",
               value: folderPath,
               onChange: (e) => setFolderPath(e.target.value),
               onKeyDown: (e) => {
@@ -6696,7 +6696,7 @@ export const __dshPurgeDrill = (() => {
                 disabled: busy,
                 onClick: assignFolder,
               },
-              busy ? "扫描中…" : "自动分配",
+              busy ? "Сканирование…" : "Автоназначение",
             ),
           ),
         ),
@@ -6720,27 +6720,27 @@ export const __dshPurgeDrill = (() => {
               h(
                 "div",
                 { style: { fontWeight: 600, marginBottom: 6 } },
-                "出网状态（借鉴 Z3r0 egress，只读）",
+                "Состояние выхода в сеть (по мотивам egress в Z3r0, только чтение)",
               ),
               h(
                 "div",
                 { className: "rt-mono", style: { fontSize: 11 } },
-                "HTTP_PROXY=" + (data.egress.http_proxy || "(空)"),
+                "HTTP_PROXY=" + (data.egress.http_proxy || "(пусто)"),
               ),
               h(
                 "div",
                 { className: "rt-mono", style: { fontSize: 11 } },
-                "HTTPS_PROXY=" + (data.egress.https_proxy || "(空)"),
+                "HTTPS_PROXY=" + (data.egress.https_proxy || "(пусто)"),
               ),
               h(
                 "div",
                 { className: "rt-mono", style: { fontSize: 11 } },
-                "ALL_PROXY=" + (data.egress.all_proxy || "(空)"),
+                "ALL_PROXY=" + (data.egress.all_proxy || "(пусто)"),
               ),
               h(
                 "div",
                 { className: "rt-mono", style: { fontSize: 11 } },
-                "NO_PROXY=" + (data.egress.no_proxy || "(空)"),
+                "NO_PROXY=" + (data.egress.no_proxy || "(пусто)"),
               ),
               h(
                 "div",
@@ -6750,21 +6750,21 @@ export const __dshPurgeDrill = (() => {
             )
           : null,
         !draft
-          ? h("div", { className: "rt-empty" }, "加载中…")
+          ? h("div", { className: "rt-empty" }, "Загрузка…")
           : h(
               "div",
               null,
               h(
                 "div",
                 { className: "rt-card" },
-                h("h4", null, "平台与目录"),
+                h("h4", null, "Платформа и каталоги"),
                 h(
                   "div",
                   { style: { display: "grid", gap: 8 } },
                   h(
                     "label",
                     { style: { fontSize: 12 } },
-                    "平台模式",
+                    "Режим платформы",
                     h(
                       "select",
                       {
@@ -6782,7 +6782,7 @@ export const __dshPurgeDrill = (() => {
                             }),
                           ),
                       },
-                      h("option", { value: "auto" }, "auto（跟随本机，默认）"),
+                      h("option", { value: "auto" }, "auto (по текущей машине, по умолчанию)"),
                       h("option", { value: "windows" }, "windows"),
                       h("option", { value: "linux" }, "linux"),
                     ),
@@ -6790,11 +6790,11 @@ export const __dshPurgeDrill = (() => {
                   h(
                     "label",
                     { style: { fontSize: 12 } },
-                    "工具箱目录 toolkitDir（留空＝默认）",
+                    "Каталог инструментов toolkitDir (пусто = по умолчанию)",
                     h("input", {
                       className: "rt-input",
                       style: { display: "block", width: "100%", marginTop: 4 },
-                      placeholder: "默认：" + defaultToolkit,
+                      placeholder: "По умолчанию: " + defaultToolkit,
                       value: draft.toolkitDir,
                       onChange: (e) =>
                         setDraft(
@@ -6807,11 +6807,11 @@ export const __dshPurgeDrill = (() => {
                   h(
                     "label",
                     { style: { fontSize: 12 } },
-                    "nuclei 模板目录（留空＝自动：toolkit/nuclei-templates）",
+                    "Каталог шаблонов nuclei (пусто = авто: toolkit/nuclei-templates)",
                     h("input", {
                       className: "rt-input",
                       style: { display: "block", width: "100%", marginTop: 4 },
-                      placeholder: "默认：" + defaultNuclei,
+                      placeholder: "По умолчанию: " + defaultNuclei,
                       value: draft.nucleiTemplatesDir,
                       onChange: (e) =>
                         setDraft(
@@ -6824,7 +6824,7 @@ export const __dshPurgeDrill = (() => {
                   h(
                     "label",
                     { style: { fontSize: 12 } },
-                    "工具搜索目录 binDirs（留空＝只搜 toolkit + PATH；每行一个）",
+                    "Каталоги поиска инструментов binDirs (пусто = только toolkit + PATH; по одному в строке)",
                     h("textarea", {
                       className: "rt-input",
                       rows: 4,
@@ -6835,7 +6835,7 @@ export const __dshPurgeDrill = (() => {
                         fontFamily: "var(--dsw-font-mono, monospace)",
                       },
                       placeholder:
-                        "可选。例如：" +
+                        "Необязательно. Например: " +
                         String.fromCharCode(10) +
                         "D:\\tools" +
                         String.fromCharCode(10) +
@@ -6854,7 +6854,7 @@ export const __dshPurgeDrill = (() => {
               h(
                 "div",
                 { className: "rt-card" },
-                h("h4", null, "密钥与 VPS（留空＝不覆盖；进程环境变量优先）"),
+                h("h4", null, "Ключи и VPS (пусто = не перекрывать; приоритет у переменных окружения процесса)"),
                 h(
                   "div",
                   { style: { display: "grid", gap: 8 } },
@@ -6862,7 +6862,7 @@ export const __dshPurgeDrill = (() => {
                     h(
                       "label",
                       { key: k, style: { fontSize: 12 } },
-                      k + "（可选）",
+                      k + " (необязательно)",
                       h("input", {
                         className: "rt-input",
                         style: {
@@ -6873,10 +6873,10 @@ export const __dshPurgeDrill = (() => {
                         type: k === "FOFA_KEY" ? "password" : "text",
                         placeholder:
                           k === "REDTEAM_VPS_KEY"
-                            ? "留空；需要时填私钥绝对路径"
+                            ? "Пусто; при необходимости укажите абсолютный путь к приватному ключу"
                             : k === "REDTEAM_VPS_HOST"
-                              ? "留空；需要时填 user@host"
-                              : "留空；测绘时再填",
+                              ? "Пусто; при необходимости укажите user@host"
+                              : "Пусто; заполните при работе с картой активов",
                         value: (draft.env && draft.env[k]) || "",
                         onChange: (e) => setEnv(k, e.target.value),
                       }),
@@ -6887,7 +6887,7 @@ export const __dshPurgeDrill = (() => {
               h(
                 "div",
                 { className: "rt-card" },
-                h("h4", null, "工具可执行文件（留空＝自动查找）"),
+                h("h4", null, "Исполняемые файлы инструментов (пусто = автопоиск)"),
                 h(
                   "div",
                   {
@@ -6897,7 +6897,7 @@ export const __dshPurgeDrill = (() => {
                       marginBottom: 8,
                     },
                   },
-                  "解析顺序：本表绝对路径 → toolkitDir → binDirs → PATH。留空即走默认查找。",
+                  "Порядок разбора: абсолютный путь из этой таблицы → toolkitDir → binDirs → PATH. Пустое поле означает поиск по умолчанию.",
                 ),
                 tools.map((t) =>
                   h(
@@ -6922,19 +6922,19 @@ export const __dshPurgeDrill = (() => {
                         ? h(
                             "span",
                             { className: "rt-tag rt-tag-live", title: t.path },
-                            t.source + " · 已找到",
+                            t.source + " · найден",
                           )
                         : h(
                             "span",
                             { className: "rt-tag rt-tag-warn" },
-                            "未找到（可留空等装好）",
+                            "Не найден (можно оставить пустым до установки)",
                           ),
                     ),
                     h("input", {
                       className: "rt-input",
                       style: { width: "100%" },
                       placeholder:
-                        "留空自动找：" +
+                        "Пусто — найдём сами: " +
                         (t.names || []).slice(0, 3).join(" / "),
                       value: (draft.tools && draft.tools[t.id]) || "",
                       onChange: (e) => setTool(t.id, e.target.value),
@@ -6959,12 +6959,12 @@ export const __dshPurgeDrill = (() => {
               h(
                 "div",
                 { className: "rt-card" },
-                h("h4", null, "备注"),
+                h("h4", null, "Примечание"),
                 h("textarea", {
                   className: "rt-input",
                   rows: 3,
                   style: { width: "100%" },
-                  placeholder: "可选。例如：工具来自某某绿色包",
+                  placeholder: "Необязательно. Например: инструменты из портативного набора",
                   value: draft.notes,
                   onChange: (e) =>
                     setDraft(
@@ -6978,10 +6978,10 @@ export const __dshPurgeDrill = (() => {
                 h(
                   "span",
                   null,
-                  "配置文件：" +
+                  "Файл конфигурации: " +
                     ((data && data.config && data.config.path) ||
                       "$DSH_HOME/redteam/config.json") +
-                    " | 留空字段全部走默认",
+                    " | пустые поля используют значения по умолчанию",
                 ),
               ),
             ),
@@ -6989,7 +6989,7 @@ export const __dshPurgeDrill = (() => {
     );
   }
 
-  /* ---------------------------------------------------------- 得分目标 */
+  /* ---------------------------------------------------------- Цели начисления */
   function ScoreTab(props) {
     const eng = props.engagement;
     const refreshKey = props.refreshKey || 0;
@@ -7007,7 +7007,7 @@ export const __dshPurgeDrill = (() => {
         (r) => {
           setBusy(false);
           if (!r || r.ok === false) {
-            setErr((r && r.error) || "读取失败");
+            setErr((r && r.error) || "Ошибка чтения");
             return;
           }
           setErr(null);
@@ -7021,9 +7021,9 @@ export const __dshPurgeDrill = (() => {
     };
     React.useEffect(load, [eng, refreshKey]);
 
-    /* builtin 要一路带到表单：内置得分点的分值/名称/口径由《得分规则》锁定，
-         界面必须把输入框置灰并说明原因 —— 以前是「能改、提示已保存、刷新后变回去」，
-         用户以为是 bug。 */
+    /* builtin нужно донести до формы: баллы/название/правило встроенного пункта начисления зафиксированы «Правилами начисления»,
+         поэтому поля в интерфейсе нужно задизейблить и объяснить причину —— раньше было «можно менять, пишет «сохранено», после обновления возвращается»,
+         и пользователь думал, что это баг. */
     const startEdit = (p) =>
       setForm({
         id: p.id,
@@ -7052,7 +7052,7 @@ export const __dshPurgeDrill = (() => {
 
     const save = () => {
       if (!form || !form.name) {
-        setMsg({ err: "名称不能为空" });
+        setMsg({ err: "Название не может быть пустым" });
         return;
       }
       setBusy(true);
@@ -7061,20 +7061,20 @@ export const __dshPurgeDrill = (() => {
         (r) => {
           setBusy(false);
           if (!r || r.ok === false) {
-            setMsg({ err: (r && r.error) || "保存失败" });
+            setMsg({ err: (r && r.error) || "Ошибка сохранения" });
             return;
           }
-          /* overridden === false 表示后端**没有采纳**提交的分值（内置点由规则锁定）。
-             这时不能笼统说「已保存」 —— 那句话会让用户以为分值改成功了。 */
+          /* overridden === false означает, что бэкенд **не принял** переданные баллы (встроенный пункт зафиксирован правилами).
+             Здесь нельзя просто сказать «сохранено» —— это убедит пользователя, что баллы изменены. */
           if (r.overridden === false) {
             setMsg({
               err:
-                "已保存「启用/停用」。分值未改动：这是随《得分规则》分发的内置得分点，" +
-                "分值 / 上限 / 计分口径由规则锁定（同一条规则的上限按组内所有得分点累计，" +
-                "单独改分值会让一条命中吃掉整组上限）。要自定义分值时请「+ 新增得分点」。",
+                "Сохранено «используется/отключено». Баллы не изменены: это встроенный пункт начисления из «Правил начисления», " +
+                "баллы / лимит / правило начисления зафиксированы (лимит одного правила считается по всем пунктам группы, " +
+                "и отдельное изменение баллов позволит одному попаданию съесть лимит всей группы). Для своих баллов используйте «+ Добавить пункт начисления».",
             });
           } else {
-            setMsg({ ok: r.note || "已保存" });
+            setMsg({ ok: r.note || "Сохранено" });
           }
           setForm(null);
           load();
@@ -7096,10 +7096,10 @@ export const __dshPurgeDrill = (() => {
         (r) => {
           setBusy(false);
           if (!r || r.ok === false) {
-            setMsg({ err: (r && r.error) || "删除失败" });
+            setMsg({ err: (r && r.error) || "Ошибка удаления" });
             return;
           }
-          setMsg({ ok: "已删除" });
+          setMsg({ ok: "Удалено" });
           setForm(null);
           setOpenId(null);
           load();
@@ -7121,8 +7121,8 @@ export const __dshPurgeDrill = (() => {
     };
     const items = (data && data.items) || [];
 
-    /* 按合并版的 8 个类别分组渲染（后端 ruleGroups 已排好序、组内按分值升序）。
-         兼容：后端没给 ruleGroups（老 host）时退回平铺。 */
+    /* Отрисовка по 8 категориям объединённой версии (на бэкенде ruleGroups уже отсортированы, внутри группы по возрастанию баллов).
+         Совместимость: если бэкенд не отдал ruleGroups (старый host), откатываемся к плоскому списку. */
     const groups =
       data && data.ruleGroups && data.ruleGroups.length
         ? data.ruleGroups
@@ -7148,11 +7148,11 @@ export const __dshPurgeDrill = (() => {
               "span",
               { className: "rt-sg-sub" },
               g.tiers.length +
-                " 项" +
+                " шт." +
                 (g.capSum > 0
-                  ? " · 各项上限合计 " +
+                  ? " · сумма лимитов по пунктам " +
                     g.capSum +
-                    " 分（各项独立，不跨项累加）"
+                    " баллов (пункты независимы, между ними не суммируется)"
                   : ""),
             ),
             h("div", { className: "rt-spacer" }),
@@ -7160,7 +7160,7 @@ export const __dshPurgeDrill = (() => {
               ? h(
                   "span",
                   { className: "rt-tag rt-tag-active" },
-                  "+" + g.points + " 分",
+                  "+" + g.points + " баллов",
                 )
               : null,
           ),
@@ -7202,7 +7202,7 @@ export const __dshPurgeDrill = (() => {
                         color: "var(--dsw-alias-label-secondary)",
                       },
                 },
-                p.points + "分",
+                p.points + " баллов",
               ),
             ),
             h(
@@ -7210,34 +7210,34 @@ export const __dshPurgeDrill = (() => {
               { title: p.description || "" },
               p.name,
               p.tier
-                ? h("span", { className: "rt-scope" }, "　" + p.tier)
+                ? h("span", { className: "rt-scope" }, " " + p.tier)
                 : null,
             ),
-            /* 命中与上限：这一条计入几次、上限用了多少（G3 各项上限独立，到顶就不再累计） */
+            /* Попадания и лимит: сколько раз учтён этот пункт и насколько использован лимит (в G3 лимиты по пунктам независимы, при достижении потолка начисления прекращаются) */
             h(
               "span",
               {
                 title:
                   p.capped > 0
-                    ? "已计入 " +
+                    ? "Учтено " +
                       p.counted +
-                      " 次，另有 " +
+                      " раз, ещё " +
                       p.capped +
-                      " 条因「" +
-                      (p.scope_label || "计分口径") +
-                      "」或已达上限不计分"
+                      " записей не начислены из-за «" +
+                      (p.scope_label || "правило начисления") +
+                      "» или из-за достигнутого лимита"
                     : p.scope_label || "",
               },
               h(
                 "span",
                 { className: "rt-sec-count" },
-                p.hits.length > 0 ? p.counted + " 次命中" : "未命中",
+                p.hits.length > 0 ? p.counted + " попаданий" : "Нет попаданий",
               ),
               p.cap > 0
                 ? h(
                     "span",
                     { className: "rt-scope" },
-                    "　上限 " +
+                    " лимит " +
                       (p.cap_used === null ? 0 : p.cap_used) +
                       "/" +
                       p.cap,
@@ -7251,7 +7251,7 @@ export const __dshPurgeDrill = (() => {
                 ? h(
                     "span",
                     { className: "rt-tag rt-tag-active" },
-                    "+" + p.earned + " 分",
+                    "+" + p.earned + " баллов",
                   )
                 : h(
                     "span",
@@ -7262,7 +7262,7 @@ export const __dshPurgeDrill = (() => {
           ),
         );
         if (!open) continue;
-        /* 命中记录：一行一条 —— 第一行给"序号 + 资产 + 时间 + 复制"，内容另起一行自适应换行 */
+        /* Записи попаданий: одна строка на запись —— в первой строке «номер + актив + время + копирование», содержимое — отдельной строкой с переносом */
         const hitNodes = p.hits.map((hh, hi) =>
           h(
             "div",
@@ -7280,16 +7280,16 @@ export const __dshPurgeDrill = (() => {
                 className: "rt-hit-asset",
                 title: hh.target || hh.asset_ip || "",
               },
-              hh.asset_ip || hh.target || "未指定资产",
+              hh.asset_ip || hh.target || "Актив не указан",
             ),
             hh.self_created
               ? h(
                   "span",
                   {
                     className: "rt-tag rt-tag-warn",
-                    title: "自己注册/自建的账号不算得分权限，只作过程记录",
+                    title: "Самостоятельно зарегистрированные/созданные учётные записи не дают баллов за доступ, это только запись процесса",
                   },
-                  "自建 · 不计分",
+                  "Своё · без баллов",
                 )
               : null,
             hh.capped
@@ -7299,10 +7299,10 @@ export const __dshPurgeDrill = (() => {
                     className: "rt-tag rt-tag-warn",
                     title:
                       hh.capped_reason ||
-                      "同一资产同一端口只算分值最高的一条，这条不计分",
+                      "По одному активу и порту учитывается только запись с наибольшими баллами, эта не начисляется",
                   },
-                  "服务已拿满 · 不计分" +
-                    (hh.service ? "（" + hh.service + "）" : ""),
+                  "Сервис взят полностью · без баллов" +
+                    (hh.service ? "(" + hh.service + ")" : ""),
                 )
               : null,
             hh.shot_count
@@ -7310,9 +7310,9 @@ export const __dshPurgeDrill = (() => {
                   "span",
                   {
                     className: "rt-tag",
-                    title: "这条命中有证据截图（展开得分点即可看到代表图）",
+                    title: "У этого попадания есть скриншоты доказательств (раскройте пункт начисления, чтобы увидеть типовой)",
                   },
-                  "图 " + hh.shot_count,
+                  "Скриншотов " + hh.shot_count,
                 )
               : null,
             h("span", { className: "rt-hit-time" }, fmt(hh.recorded_at)),
@@ -7321,7 +7321,7 @@ export const __dshPurgeDrill = (() => {
               {
                 className: "rt-btn",
                 style: { padding: "0 5px", fontSize: 10.5 },
-                title: "复制这一条",
+                title: "Скопировать эту запись",
                 onClick: (e) => {
                   e.stopPropagation();
                   copyText(
@@ -7331,7 +7331,7 @@ export const __dshPurgeDrill = (() => {
                   );
                 },
               },
-              "复制",
+              "Копировать",
             ),
             hh.evidence
               ? h(
@@ -7342,7 +7342,7 @@ export const __dshPurgeDrill = (() => {
               : h(
                   "span",
                   { className: "rt-hit-txt none" },
-                  "未填账号密码/结果",
+                  "Логин и пароль / результат не указаны",
                 ),
           ),
         );
@@ -7361,30 +7361,30 @@ export const __dshPurgeDrill = (() => {
                 ? h(
                     "div",
                     { className: "rt-kv" },
-                    h("b", null, "得分条件"),
+                    h("b", null, "Условие начисления"),
                     h("span", null, p.description),
                   )
                 : null,
               h(
                 "div",
                 { className: "rt-kv" },
-                h("b", null, "状态"),
+                h("b", null, "Статус"),
                 h(
                   "span",
                   null,
-                  (p.enabled ? "启用" : "停用") +
+                  (p.enabled ? "Включён" : "Отключён") +
                     " · " +
                     p.points +
-                    " 分/次 · 命中 " +
+                    " баллов/раз · попаданий " +
                     p.hits.length +
-                    " 次 = " +
+                    " = " +
                     p.earned +
-                    " 分" +
+                    " баллов" +
                     (p.self_created
-                      ? "（另有 " + p.self_created + " 次自建不计分）"
+                      ? " (ещё " + p.self_created + " своих без баллов)"
                       : "") +
                     (p.capped
-                      ? "（另有 " + p.capped + " 次同服务重复命中不计分）"
+                      ? " (ещё " + p.capped + " повторных попаданий по тому же сервису без баллов)"
                       : ""),
                 ),
               ),
@@ -7392,12 +7392,12 @@ export const __dshPurgeDrill = (() => {
                 ? h(
                     "div",
                     { className: "rt-kv" },
-                    h("b", null, "服务封顶"),
+                    h("b", null, "Лимит сервиса"),
                     h(
                       "span",
                       null,
                       p.service_summary +
-                        "；账号权限与数据库权限按「同资产同端口」只算一次，拿到最高权限账号即该服务拿满",
+                        "; права учётной записи и права на БД по одному активу и порту считаются один раз: получили самую привилегированную учётную запись — сервис взят полностью",
                     ),
                   )
                 : null,
@@ -7410,9 +7410,9 @@ export const __dshPurgeDrill = (() => {
                       shots: p.shots,
                       total: p.shot_total,
                       title:
-                        "证据截图 · " +
+                        "Скриншоты доказательств · " +
                         (p.shot_total || (p.shots || []).length) +
-                        " 张",
+                        " шт.",
                     }),
                     h(
                       "div",
@@ -7420,20 +7420,20 @@ export const __dshPurgeDrill = (() => {
                         className: "rt-section",
                         style: { padding: "6px 0 0" },
                       },
-                      "命中记录 · " +
+                      "Записи попаданий · " +
                         p.hits.length +
-                        "（只记资产与账号密码，详细复现见报告）",
+                        " (только актив и логин с паролем, подробное воспроизведение — в отчёте)",
                     ),
                     h("div", { className: "rt-hits" }, hitNodes),
                   )
                 : h(
                     "div",
                     { className: "rt-kv" },
-                    h("b", null, "命中记录"),
+                    h("b", null, "Записи попаданий"),
                     h(
                       "span",
                       { style: { color: "var(--dsw-alias-label-secondary)" } },
-                      "还没有 —— 拿下成果后用 redteam_score_hit 记分：写明目标资产 + 拿到的账号密码/权限",
+                      "Пока нет —— получив результат, зафиксируйте его через redteam_score_hit: актив цели + полученные логин/пароль или права",
                     ),
                   ),
               h(
@@ -7448,7 +7448,7 @@ export const __dshPurgeDrill = (() => {
                       startEdit(p);
                     },
                   },
-                  "编辑",
+                  "Изменить",
                 ),
               ),
             ),
@@ -7463,8 +7463,8 @@ export const __dshPurgeDrill = (() => {
       h(
         "div",
         { className: "rt-toolbar" },
-        h("span", { style: { fontWeight: 600 } }, "得分目标"),
-        /* 只显示已拿下的总分，不显示目标分数、不显示进度条 */
+        h("span", { style: { fontWeight: 600 } }, "Цели начисления"),
+        /* Показываем только уже набранные баллы, без целевого значения и без полосы прогресса */
         h(
           "span",
           {
@@ -7474,7 +7474,7 @@ export const __dshPurgeDrill = (() => {
               marginLeft: 4,
             },
           },
-          "总分",
+          "Всего баллов",
         ),
         h("span", { className: "rt-total" }, String(summary.achievedPoints)),
         h(
@@ -7482,13 +7482,13 @@ export const __dshPurgeDrill = (() => {
           {
             style: { fontSize: 13, color: "var(--dsw-alias-label-secondary)" },
           },
-          "分",
+          "баллов",
         ),
-        h("span", { className: "rt-tag" }, summary.pointCount + " 个得分点"),
+        h("span", { className: "rt-tag" }, summary.pointCount + " пунктов начисления"),
         h(
           "span",
           { className: "rt-tag" },
-          "命中 " + summary.countedHits + " 次",
+          "Попаданий " + summary.countedHits + "",
         ),
         summary.selfCreatedHits
           ? h(
@@ -7496,9 +7496,9 @@ export const __dshPurgeDrill = (() => {
               {
                 className: "rt-tag rt-tag-warn",
                 title:
-                  "自己注册/自己创建的账号不算得分权限，只作过程记录（不计分、不占上限、不进报告）",
+                  "Самостоятельно зарегистрированные/созданные учётные записи не дают баллов за доступ, это только запись процесса (без баллов, не расходует лимит, не идёт в отчёт)",
               },
-              "自建不计分 " + summary.selfCreatedHits,
+              "Свои без баллов: " + summary.selfCreatedHits,
             )
           : null,
         summary.serviceCappedHits
@@ -7507,17 +7507,17 @@ export const __dshPurgeDrill = (() => {
               {
                 className: "rt-tag rt-tag-warn",
                 title:
-                  "账号权限与数据库权限按「同资产同端口」只算一次：该服务已拿满，这些重复命中不计分（只作留痕）",
+                  "Права учётной записи и права на БД по одному активу и порту считаются один раз: сервис взят полностью, эти повторные попадания баллов не дают (только фиксация)",
               },
-              "服务已拿满不计分 " + summary.serviceCappedHits,
+              "Сервис взят полностью, без баллов: " + summary.serviceCappedHits,
             )
           : null,
         h("div", { className: "rt-spacer" }),
-        h("button", { className: "rt-btn", onClick: startNew }, "+ 新增得分点"),
+        h("button", { className: "rt-btn", onClick: startNew }, "+ Добавить пункт начисления"),
         h(
           "button",
           { className: "rt-btn", disabled: busy, onClick: load },
-          busy ? "刷新中…" : "刷新",
+          busy ? "Обновление…" : "Обновить",
         ),
       ),
       msg
@@ -7538,8 +7538,8 @@ export const __dshPurgeDrill = (() => {
                 borderBottom: "1px solid var(--dsw-alias-border-l1)",
               },
             },
-            /* 内置得分点（builtin）：分值 / 名称 / 分类由《得分规则》锁定，输入框置灰。
-             可改的只有「启用 / 停用」。这样界面上就不会再出现「改完提示已保存、刷新变回去」的困惑。 */
+            /* Встроенный пункт начисления (builtin): баллы / название / категория зафиксированы «Правилами начисления», поля задизейблены.
+             Менять можно только «используется / отключено». Так в интерфейсе больше не будет путаницы «изменил, пишет «сохранено», после обновления вернулось». */
             form.builtin
               ? h(
                   "div",
@@ -7547,14 +7547,14 @@ export const __dshPurgeDrill = (() => {
                   h(
                     "b",
                     null,
-                    "内置得分点（来自《突破入侵类得分规则（合并版）》）",
+                    "Встроенный пункт начисления (из «Правил начисления за прорыв и вторжение (объединённая версия)»)",
                   ),
                   h(
                     "div",
                     { style: { marginTop: 3 } },
-                    "分值、上限、计分口径与名称由规则锁定 —— 同一条规则的上限按组内所有得分点累计，" +
-                      "单独改分值会让一条命中吃掉整组上限。这里可以改「启用 / 停用」；" +
-                      "要自定义分值时请返回上一屏点「+ 新增得分点」。",
+                    "Баллы, лимит, правило начисления и название зафиксированы правилами —— лимит одного правила считается по всем пунктам группы, " +
+                      "и отдельное изменение баллов позволит одному попаданию съесть лимит всей группы. Здесь можно менять только «используется / отключено»; " +
+                      "для своих баллов вернитесь на предыдущий экран и нажмите «+ Добавить пункт начисления».",
                   ),
                   form.src !== null && form.src !== undefined
                     ? h(
@@ -7565,12 +7565,12 @@ export const __dshPurgeDrill = (() => {
                             color: "var(--dsw-alias-label-secondary)",
                           },
                         },
-                        "规则原文序号 " +
+                        "Номер пункта в правилах " +
                           form.src +
-                          (form.rule ? "　·　上限分组 rule=" + form.rule : "") +
+                          (form.rule ? " · группа лимита rule=" + form.rule : "") +
                           (form.cap > 0
-                            ? "　·　上限 " + form.cap + " 分"
-                            : "　·　不设上限"),
+                            ? " · лимит " + form.cap + " баллов"
+                            : " · без лимита"),
                       )
                     : null,
                 )
@@ -7580,30 +7580,30 @@ export const __dshPurgeDrill = (() => {
               { className: "rt-score-form" },
               h("input", {
                 className: "rt-input",
-                placeholder: "名称（必填）",
+                placeholder: "Название (обязательно)",
                 value: form.name,
                 readOnly: form.builtin === true,
-                title: form.builtin ? "内置得分点的名称由规则锁定" : "",
+                title: form.builtin ? "Название встроенного пункта начисления зафиксировано правилами" : "",
                 onChange: (e) => setField("name", e.target.value),
               }),
               h("input", {
                 className: "rt-input",
-                placeholder: "分类，如 账号权限",
+                placeholder: "Категория, например «права учётной записи»",
                 value: form.category,
                 readOnly: form.builtin === true,
                 title: form.builtin
-                  ? "内置得分点的分类由规则锁定（决定它属于面板哪一组）"
+                  ? "Категория встроенного пункта зафиксирована правилами (определяет, в какую группу панели он попадает)"
                   : "",
                 onChange: (e) => setField("category", e.target.value),
               }),
               h("input", {
                 className: "rt-input",
                 type: "number",
-                placeholder: "单次分值",
+                placeholder: "Баллы за раз",
                 readOnly: form.builtin === true,
                 title: form.builtin
-                  ? "内置得分点的分值由《得分规则》锁定，不能在这里改"
-                  : "这一类的单次分值；每命中一次就按这个分值累加（受该条规则上限约束）",
+                  ? "Баллы встроенного пункта зафиксированы «Правилами начисления» и здесь не меняются"
+                  : ": баллы за одно попадание этого типа; каждое попадание прибавляет их (в пределах лимита правила)",
                 value: form.points,
                 onChange: (e) => setField("points", Number(e.target.value)),
               }),
@@ -7614,8 +7614,8 @@ export const __dshPurgeDrill = (() => {
                   value: form.enabled ? "1" : "0",
                   onChange: (e) => setField("enabled", e.target.value === "1"),
                 },
-                h("option", { value: "1" }, "启用"),
-                h("option", { value: "0" }, "停用"),
+                h("option", { value: "1" }, "Включён"),
+                h("option", { value: "0" }, "Отключён"),
               ),
             ),
             h("input", {
@@ -7625,10 +7625,10 @@ export const __dshPurgeDrill = (() => {
                 marginBottom: 6,
                 boxSizing: "border-box",
               },
-              placeholder: "得分条件说明",
+              placeholder: "Описание условия начисления",
               value: form.description,
               readOnly: form.builtin === true,
-              title: form.builtin ? "内置得分点的条款正文由规则锁定" : "",
+              title: form.builtin ? "Текст пункта встроенного начисления зафиксирован правилами" : "",
               onChange: (e) => setField("description", e.target.value),
             }),
             h(
@@ -7641,7 +7641,7 @@ export const __dshPurgeDrill = (() => {
                   disabled: busy,
                   onClick: save,
                 },
-                "保存",
+                "Сохранить",
               ),
               form.id
                 ? form.builtin
@@ -7651,20 +7651,20 @@ export const __dshPurgeDrill = (() => {
                         className: "rt-btn",
                         disabled: true,
                         title:
-                          "内置得分点不能删除：删掉会让面板缺一条规则、报告少一类成果（下次启动还会自动补回来）。要让它不参与计分请改用「停用」。",
+                          "Встроенный пункт нельзя удалить: панель потеряет правило, а отчёт — класс результатов (при следующем запуске он всё равно восстановится). Чтобы он не участвовал в начислении, используйте «Отключён».",
                       },
-                      "删除（内置项不可删）",
+                      "Удалить (встроенные не удаляются)",
                     )
                   : h(
                       "button",
                       { className: "rt-btn", disabled: busy, onClick: remove },
-                      "删除",
+                      "Удалить",
                     )
                 : null,
               h(
                 "button",
                 { className: "rt-btn", onClick: () => setForm(null) },
-                "取消",
+                "Отмена",
               ),
             ),
           )
@@ -7676,27 +7676,27 @@ export const __dshPurgeDrill = (() => {
           "div",
           { className: "rt-score-row head" },
           h("span", null, ""),
-          h("span", null, "分值"),
-          h("span", null, "得分点（按分值从低到高）"),
-          h("span", null, "命中 / 上限"),
-          h("span", { style: { textAlign: "right" } }, "已得分"),
+          h("span", null, "Баллы"),
+          h("span", null, "Пункты начисления (по возрастанию баллов)"),
+          h("span", null, "Попадания / лимит"),
+          h("span", { style: { textAlign: "right" } }, "Набрано"),
         ),
         rows,
         !items.length
           ? h(
               "div",
               { className: "rt-empty" },
-              "暂无得分点，点右上角「新增得分点」",
+              "Пунктов начисления пока нет, нажмите «Добавить пункт начисления» справа сверху",
             )
           : null,
       ),
     );
   }
 
-  /* ---------------------------------------------------------- 折叠底座 */
+  /* ---------------------------------------------------------- Основа сворачивания */
   /**
-   * 折叠状态按「页签 + 靶标」持久化到 localStorage，切页签/刷新后保持不变。
-   * 只记录用户显式点过的键；没点过的用调用方给的默认值。
+   * Состояние сворачивания сохраняется в localStorage по «вкладка + цель» и не меняется при переключении вкладок и обновлении страницы.
+   * Запоминаем только ключи, которые пользователь явно переключал; для остальных используется значение по умолчанию от вызывающей стороны.
    */
   const COLLAPSE_KEY = "rt-collapse:";
   const collapseLoad = (prefix) => {
@@ -7712,11 +7712,11 @@ export const __dshPurgeDrill = (() => {
     try {
       window.localStorage.setItem(COLLAPSE_KEY + prefix, JSON.stringify(value));
     } catch (e) {
-      /* 隐私模式等 */
+      /* Приватный режим и т.п. */
     }
   };
 
-  /** 一个页签一个 hook：isOpen(key, defaultOpen) / toggle(key, defaultOpen) / setAll(keys, open) */
+  /** Один хук на вкладку: isOpen(key, defaultOpen) / toggle(key, defaultOpen) / setAll(keys, open) */
   function useCollapse(prefix) {
     const [state, setState] = React.useState(() => collapseLoad(prefix));
     React.useEffect(() => {
@@ -7743,8 +7743,8 @@ export const __dshPurgeDrill = (() => {
   }
 
   /**
-   * 统一折叠头（L1）：▾ 固定在最左、标题加粗、计数紧跟、右侧放时间或操作，
-   * 内容缩进 12px 并带一条竖引导线。always=true 表示"常显"（不可折叠）。
+   * Единый заголовок сворачивания (L1): ▾ всегда слева, название жирным, счётчик сразу за ним, справа время или действия,
+   * содержимое с отступом 12px и вертикальной направляющей. always=true означает "всегда показан" (не сворачивается).
    */
   function Section(props) {
     const always = props.always === true;
@@ -7789,7 +7789,7 @@ export const __dshPurgeDrill = (() => {
     );
   }
 
-  /** 长文本折叠（L3）：固定预览高度 + 渐隐 + 展开/复制。 */
+  /** Сворачивание длинного текста (L3): фиксированная высота превью + затухание + раскрыть/скопировать. */
   function Clip(props) {
     const [open, setOpen] = React.useState(false);
     const text = String(
@@ -7816,7 +7816,7 @@ export const __dshPurgeDrill = (() => {
               copyText(text);
             },
           },
-          "复制",
+          "Копировать",
         ),
         h(
           "button",
@@ -7828,26 +7828,26 @@ export const __dshPurgeDrill = (() => {
               setOpen((v) => !v);
             },
           },
-          open ? "收起" : "展开",
+          open ? "Свернуть" : "Развернуть",
         ),
       ),
       h("div", { className: "rt-clip-body" }, text),
     );
   }
 
-  /* ---------------------------------------------------------- 当前测试（实时） */
+  /* ---------------------------------------------------------- Текущее тестирование (в реальном времени) */
   const TEST_STATUS_LABEL = {
-    untested: "未测试",
-    testing: "测试中",
-    tested: "已测试",
-    blocked: "被封禁",
-    abandoned: "已放弃",
-    no_surface: "无攻击面",
+    untested: "Не тестировался",
+    testing: "Тестируется",
+    tested: "Протестирован",
+    blocked: "Заблокирован",
+    abandoned: "Заброшен",
+    no_surface: "Нет поверхности атаки",
   };
 
   /**
-   * 当前测试页：agent 正在打哪台、打到哪一步、还有什么在排队。
-   * 5 秒轮询自动刷新；三个区块可折叠，其中「正在测」始终完整展开。
+   * Страница текущего тестирования: какую машину агент бьёт сейчас, на каком шаге он, что ещё в очереди.
+   * Автообновление опросом каждые 5 секунд; три блока сворачиваются, но «Сейчас в работе» всегда развёрнут полностью.
    */
   function TestingTab(props) {
     const eng = props.engagement;
@@ -7856,11 +7856,11 @@ export const __dshPurgeDrill = (() => {
     const [err, setErr] = React.useState(null);
     const [at, setAt] = React.useState(null);
     const [auto, setAuto] = React.useState(true);
-    /* 折叠状态按「页签 + 靶标」记忆；正在测永远常显，不参与折叠 */
+    /* Состояние сворачивания запоминается по «вкладка + цель»; «Сейчас в работе» всегда показан и в сворачивании не участвует */
     const collapse = useCollapse("testing:" + eng);
 
-    /* 5 秒轮询要有在途守卫：网络慢或后端卡住时，请求会越堆越多、
-         而且旧响应回来会覆盖新状态（界面上表现为数字来回跳）。 */
+    /* Для 5-секундного опроса нужен guard на летящие запросы: при медленной сети или зависшем бэкенде они копятся,
+         а запоздавший ответ перезаписывает новое состояние (в интерфейсе цифры прыгают туда-сюда). */
     const inflight = React.useRef(false);
     const seq = React.useRef(0);
     const load = () => {
@@ -7870,9 +7870,9 @@ export const __dshPurgeDrill = (() => {
       api({ op: "activeTests", engagement: eng, limit: 20 })
         .then(
           (r) => {
-            if (my !== seq.current) return; /* 切了靶标：这条已经过期，丢掉 */
+            if (my !== seq.current) return; /* переключили цель: ответ устарел, выбрасываем */
             if (!r || r.ok === false) {
-              setErr((r && r.error) || "读取失败");
+              setErr((r && r.error) || "Ошибка чтения");
               return;
             }
             setErr(null);
@@ -7902,7 +7902,7 @@ export const __dshPurgeDrill = (() => {
     const queue = (data && data.queue) || [];
     const stats = (data && data.stats) || {};
 
-    /* 一台资产一张卡：一眼看清"打的是谁、打到哪、拿到什么" */
+    /* Один актив — одна карточка: сразу видно, «кого бьём, до чего дошли, что взяли» */
     const card = (a, past) => {
       const chips = [];
       chips.push(
@@ -7914,7 +7914,7 @@ export const __dshPurgeDrill = (() => {
               "rt-scope rt-scope-" +
               (a.scope === "internal" ? "internal" : "external"),
           },
-          a.scope === "internal" ? "内网" : "外网",
+          a.scope === "internal" ? "Внутренняя сеть" : "Внешняя сеть",
         ),
       );
       if (a.segment_cidr)
@@ -7926,7 +7926,7 @@ export const __dshPurgeDrill = (() => {
           h(
             "span",
             { key: "p", className: "rt-tag rt-tag-active" },
-            "开放 " + a.open_ports + " 端口",
+            "Открыто портов: " + a.open_ports + "",
           ),
         );
       if (a.vulns)
@@ -7934,7 +7934,7 @@ export const __dshPurgeDrill = (() => {
           h(
             "span",
             { key: "v", className: "rt-tag rt-tag-live" },
-            "已确认漏洞 " + a.vulns,
+            "Подтверждённых уязвимостей " + a.vulns,
           ),
         );
       if (a.webshells)
@@ -7950,12 +7950,12 @@ export const __dshPurgeDrill = (() => {
           h(
             "span",
             { key: "t", className: "rt-tag rt-tag-passive" },
-            "隧道 " + a.tunnels,
+            "Туннелей " + a.tunnels,
           ),
         );
       if (a.priority)
         chips.push(
-          h("span", { key: "pr", className: "rt-tag" }, "易打 " + a.priority),
+          h("span", { key: "pr", className: "rt-tag" }, "Простота " + a.priority),
         );
       if (a.blocked_count)
         chips.push(
@@ -7966,7 +7966,7 @@ export const __dshPurgeDrill = (() => {
               className: "rt-tag",
               style: { color: "#ef4444", borderColor: "#ef444455" },
             },
-            "被封 " + a.blocked_count + " 次",
+            "Заблокирован " + a.blocked_count + " раз",
           ),
         );
       const noteLines = a.test_notes
@@ -8009,14 +8009,14 @@ export const __dshPurgeDrill = (() => {
           ? h(
               "div",
               { className: "rt-atest-meta" },
-              "测试面：" + a.test_surface,
+              "Поверхность теста: " + a.test_surface,
             )
           : null,
         a.potential
-          ? h("div", { className: "rt-atest-meta" }, "预期得分：" + a.potential)
+          ? h("div", { className: "rt-atest-meta" }, "Ожидаемые баллы: " + a.potential)
           : null,
         noteLines.length
-          ? h(Clip, { label: "测试记录", text: noteLines.join("\n") })
+          ? h(Clip, { label: "Записи тестов", text: noteLines.join("\n") })
           : null,
       );
     };
@@ -8031,11 +8031,11 @@ export const __dshPurgeDrill = (() => {
     const conclusion = h(
       "div",
       { className: "rt-concl" },
-      concl("测试中", stats.testing, "live"),
-      concl("待测", stats.untested, ""),
-      concl("已测", stats.tested, ""),
-      concl("放弃", (stats.abandoned || 0) + (stats.blocked || 0), ""),
-      concl("无攻击面", stats.no_surface, ""),
+      concl("Тестируется", stats.testing, "live"),
+      concl("К тесту", stats.untested, ""),
+      concl("Протестировано", stats.tested, ""),
+      concl("Заброшено", (stats.abandoned || 0) + (stats.blocked || 0), ""),
+      concl("Без поверхности атаки", stats.no_surface, ""),
       h("div", { className: "rt-spacer" }),
       at
         ? h(
@@ -8046,7 +8046,7 @@ export const __dshPurgeDrill = (() => {
                 color: "var(--dsw-alias-label-secondary)",
               },
             },
-            "更新于 " + at.toLocaleTimeString("zh-CN", { hour12: false }),
+            "Обновлено " + at.toLocaleTimeString("zh-CN", { hour12: false }),
           )
         : null,
       h(
@@ -8054,38 +8054,38 @@ export const __dshPurgeDrill = (() => {
         {
           className: "rt-btn",
           style: { padding: "0 7px", fontSize: 11 },
-          title: "展开最近动过与待测队列",
+          title: "Развернуть недавно изменённые и очередь на тест",
           onClick: () =>
             collapse.setAll(
               ["testing:" + eng, "recent:" + eng, "queue:" + eng],
               true,
             ),
         },
-        "全部展开",
+        "Развернуть все",
       ),
       h(
         "button",
         {
           className: "rt-btn",
           style: { padding: "0 7px", fontSize: 11 },
-          title: "只留正在测",
+          title: "Оставить только то, что в работе",
           onClick: () =>
             collapse.setAll(
               ["testing:" + eng, "recent:" + eng, "queue:" + eng],
               false,
             ),
         },
-        "全部收起",
+        "Свернуть все",
       ),
       h(
         "button",
         {
           className: "rt-btn" + (auto ? " rt-btn-primary" : ""),
           style: { padding: "0 7px", fontSize: 11 },
-          title: "每 5 秒自动刷新",
+          title: "Автообновление каждые 5 секунд",
           onClick: () => setAuto((x) => !x),
         },
-        auto ? "实时 · 5s" : "已暂停",
+        auto ? "Реальное время · 5s" : "Пауза",
       ),
       h(
         "button",
@@ -8094,23 +8094,23 @@ export const __dshPurgeDrill = (() => {
           style: { padding: "0 7px", fontSize: 11 },
           onClick: load,
         },
-        "刷新",
+        "Обновить",
       ),
     );
 
     const body = [];
-    /* 正在测：常显，完整展开（不可折叠） */
+    /* Сейчас в работе: всегда показан, полностью развёрнут (не сворачивается) */
     body.push(
       h(
         Section,
         {
           key: "testing",
           tone: "test",
-          title: "正在测",
-          count: testing.length + " 台",
+          title: "Сейчас в работе",
+          count: testing.length + " хостов",
           sub: testing.length
-            ? "agent 正在打这些资产"
-            : "agent 开始测某台资产后会实时出现在这里",
+            ? "эти активы агент бьёт прямо сейчас"
+            : "как только агент начнёт тестировать актив, он появится здесь в реальном времени",
           open: collapse.isOpen("testing:" + eng, true),
           onToggle: collapse.toggle("testing:" + eng, true),
         },
@@ -8119,40 +8119,40 @@ export const __dshPurgeDrill = (() => {
           : h(
               "div",
               { className: "rt-atest-meta", style: { paddingBottom: 4 } },
-              "当前没有资产处于「测试中」",
+              "Сейчас нет активов в статусе «Тестируется»",
             ),
       ),
     );
 
-    /* 最近动过（默认折叠，可记忆） */
+    /* Недавно изменённые (по умолчанию свёрнуты, состояние запоминается) */
     body.push(
       h(
         Section,
         {
           key: "recent",
           tone: "past",
-          title: "最近动过",
-          count: recent.length + " 台",
-          sub: "已测过的资产",
+          title: "Недавно изменённые",
+          count: recent.length + " хостов",
+          sub: "активы, которые уже тестировали",
           open: collapse.isOpen("recent:" + eng, false),
           onToggle: collapse.toggle("recent:" + eng, false),
         },
         recent.length
           ? recent.map((a) => card(a, true))
-          : h("div", { className: "rt-atest-meta" }, "暂无"),
+          : h("div", { className: "rt-atest-meta" }, "Пока нет"),
       ),
     );
 
-    /* 待测队列（默认折叠，可记忆） */
+    /* Очередь на тест (по умолчанию свёрнута, состояние запоминается) */
     body.push(
       h(
         Section,
         {
           key: "queue",
           tone: "queue",
-          title: "待测队列",
-          count: (data ? data.untested || 0 : 0) + " 台",
-          sub: "按易打性与端口数排出先打哪几台",
+          title: "Очередь на тест",
+          count: (data ? data.untested || 0 : 0) + " хостов",
+          sub: "порядок удара по простоте атаки и числу портов",
           open: collapse.isOpen("queue:" + eng, false),
           onToggle: collapse.toggle("queue:" + eng, false),
         },
@@ -8167,10 +8167,10 @@ export const __dshPurgeDrill = (() => {
                     className: "rt-atest-meta",
                     style: { paddingTop: 4 },
                   },
-                  "完整清单（含筛选与排序）见「资产测绘」页",
+                  "Полный список (с фильтрами и сортировкой) — на странице «Карта активов»",
                 ),
               ])
-          : h("div", { className: "rt-atest-meta" }, "没有待测资产"),
+          : h("div", { className: "rt-atest-meta" }, "Активов в очереди на тест нет"),
       ),
     );
 
@@ -8180,7 +8180,7 @@ export const __dshPurgeDrill = (() => {
       conclusion,
       err ? h("div", { className: "rt-err" }, err) : null,
       data === null && !err
-        ? h("div", { className: "rt-empty" }, "加载中…")
+        ? h("div", { className: "rt-empty" }, "Загрузка…")
         : null,
       h(
         "div",
@@ -8190,10 +8190,10 @@ export const __dshPurgeDrill = (() => {
     );
   }
 
-  /* ---------------------------------------------------------- 会话与入口（WebShell / 隧道） */
+  /* ---------------------------------------------------------- Сессии и входы (WebShell / туннели) */
   /**
-   * 打内网最容易出的问题：拿到 WebShell 或隧道之后忘了登记，过一会儿就"忘了还有入口可用"。
-   * 这个页签把事实库里的 WebShell 与隧道集中展示，带连通状态，并可一键让 host 侧实测。
+   * Самая частая проблема во внутренней сети: получив WebShell или туннель, забывают зарегистрировать его и через время "забывают, что вход ещё доступен".
+   * Эта вкладка собирает WebShell и туннели из базы фактов, показывает состояние связности и позволяет одной кнопкой прогнать проверку на стороне host.
    */
   function SessionTab(props) {
     const eng = props.engagement;
@@ -8209,7 +8209,7 @@ export const __dshPurgeDrill = (() => {
       api({ op: "sessions", engagement: eng }).then(
         (r) => {
           if (!r || r.ok === false) {
-            setErr((r && r.error) || "读取失败");
+            setErr((r && r.error) || "Ошибка чтения");
             return;
           }
           setErr(null);
@@ -8227,7 +8227,7 @@ export const __dshPurgeDrill = (() => {
         (r) => {
           setBusy(false);
           if (!r || r.ok === false) {
-            setMsg({ err: (r && r.error) || "检测失败" });
+            setMsg({ err: (r && r.error) || "Ошибка проверки" });
             load();
             return;
           }
@@ -8239,11 +8239,11 @@ export const __dshPurgeDrill = (() => {
           ).length;
           setMsg({
             ok:
-              "检测完成：WebShell 在线 " +
+              "Проверка завершена: WebShell онлайн " +
               on +
               "/" +
               (r.webshells || []).length +
-              "，隧道可用 " +
+              ", туннелей доступно " +
               act +
               "/" +
               (r.tunnels || []).length,
@@ -8257,7 +8257,7 @@ export const __dshPurgeDrill = (() => {
       );
     };
 
-    /* 只有真的写进剪贴板才把按钮点亮成「已复制」；失败时如实报错 */
+    /* Кнопка загорается «скопировано» только если текст реально попал в буфер; при ошибке честно сообщаем */
     const copy = (key, text) =>
       copyWithFeedback(text, text, (okFlag, message) => {
         if (!okFlag) {
@@ -8274,7 +8274,7 @@ export const __dshPurgeDrill = (() => {
         op: "updateTunnel",
         engagement: eng,
         id: t.id,
-        patch: { status: status, check_note: "界面手动标记" },
+        patch: { status: status, check_note: "отмечено вручную в интерфейсе" },
       }).then(
         () => load(),
         (e) => setMsg({ err: String((e && e.message) || e) }),
@@ -8286,7 +8286,7 @@ export const __dshPurgeDrill = (() => {
         op: "updateWebshell",
         engagement: eng,
         id: w.id,
-        patch: { status: status, check_note: "界面手动标记" },
+        patch: { status: status, check_note: "отмечено вручную в интерфейсе" },
       }).then(
         () => load(),
         (e) => setMsg({ err: String((e && e.message) || e) }),
@@ -8306,7 +8306,7 @@ export const __dshPurgeDrill = (() => {
               ? "rt-dot-unk"
               : "rt-dot-off",
       });
-    /* 卡片里统一用「标签 + 值」两列，长文本自动换行 —— 比一行点分隔好扫读 */
+    /* В карточках единые две колонки «метка + значение», длинный текст переносится —— читается легче, чем строка через точки */
     const fact = (label, value) =>
       h(
         "div",
@@ -8314,11 +8314,11 @@ export const __dshPurgeDrill = (() => {
         h("b", null, label),
         h("span", null, value),
       );
-    /* 交付要求：马必须是冰蝎/哥斯拉加密马（用户才连得上），内网必须走 suo5 隧道 */
+    /* Требования сдачи: шелл должен быть зашифрованным Behinder/Godzilla (иначе пользователь не подключится), а внутренняя сеть — идти через туннель suo5 */
     const isEncryptedShell = (t) =>
-      /behinder|godzilla|冰蝎|哥斯拉/i.test(String(t || ""));
+      /behinder|godzilla|\u51b0\u874e|\u54e5\u65af\u62c9/i.test(String(t || ""));
     const isSuo5 = (t) => /suo5/i.test(String(t || ""));
-    /* 提示条：只留一句结论 + 可展开的做法（原来是把三段长解释平铺，正文全被淹掉） */
+    /* Плашка: только один вывод + раскрываемые указания (раньше три длинных абзаца шли подряд, и суть тонула) */
     const hint = (key, title, detail) =>
       h(
         "div",
@@ -8327,7 +8327,7 @@ export const __dshPurgeDrill = (() => {
         h(
           "details",
           { className: "rt-sess-fold", style: { marginTop: 3 } },
-          h("summary", null, "怎么做（点击展开）"),
+          h("summary", null, "Что делать (клик — раскрыть)"),
           h("div", { style: { marginTop: 4 } }, detail),
         ),
       );
@@ -8338,11 +8338,11 @@ export const __dshPurgeDrill = (() => {
       hints.push(
         hint(
           "h1",
-          "有 " +
+          "Входов " +
             badShells.length +
-            " 个入口不是冰蝎马/哥斯拉马（用户连不上，不算可交付入口）",
-          "用技能 webshell-toolkit 重新上传冰蝎马（behinder）或哥斯拉马（godzilla），" +
-            "并把 shell_type + pass_key 写进 redteam_webshell_add。只作临时中转的可在备注里写明。",
+            " не являются шеллом Behinder/Godzilla (пользователь не подключится, это не сдаваемый вход)",
+          "Навыком webshell-toolkit залейте заново шелл Behinder (behinder) или Godzilla (godzilla) " +
+            "и укажите shell_type + pass_key в redteam_webshell_add. Если вход только для временного транзита, напишите это в примечании.",
         ),
       );
     }
@@ -8350,11 +8350,11 @@ export const __dshPurgeDrill = (() => {
       hints.push(
         hint(
           "h3",
-          "现有 " +
+          "Имеющиеся " +
             tunnels.length +
-            ' 条通道都不算"跨越靶标边界"（不算边界/内网突破）',
-          "自己的 VPS / 自建服务器上开的 socks5、frp、代理不算隧道。必须是目标侧发起的通道：" +
-            "目标反弹 shell 到我方、目标上跑 frp/Stowaway 客户端、或经目标 WebShell 建的 suo5/HTTP 隧道；登记时用 entry_kind 说明。",
+            ' каналов не считаются "пересечением границы цели" (не прорыв периметра и не прорыв во внутреннюю сеть)',
+          "socks5, frp и прокси, поднятые на своём VPS или собственном сервере, туннелем не считаются. Нужен канал, инициируемый со стороны цели: " +
+            "reverse shell с цели к нам, запуск frp/Stowaway-клиента на цели или туннель suo5/HTTP через WebShell на цели; при регистрации укажите entry_kind.",
         ),
       );
     }
@@ -8365,10 +8365,10 @@ export const __dshPurgeDrill = (() => {
       hints.push(
         hint(
           "h2",
-          "还没有可用的 suo5 隧道（打进内网的标准通道）",
-          "用技能 suo5-tunnel 通过上面的 WebShell 建 socks5 隧道，再 redteam_tunnel_add" +
-            "（kind=suo5、listen=127.0.0.1:1080、entry=WebShell URL、reach=可达网段）登记，" +
-            "最后点「检测连通性」确认 status=active。",
+          "Нет рабочего туннеля suo5 (стандартного канала во внутреннюю сеть)",
+          "Навыком suo5-tunnel поднимите socks5-туннель через WebShell выше, затем зарегистрируйте его через redteam_tunnel_add " +
+            "(kind=suo5, listen=127.0.0.1:1080, entry=URL WebShell, reach=доступная подсеть), " +
+            "и нажмите «Проверить связность», чтобы убедиться в status=active.",
         ),
       );
     }
@@ -8389,14 +8389,14 @@ export const __dshPurgeDrill = (() => {
           ),
           isEncryptedShell(w.shell_type)
             ? null
-            : h("span", { className: "rt-tag rt-tag-warn" }, "用户连不上"),
+            : h("span", { className: "rt-tag rt-tag-warn" }, "Пользователь не подключится"),
           w.privilege ? h("span", { className: "rt-tag" }, w.privilege) : null,
           h("div", { className: "rt-spacer" }),
           copied === "cmd" + w.id
             ? h(
                 "span",
                 { className: "rt-tag", style: { color: "#10b981" } },
-                "已复制",
+                "Скопировано",
               )
             : h(
                 "button",
@@ -8405,7 +8405,7 @@ export const __dshPurgeDrill = (() => {
                   style: { padding: "0 6px", fontSize: 11 },
                   onClick: () => copy("cmd" + w.id, 'curl -s "' + w.url + '"'),
                 },
-                "复制 URL",
+                "Копировать URL",
               ),
           h(
             "button",
@@ -8414,38 +8414,38 @@ export const __dshPurgeDrill = (() => {
               style: { padding: "0 6px", fontSize: 11 },
               onClick: () => markShell(w, "offline"),
             },
-            "标记失效",
+            "Отметить нерабочим",
           ),
         ),
         h(
           "div",
           { className: "rt-sess-facts" },
           fact(
-            "类型",
+            "Тип",
             isEncryptedShell(w.shell_type)
-              ? "加密马（冰蝎/哥斯拉，用户可直连）"
-              : "非加密马 —— 用户连不上，仅可作临时中转",
+              ? "Зашифрованный шелл (Behinder/Godzilla, пользователь подключается напрямую)"
+              : "Незашифрованный шелл —— пользователь не подключится, только для временного транзита",
           ),
           w.pass_key
-            ? fact("连接口令", h("span", { className: "rt-mono" }, w.pass_key))
+            ? fact("Пароль подключения", h("span", { className: "rt-mono" }, w.pass_key))
             : null,
-          w.asset_ip ? fact("所在资产", w.asset_ip) : null,
-          w.privilege ? fact("权限", w.privilege) : null,
+          w.asset_ip ? fact("Актив", w.asset_ip) : null,
+          w.privilege ? fact("Права", w.privilege) : null,
           w.secret_ref
             ? fact(
-                "凭据引用",
+                "Ссылка на учётные данные",
                 h("span", { className: "rt-mono" }, w.secret_ref),
               )
             : null,
           fact(
-            "最后检测",
-            (w.last_check ? fmt(w.last_check) : "未检测") +
+            "Последняя проверка",
+            (w.last_check ? fmt(w.last_check) : "не проверялось") +
               (w.latency_ms !== null && w.latency_ms !== undefined
-                ? "（" + w.latency_ms + "ms）"
+                ? "(" + w.latency_ms + "ms)"
                 : ""),
           ),
-          w.check_note ? fact("检测说明", w.check_note) : null,
-          w.note ? fact("备注", w.note) : null,
+          w.check_note ? fact("Пояснение проверки", w.check_note) : null,
+          w.note ? fact("Примечание", w.note) : null,
         ),
       ),
     );
@@ -8453,10 +8453,10 @@ export const __dshPurgeDrill = (() => {
     const tunnelCards = tunnels.map((t) => {
       const proxy = t.listen ? "socks5://" + t.listen : "";
       const gogoCmd = t.listen
-        ? "./gogo -i <内网CIDR> -m ss --ping -p top2,win,db --proxy " + proxy
+        ? "./gogo -i <CIDR внутренней сети> -m ss --ping -p top2,win,db --proxy " + proxy
         : "";
       const fscanCmd = t.listen
-        ? "./fscan -h <内网CIDR> -np -nobr -nopoc -socks5 " +
+        ? "./fscan -h <CIDR внутренней сети> -np -nobr -nopoc -socks5 " +
           t.listen +
           " -o intranet.txt"
         : "";
@@ -8470,7 +8470,7 @@ export const __dshPurgeDrill = (() => {
           h(
             "span",
             { className: "rt-sess-title" },
-            t.listen || "(未填监听地址)",
+            t.listen || "(адрес прослушивания не указан)",
           ),
           h("span", { className: "rt-tag rt-tag-passive" }, t.kind || "tunnel"),
           isSuo5(t.kind)
@@ -8478,9 +8478,9 @@ export const __dshPurgeDrill = (() => {
             : h(
                 "span",
                 { className: "rt-tag rt-tag-warn" },
-                "非 suo5 标准通道",
+                "Не стандартный канал suo5",
               ),
-          /* 只有跨越靶标边界的通道才算突破凭证（自己 VPS/自建服务器上开的不算） */
+          /* Прорывом считается только канал, пересекающий границу цели (поднятый на своём VPS/сервере — нет) */
           t.legit === true
             ? h(
                 "span",
@@ -8488,7 +8488,7 @@ export const __dshPurgeDrill = (() => {
                   className: "rt-tag rt-tag-live",
                   title: t.entry_kind_label || "",
                 },
-                "目标侧通道",
+                "Канал со стороны цели",
               )
             : t.legit === false
               ? h(
@@ -8496,21 +8496,21 @@ export const __dshPurgeDrill = (() => {
                   {
                     className: "rt-tag rt-tag-warn",
                     title:
-                      "只在自己 VPS/自建服务器上开的通道，没有碰到目标 —— 不算边界突破/内网突破",
+                      "Канал поднят только на своём VPS/собственном сервере и цели не касается —— это не прорыв периметра и не прорыв во внутреннюю сеть",
                   },
-                  "不算突破",
+                  "Не прорыв",
                 )
               : h(
                   "span",
                   {
                     className: "rt-tag",
                     title:
-                      "未声明 entry_kind：请说明目标侧的那一端是什么（target-outbound / target-http / target-agent）",
+                      "entry_kind не указан: поясните, что находится на стороне цели (target-outbound / target-http / target-agent)",
                   },
-                  "待确认",
+                  "К подтверждению",
                 ),
           t.reach
-            ? h("span", { className: "rt-tag" }, "可达 " + t.reach)
+            ? h("span", { className: "rt-tag" }, "Доступно " + t.reach)
             : null,
           h("div", { className: "rt-spacer" }),
           h(
@@ -8520,7 +8520,7 @@ export const __dshPurgeDrill = (() => {
               style: { padding: "0 6px", fontSize: 11 },
               onClick: () => copy("sock" + t.id, t.listen || ""),
             },
-            copied === "sock" + t.id ? "已复制" : "复制地址",
+            copied === "sock" + t.id ? "Скопировано" : "Копировать адрес",
           ),
           t.status === "active"
             ? h(
@@ -8530,7 +8530,7 @@ export const __dshPurgeDrill = (() => {
                   style: { padding: "0 6px", fontSize: 11 },
                   onClick: () => markTunnel(t, "down"),
                 },
-                "标记失效",
+                "Отметить нерабочим",
               )
             : h(
                 "button",
@@ -8539,60 +8539,60 @@ export const __dshPurgeDrill = (() => {
                   style: { padding: "0 6px", fontSize: 11 },
                   onClick: () => markTunnel(t, "active"),
                 },
-                "标记可用",
+                "Отметить рабочим",
               ),
         ),
         h(
           "div",
           { className: "rt-sess-facts" },
-          fact("目标侧入口", t.entry || "未登记"),
+          fact("Вход со стороны цели", t.entry || "не зарегистрирован"),
           fact(
-            "跨越边界",
+            "Пересечение границы",
             t.legit === true
               ? h(
                   "span",
                   { className: "rt-tag rt-tag-live" },
-                  t.entry_kind_label || t.entry_kind || "已确认目标侧",
+                  t.entry_kind_label || t.entry_kind || "сторона цели подтверждена",
                 )
               : t.legit === false
                 ? h(
                     "span",
                     { className: "rt-tag rt-tag-warn" },
-                    "不算突破（只在自己 VPS 上开代理）",
+                    "Не прорыв (прокси поднят только на своём VPS)",
                   )
                 : h(
                     "span",
                     { className: "rt-tag" },
-                    "未声明 entry_kind，待确认",
+                    "entry_kind не указан, требует подтверждения",
                   ),
           ),
-          t.reach ? fact("可达网段", t.reach) : null,
-          t.asset_ip ? fact("所在资产", t.asset_ip) : null,
+          t.reach ? fact("Доступная подсеть", t.reach) : null,
+          t.asset_ip ? fact("Актив", t.asset_ip) : null,
           fact(
-            "最后检测",
-            (t.last_check ? fmt(t.last_check) : "未检测") +
+            "Последняя проверка",
+            (t.last_check ? fmt(t.last_check) : "не проверялось") +
               (t.latency_ms !== null && t.latency_ms !== undefined
-                ? "（" + t.latency_ms + "ms）"
+                ? "(" + t.latency_ms + "ms)"
                 : ""),
           ),
-          t.check_note ? fact("检测说明", t.check_note) : null,
-          t.note ? fact("备注", t.note) : null,
+          t.check_note ? fact("Пояснение проверки", t.check_note) : null,
+          t.note ? fact("Примечание", t.note) : null,
         ),
-        /* 命令默认折叠：卡片首要信息是"这条通道能不能用、通向哪"，命令按需展开 */
+        /* Команды по умолчанию свёрнуты: главное в карточке — «работает ли канал и куда ведёт», команды раскрываются по необходимости */
         t.command
           ? h(
               "details",
               { className: "rt-sess-fold" },
-              h("summary", null, "建立命令（点击展开 / 复制）"),
+              h("summary", null, "Команда создания (клик — раскрыть / скопировать)"),
               h(
                 "div",
                 Object.assign(
-                  { className: "rt-code", title: "点击复制" },
+                  { className: "rt-code", title: "Клик — копировать" },
                   clickable(() => copy("c" + t.id, t.command), {
-                    label: "复制命令",
+                    label: "Копировать команду",
                   }),
                 ),
-                copied === "c" + t.id ? "已复制" : t.command,
+                copied === "c" + t.id ? "Скопировано" : t.command,
               ),
             )
           : null,
@@ -8600,19 +8600,19 @@ export const __dshPurgeDrill = (() => {
           ? h(
               "details",
               { className: "rt-sess-fold" },
-              h("summary", null, "走这条隧道扫描（gogo / fscan 命令）"),
+              h("summary", null, "Сканировать через этот туннель (команды gogo / fscan)"),
               h(
                 "div",
                 { className: "rt-sess-cmd" },
                 h(
                   "div",
                   Object.assign(
-                    { className: "rt-code", title: "点击复制" },
+                    { className: "rt-code", title: "Клик — копировать" },
                     clickable(() => copy("g" + t.id, gogoCmd), {
-                      label: "复制 gogo 命令",
+                      label: "Копировать команду gogo",
                     }),
                   ),
-                  copied === "g" + t.id ? "已复制" : gogoCmd,
+                  copied === "g" + t.id ? "Скопировано" : gogoCmd,
                 ),
                 h(
                   "div",
@@ -8620,13 +8620,13 @@ export const __dshPurgeDrill = (() => {
                     {
                       className: "rt-code",
                       style: { display: "block", marginTop: 3 },
-                      title: "点击复制",
+                      title: "Клик — копировать",
                     },
                     clickable(() => copy("f" + t.id, fscanCmd), {
-                      label: "复制 fscan 命令",
+                      label: "Копировать команду fscan",
                     }),
                   ),
-                  copied === "f" + t.id ? "已复制" : fscanCmd,
+                  copied === "f" + t.id ? "Скопировано" : fscanCmd,
                 ),
               ),
             )
@@ -8640,7 +8640,7 @@ export const __dshPurgeDrill = (() => {
       h(
         "div",
         { className: "rt-toolbar" },
-        h("span", { style: { fontWeight: 600 } }, "会话与入口"),
+        h("span", { style: { fontWeight: 600 } }, "Сессии и входы"),
         h(
           "span",
           { className: "rt-tag" },
@@ -8648,19 +8648,19 @@ export const __dshPurgeDrill = (() => {
             (totals.webshellsOnline || 0) +
             "/" +
             (totals.webshells || 0) +
-            " 在线",
+            " онлайн",
         ),
         h(
           "span",
           { className: "rt-tag" },
-          "隧道 " +
+          "Туннелей " +
             (totals.tunnelsActive || 0) +
             "/" +
             (totals.tunnels || 0) +
-            " 可用",
+            " доступно",
         ),
-        h("span", { className: "rt-tag" }, "凭据 " + (totals.credentials || 0)),
-        h("span", { className: "rt-tag" }, "访问会话 " + (totals.access || 0)),
+        h("span", { className: "rt-tag" }, "Учётных данных " + (totals.credentials || 0)),
+        h("span", { className: "rt-tag" }, "Сессий доступа " + (totals.access || 0)),
         h("div", { className: "rt-spacer" }),
         h(
           "button",
@@ -8669,9 +8669,9 @@ export const __dshPurgeDrill = (() => {
             disabled: busy,
             onClick: probe,
           },
-          busy ? "检测中…" : "检测连通性",
+          busy ? "Проверка…" : "Проверить связность",
         ),
-        h("button", { className: "rt-btn", onClick: load }, "刷新"),
+        h("button", { className: "rt-btn", onClick: load }, "Обновить"),
       ),
       msg
         ? h(
@@ -8688,11 +8688,11 @@ export const __dshPurgeDrill = (() => {
           ? h(
               "div",
               { className: "rt-empty" },
-              h("div", null, "还没有登记任何 WebShell 或隧道。"),
+              h("div", null, "Пока не зарегистрировано ни одного WebShell или туннеля."),
               h(
                 "div",
                 { style: { marginTop: 6, fontSize: 12 } },
-                "拿到 WebShell 用 redteam_webshell_add；建好隧道用 redteam_tunnel_add（suo5 / socks5 / ssh -R）；之后智能体用 redteam_sessions 就能看到。",
+                "Получили WebShell — используйте redteam_webshell_add; подняли туннель — redteam_tunnel_add (suo5 / socks5 / ssh -R); дальше агент увидит их через redteam_sessions.",
               ),
             )
           : null,
@@ -8709,8 +8709,8 @@ export const __dshPurgeDrill = (() => {
               (totals.webshellsOnline || 0) +
               "/" +
               (totals.webshells || 0) +
-              " 在线",
-            sub: "已上线的可控入口",
+              " онлайн",
+            sub: "поднятые управляемые входы",
             open: sessCollapse.isOpen("shells", true),
             onToggle: sessCollapse.toggle("shells", true),
           },
@@ -8723,7 +8723,7 @@ export const __dshPurgeDrill = (() => {
             : h(
                 "div",
                 { className: "rt-atest-meta" },
-                "暂无（拿到 WebShell 后用 redteam_webshell_add 登记）",
+                "Пока нет (получив WebShell, зарегистрируйте его через redteam_webshell_add)",
               ),
         ),
         h(
@@ -8731,13 +8731,13 @@ export const __dshPurgeDrill = (() => {
           {
             key: "tunnels",
             tone: "test",
-            title: "内网隧道",
+            title: "Туннели во внутреннюю сеть",
             count:
               (totals.tunnelsActive || 0) +
               "/" +
               (totals.tunnels || 0) +
-              " 可用",
-            sub: "可直接给扫描器当代理用",
+              " доступно",
+            sub: "можно сразу использовать как прокси для сканеров",
             open: sessCollapse.isOpen("tunnels", true),
             onToggle: sessCollapse.toggle("tunnels", true),
           },
@@ -8750,17 +8750,17 @@ export const __dshPurgeDrill = (() => {
             : h(
                 "div",
                 { className: "rt-atest-meta" },
-                "暂无（建好隧道后用 redteam_tunnel_add 登记）",
+                "Пока нет (подняв туннель, зарегистрируйте его через redteam_tunnel_add)",
               ),
         ),
       ),
     );
   }
 
-  /* ---------------------------------------------------------- 错误边界 */
+  /* ---------------------------------------------------------- Граница ошибок */
   /**
-   * 单个页签渲染出错时只降级该页签，不拖垮整个面板：面板与侧栏按钮保持可用，
-   * 用户可一键回到资产测绘。（此前面板整块消失、按钮点不开就是缺了这层保护。）
+   * При ошибке отрисовки одной вкладки деградирует только она, а не вся панель: панель и кнопки боковой панели остаются рабочими,
+   * пользователь одной кнопкой возвращается в карту активов. (Раньше панель исчезала целиком и кнопки не нажимались — как раз из-за отсутствия этой защиты.)
    */
   class RtBoundary extends React.Component {
     constructor(props) {
@@ -8772,7 +8772,7 @@ export const __dshPurgeDrill = (() => {
     }
     componentDidCatch(error) {
       try {
-        console.error("[redteam-ui] 页面渲染出错:", error);
+        console.error("[redteam-ui] ошибка отрисовки страницы:", error);
       } catch (e) {
         /* ignore */
       }
@@ -8786,7 +8786,7 @@ export const __dshPurgeDrill = (() => {
         return h(
           "div",
           { className: "rt-pane" },
-          h("div", { className: "rt-err" }, "该页面渲染出错：" + msg),
+          h("div", { className: "rt-err" }, "Ошибка отрисовки страницы: " + msg),
           h(
             "button",
             {
@@ -8796,7 +8796,7 @@ export const __dshPurgeDrill = (() => {
                 setUI({ tab: "assets" });
               },
             },
-            "回到资产测绘",
+            "Вернуться в карту активов",
           ),
         );
       }
@@ -8805,8 +8805,8 @@ export const __dshPurgeDrill = (() => {
   }
 
   /**
-   * 智能体页签：并发名额（最多 3 个）+ 六个角色与它们的提示词。
-   * 主会话派活前先看这里的名额，用户也能一眼看到"现在还能拉起几个智能体"。
+   * Вкладка агентов: лимит одновременных (максимум 3) + шесть ролей и их промпты.
+   * Главная сессия перед раздачей задач смотрит сюда, а пользователь сразу видит, «сколько ещё агентов можно поднять».
    */
   function AgentsTab(props) {
     const eng = props.engagement;
@@ -8825,7 +8825,7 @@ export const __dshPurgeDrill = (() => {
         (r) => {
           setBusy(false);
           if (!r || r.ok === false) {
-            setErr((r && r.error) || "读取失败");
+            setErr((r && r.error) || "Ошибка чтения");
             return;
           }
           setErr(null);
@@ -8836,7 +8836,7 @@ export const __dshPurgeDrill = (() => {
           setErr(String((e && e.message) || e));
         },
       );
-      /* 并发名额按"当前跑着的子智能体"算；host 侧读 subagents 注册表 */
+      /* Лимит считается по «сейчас работающим субагентам»; host читает реестр subagents */
       api({ op: "agentsStatus" }).then(
         (r) => {
           if (r && r.ok !== false) setConcurrency(r);
@@ -8854,23 +8854,23 @@ export const __dshPurgeDrill = (() => {
       h(
         "div",
         { className: "rt-toolbar" },
-        h("span", { style: { fontWeight: 600 } }, "作战智能体"),
-        h("span", { className: "rt-tag rt-tag-passive" }, "并发上限 " + max),
+        h("span", { style: { fontWeight: 600 } }, "Боевые агенты"),
+        h("span", { className: "rt-tag rt-tag-passive" }, "Лимит одновременных " + max),
         used === null
-          ? h("span", { className: "rt-tag" }, "占用未知")
+          ? h("span", { className: "rt-tag" }, "Занятость неизвестна")
           : h(
               "span",
               {
                 className:
                   "rt-tag" + (used >= max ? " rt-tag-warn" : " rt-tag-live"),
               },
-              "在跑 " + used + " / 剩余 " + Math.max(max - used, 0),
+              "В работе " + used + " / свободно " + Math.max(max - used, 0),
             ),
         h("div", { className: "rt-spacer" }),
         h(
           "button",
           { className: "rt-btn", disabled: busy, onClick: load },
-          busy ? "读取中…" : "刷新",
+          busy ? "Чтение…" : "Обновить",
         ),
       ),
       h(
@@ -8880,44 +8880,44 @@ export const __dshPurgeDrill = (() => {
         h(
           "div",
           { className: "rt-card" },
-          h("h4", null, "并发规则（硬约束）"),
+          h("h4", null, "Правила параллельности (жёсткие ограничения)"),
           h(
             "div",
             { style: { fontSize: 12, lineHeight: 1.7 } },
-            "· 同一靶标**同时最多 " +
+            "· По одной цели **одновременно не более " +
               max +
-              " 个执行智能体**；主会话派活前用 `redteam_agent_slot` 占位，满了直接拒绝。",
+              " исполнительных агентов**; перед раздачей задач главная сессия занимает слот через `redteam_agent_slot`; при заполнении лимита запрос отклоняется.",
             h("br"),
-            "· **默认一个一个派、按顺序推进**；只有确实互不依赖的活才并行。",
+            "· **По умолчанию задачи раздаются по одной и идут по порядку**; параллельно только действительно независимые.",
             h("br"),
-            "· 每个会话有**自己的靶标绑定**：多会话并行不会把报告写串（子智能体继承父会话的靶标）。",
+            "· У каждой сессии **своя привязка к цели**: при параллельных сессиях отчёты не перемешаются (субагент наследует цель родительской сессии).",
           ),
         ),
         h(
           "div",
           { className: "rt-card" },
-          h("h4", null, "六个角色"),
+          h("h4", null, "Шесть ролей"),
           h(
             "div",
             { style: { fontSize: 12, lineHeight: 1.8 } },
-            "① 信息收集 `recon` —— 只收集资产，把单位资产收集完整（含边缘与未备案资产）",
+            "① Разведка `recon` —— только собирает активы, полно по организации (включая периферийные и незарегистрированные)",
             h("br"),
-            "② 资产梳理 `assess` —— 一条一条过，评易打性并全部落库",
+            "② Инвентаризация активов `assess` —— проходит по одному, оценивает простоту атаки и заносит всё в базу",
             h("br"),
-            "③ 漏洞发现 `vuln-scan` —— 先查库去重 → Nday/1day 优先 → 接口未授权探测",
+            "③ Поиск уязвимостей `vuln-scan` —— сначала проверка базы на дубли → приоритет Nday/1day → проверка интерфейсов на доступ без авторизации",
             h("br"),
-            "④ 漏洞利用 `exploit` —— 先拿服务器权限（冰蝎/哥斯拉马）+ 建 suo5 隧道，再打其它得分项",
+            "④ Эксплуатация уязвимостей `exploit` —— сначала права на сервере (шелл Behinder/Godzilla) + туннель suo5, затем остальные пункты начисления",
             h("br"),
-            "⑤ 内网渗透 `internal` —— 走隧道，依次拉起 ①②③④ 做内网",
+            "⑤ Пентест внутренней сети `internal` —— идёт через туннель и последовательно поднимает ①②③④ для внутренней сети",
             h("br"),
-            "⑥ 主会话 `plan` —— 只做计划、派活、汇总、汇报，不动手",
+            "⑥ Главная сессия `plan` —— только планирует, раздаёт задачи, сводит и докладывает, руками не работает",
           ),
         ),
         h(ConcurrencyCard, { concurrency, onSaved: load }),
         h(
           "div",
           { className: "rt-card" },
-          h("h4", null, "角色提示词（按靶标存，可在这里编辑）"),
+          h("h4", null, "Промпты ролей (хранятся по цели, здесь их можно править)"),
           h(
             "div",
             {
@@ -8927,7 +8927,7 @@ export const __dshPurgeDrill = (() => {
                 marginBottom: 6,
               },
             },
-            "「智能体提示词」已并入本页；下面是完整编辑器（改完点保存，只影响当前靶标）。",
+            "«Промпты агента» теперь на этой странице; ниже полный редактор (после правок нажмите «Сохранить», влияет только на текущую цель).",
           ),
           h(PromptsTab, { engagement: eng, refreshKey: refreshKey }),
         ),
@@ -8948,10 +8948,10 @@ export const __dshPurgeDrill = (() => {
     const used = typeof info.used === "number" ? info.used : null;
     const source =
       info.source === "settings"
-        ? "面板中设置"
+        ? "задано в панели"
         : info.source === "env"
-          ? "环境变量 REDTEAM_MAX_AGENTS"
-          : "默认值";
+          ? "переменная окружения REDTEAM_MAX_AGENTS"
+          : "значение по умолчанию";
     const n = Number(draft);
     const invalid =
       !Number.isFinite(n) || Math.floor(n) !== n || n < 1 || n > limit;
@@ -8963,11 +8963,11 @@ export const __dshPurgeDrill = (() => {
         (r) => {
           setBusy(false);
           if (!r || r.ok === false) {
-            setMsg({ err: (r && r.error) || "保存失败" });
+            setMsg({ err: (r && r.error) || "Ошибка сохранения" });
             return;
           }
           setMsg({
-            ok: "已保存：并发上限 " + r.max + "（立即生效，不用重启）",
+            ok: "Сохранено: лимит одновременных " + r.max + " (действует сразу, перезапуск не нужен)",
           });
           if (props.onSaved) props.onSaved();
         },
@@ -8980,23 +8980,23 @@ export const __dshPurgeDrill = (() => {
     return h(
       "div",
       { className: "rt-card" },
-      h("h4", null, "并发数量"),
+      h("h4", null, "Число одновременных"),
       h(
         "div",
         { style: { fontSize: 12, lineHeight: 1.8, marginBottom: 8 } },
-        "同一靶标**同时最多几个执行智能体**。当前生效：**" +
+        "Сколько исполнительных агентов **одновременно по одной цели**. Сейчас действует: **" +
           (info.max || "?") +
           "**" +
           (used === null
             ? ""
-            : "（在跑 " +
+            : " (в работе " +
               used +
-              "，剩余 " +
+              ", свободно " +
               Math.max((info.max || 0) - used, 0) +
-              "）") +
-          "，来源：" +
+              ")") +
+          ", источник: " +
           source +
-          "。改完**立即生效**，不用重启。",
+          ". После изменения **действует сразу**, перезапуск не нужен.",
       ),
       h(
         "div",
@@ -9025,7 +9025,7 @@ export const __dshPurgeDrill = (() => {
               color: "var(--dsw-alias-label-secondary)",
             },
           },
-          "范围 1 – " + limit,
+          "Диапазон 1 – " + limit,
         ),
         h(
           "button",
@@ -9034,7 +9034,7 @@ export const __dshPurgeDrill = (() => {
             disabled: busy || invalid,
             onClick: save,
           },
-          busy ? "保存中…" : "保存",
+          busy ? "Сохранение…" : "Сохранить",
         ),
         msg && msg.err
           ? h(
@@ -9059,19 +9059,19 @@ export const __dshPurgeDrill = (() => {
       h(
         "div",
         { className: "rt-note", style: { marginTop: 8 } },
-        "⚠️ 调大不等于更快：**同一个模型 API Key 的并发/速率上限是共享的**，同时派太多会互相挤占，" +
-          "表现为排队等待、超时、返回被截断甚至限流报错 —— 反而让测试结果不稳定（漏测、半途而废）。" +
-          "建议从 2–3 开始，只有在确认 Key 的额度足够、任务之间确实互不依赖时才调大。",
+        "⚠️ Больше не значит быстрее: **лимиты параллельности и скорости на один API Key модели общие**, и слишком много одновременных задач мешают друг другу: " +
+          "это видно как ожидание в очереди, таймауты, обрезанные ответы и даже ошибки rate limit —— результаты теста становятся нестабильными (пропуски, брошенные задачи). " +
+          "Начинайте с 2–3 и увеличивайте только когда уверены, что квоты Key хватает и задачи действительно независимы.",
       ),
     );
   }
 
   /**
-   * 版本显示 + 自动更新按钮。
+   * Отображение версии + кнопка автообновления.
    *
-   * 行为：挂载时静默查一次最新版本（npm registry），有新版本就把按钮点亮成
-   * 「有新版本 vX」；点击弹出确认框（当前版本 / 最新版本 / 安装位置 / 阻塞项），
-   * 确认后由 host 侧执行 安装 → 重启 dsh web（页面会断开，重启后刷新即可）。
+   * Поведение: при монтировании тихо проверяется последняя версия (npm registry), при наличии новой кнопка подсвечивается как
+   * «Есть новая версия vX»; по клику открывается окно подтверждения (текущая версия / последняя версия / место установки / блокеры),
+   * после подтверждения host выполняет установку → перезапуск dsh web (страница отключится, после перезапуска достаточно обновить).
    */
   function VersionBar(props) {
     const [info, setInfo] = React.useState(null);
@@ -9104,8 +9104,8 @@ export const __dshPurgeDrill = (() => {
         (r) => {
           setBusy(false);
           if (!r || r.ok === false) {
-            /* 开发态或查不到 registry：只显示当前版本，不报错打扰用户 */
-            if (!silent) setErr((r && r.error) || "检查更新失败");
+            /* Dev-режим или registry недоступен: показываем только текущую версию и не мешаем пользователю ошибками */
+            if (!silent) setErr((r && r.error) || "Ошибка проверки обновлений");
             api({ op: "version" }).then(
               (v) => {
                 if (v && v.ok !== false) setInfo(v);
@@ -9143,13 +9143,13 @@ export const __dshPurgeDrill = (() => {
         (r) => {
           setBusy(false);
           if (!r || r.ok === false) {
-            setMsg({ err: (r && r.error) || "更新失败" });
+            setMsg({ err: (r && r.error) || "Ошибка обновления" });
             return;
           }
           setMsg({
-            ok: "已安装 " + (r.installed || "") + "，正在重启当前宿主…",
+            ok: "Установлено " + (r.installed || "") + " , перезапускаем текущий хост…",
           });
-          /* 重启会断开这个页面：倒计时提示用户稍后刷新 */
+          /* Перезапуск отключает эту страницу: обратный отсчёт подсказывает обновить её позже */
           setCountdown(6);
           clearCountdown();
           countdownRef.current = setInterval(() => {
@@ -9190,15 +9190,15 @@ export const __dshPurgeDrill = (() => {
         {
           className: "rt-tag" + (hasNew ? " rt-tag-warn" : ""),
           title:
-            "当前版本 " +
-            (current || "未知") +
-            (latest ? "\n最新版本 " + latest : "") +
+            "Текущая версия " +
+            (current || "неизвестно") +
+            (latest ? "\nПоследняя версия " + latest : "") +
             (mode === "dev"
-              ? "\n安装方式：开发态（源码软链）"
+              ? "\nСпособ установки: dev-режим (симлинк на исходники)"
               : mode === "package"
-                ? "\n安装方式：包安装"
+                ? "\nСпособ установки: установка пакетом"
                 : "") +
-            (info && info.check_error ? "\n检查失败：" + info.check_error : ""),
+            (info && info.check_error ? "\nОшибка проверки: " + info.check_error : ""),
         },
         "v" + (current || "?"),
       ),
@@ -9213,11 +9213,11 @@ export const __dshPurgeDrill = (() => {
                 setMsg(null);
               },
               title:
-                "发现新版本 " +
+                "Найдена новая версия " +
                 latest +
-                "：点击查看并一键更新（会重启当前宿主）",
+                ": нажмите, чтобы посмотреть и обновиться одной кнопкой (текущий хост перезапустится)",
             },
-            busy ? "检查中…" : "有新版本 v" + latest,
+            busy ? "Проверка…" : "Есть новая версия v" + latest,
           )
         : h(
             "button",
@@ -9225,9 +9225,9 @@ export const __dshPurgeDrill = (() => {
               className: "rt-btn",
               disabled: busy,
               onClick: () => check(false),
-              title: "重新检查 npm 上的最新版本",
+              title: "Ещё раз проверить последнюю версию в npm",
             },
-            busy ? "检查中…" : "检查更新",
+            busy ? "Проверка…" : "Проверить обновления",
           ),
       open
         ? h(
@@ -9243,41 +9243,41 @@ export const __dshPurgeDrill = (() => {
                 className: "rt-modal-box",
                 onClick: (e) => e.stopPropagation(),
               },
-              h("h4", { style: { marginTop: 0 } }, "更新 RedTeam 模式"),
+              h("h4", { style: { marginTop: 0 } }, "Обновление режима RedTeam"),
               h(
                 "div",
                 { className: "rt-kv" },
-                h("b", null, "当前版本"),
-                h("span", null, current || "未知"),
+                h("b", null, "Текущая версия"),
+                h("span", null, current || "неизвестно"),
               ),
               h(
                 "div",
                 { className: "rt-kv" },
-                h("b", null, "最新版本"),
-                h("span", null, latest || "未知"),
+                h("b", null, "Последняя версия"),
+                h("span", null, latest || "неизвестно"),
               ),
               h(
                 "div",
                 { className: "rt-kv" },
-                h("b", null, "安装方式"),
+                h("b", null, "Способ установки"),
                 h(
                   "span",
                   null,
                   mode === "dev"
-                    ? "开发态（源码软链）"
+                    ? "dev-режим (симлинк на исходники)"
                     : mode === "package"
-                      ? "包安装（" +
+                      ? "установка пакетом (" +
                         ((info.install && info.install.packageManager) ||
                           "npm") +
-                        "）"
-                      : "未知",
+                        ")"
+                      : "неизвестно",
                 ),
               ),
               info && info.install && info.install.dir
                 ? h(
                     "div",
                     { className: "rt-kv" },
-                    h("b", null, "安装位置"),
+                    h("b", null, "Место установки"),
                     h("span", { className: "rt-mono" }, info.install.dir),
                   )
                 : null,
@@ -9288,7 +9288,7 @@ export const __dshPurgeDrill = (() => {
                     h(
                       "div",
                       { style: { fontWeight: 600, marginBottom: 4 } },
-                      "现在不能更新：",
+                      "Сейчас обновиться нельзя:",
                     ),
                     blockers.map((b, i) =>
                       h("div", { key: "b" + i }, "· " + b),
@@ -9311,8 +9311,8 @@ export const __dshPurgeDrill = (() => {
                     margin: "8px 0",
                   },
                 },
-                "更新过程：安装新版本 → 自动重启当前宿主（官方 exe / 社区版 / dsh web；当前页面会断开，约 5–10 秒后自动刷新）。" +
-                  "重启前会检查有没有智能体在跑，有就拦住不动。",
+                "Ход обновления: установка новой версии → автоматический перезапуск текущего хоста (официальный exe / Community Edition / dsh web; текущая страница отключится и через 5–10 секунд обновится сама). " +
+                  "Перед перезапуском проверяется, не работают ли агенты: если работают, обновление останавливается.",
               ),
               msg
                 ? h(
@@ -9325,7 +9325,7 @@ export const __dshPurgeDrill = (() => {
                 ? h(
                     "div",
                     { className: "rt-foot" },
-                    "宿主正在重启，" + countdown + " 秒后自动刷新页面…",
+                    "Хост перезапускается, страница обновится через " + countdown + " с…",
                   )
                 : null,
               h(
@@ -9341,7 +9341,7 @@ export const __dshPurgeDrill = (() => {
                 h(
                   "button",
                   { className: "rt-btn", onClick: closeModal },
-                  "关闭",
+                  "Закрыть",
                 ),
                 h(
                   "button",
@@ -9350,13 +9350,13 @@ export const __dshPurgeDrill = (() => {
                     disabled: busy || blockers.length > 0 || mode === "dev",
                     title:
                       mode === "dev"
-                        ? "开发态安装请用仓库流程升级"
+                        ? "При dev-установке обновляйтесь через процесс репозитория"
                         : blockers.length
-                          ? "先解决上面的阻塞项"
-                          : "安装并重启",
+                          ? "Сначала устраните блокеры выше"
+                          : "Установить и перезапустить",
                     onClick: apply,
                   },
-                  busy ? "更新中…" : "一键更新并重启",
+                  busy ? "Обновление…" : "Обновить и перезапустить",
                 ),
               ),
             ),
@@ -9365,11 +9365,11 @@ export const __dshPurgeDrill = (() => {
     );
   }
 
-  /* ---------------------------------------------------------- 常驻面板主体 */
+  /* ---------------------------------------------------------- Основная часть постоянной панели */
   /**
-   * 「未读」状态：按靶标记在 localStorage 里，每 25 秒问一次 host 的 consoleDigest
-   * （每个页签的条数 + 最近更新时间）。比本地记住的快照新 → 该页签点红点；
-   * 用户点开那个页签就把当前值记成已读，红点消失。
+   * Состояние «непрочитано» хранится в localStorage по цели, раз в 25 секунд запрашивается consoleDigest у host
+   * (число записей по каждой вкладке + время последнего обновления). Свежее запомненного локально снимка → на вкладке красная точка;
+   * пользователь открывает вкладку — текущие значения записываются как прочитанные, точка исчезает.
    */
   const UNREAD_KEY = "rt-unread:";
   const loadUnread = (eng) => {
@@ -9385,10 +9385,10 @@ export const __dshPurgeDrill = (() => {
     try {
       window.localStorage.setItem(UNREAD_KEY + eng, JSON.stringify(value));
     } catch (e) {
-      /* 隐私模式等：不持久化也能用 */
+      /* Приватный режим и т.п.: работает и без сохранения */
     }
   };
-  /** 这个页签相对上次查看有没有新内容（条数变多，或最新一条比上次查看还新）。 */
+  /** Есть ли на вкладке новое с прошлого просмотра (записей стало больше или последняя новее прошлого просмотра). */
   const digestHasNew = (prev, cur) => {
     if (!cur) return false;
     if (!prev) return true;
@@ -9424,7 +9424,7 @@ export const __dshPurgeDrill = (() => {
       const saved = Number(window.localStorage.getItem("rt-dock-width"));
       if (Number.isFinite(saved) && saved >= 320 && saved <= 1200) w = saved;
     } catch (e) {
-      /* 隐私模式 */
+      /* Приватный режим */
     }
     const h = Math.max(240, Math.min(640, vh - 24));
     return clampRtGeom({ x: Math.max(0, vw - w - 12), y: 12, w: w, h: h });
@@ -9436,13 +9436,13 @@ export const __dshPurgeDrill = (() => {
       );
       if (raw && typeof raw === "object") return clampRtGeom(raw);
     } catch (e) {
-      /* 隐私模式或坏数据 */
+      /* Приватный режим или повреждённые данные */
     }
     return defaultRtGeom();
   }
 
   function Panel(props) {
-    /* embedded：嵌在 dsh-purge 外层 dock 里时，不再自带收起/全面浏览/拖拽条，避免与外层按钮重叠 */
+    /* embedded: при встраивании во внешний dock dsh-purge не рисуем свои «свернуть/полный просмотр/перетаскивание», чтобы не перекрывать кнопки внешнего слоя */
     const embedded = !!(props && props.embedded);
     const st = useUI();
     const [engagements, setEngagements] = React.useState([]);
@@ -9461,7 +9461,7 @@ export const __dshPurgeDrill = (() => {
       try {
         window.localStorage.setItem(RT_GEOM_KEY, JSON.stringify(geom));
       } catch (e) {
-        /* 隐私模式 */
+        /* Приватный режим */
       }
     }, [geom, embedded]);
     React.useEffect(() => {
@@ -9479,7 +9479,7 @@ export const __dshPurgeDrill = (() => {
       api({ op: "snapshot", engagement: id }).then(
         (r) => {
           if (!r || r.ok === false) {
-            setErr((r && r.error) || "加载失败");
+            setErr((r && r.error) || "Ошибка загрузки");
             return;
           }
           setErr(null);
@@ -9506,7 +9506,7 @@ export const __dshPurgeDrill = (() => {
       api({ op: "bootstrap" }).then(
         (r) => {
           if (!r || r.ok === false) {
-            setErr((r && r.error) || "无法连接资产库");
+            setErr((r && r.error) || "Нет связи с базой активов");
             return;
           }
           setEngagements(r.engagements || []);
@@ -9531,7 +9531,7 @@ export const __dshPurgeDrill = (() => {
         (r) => {
           setCreating(false);
           if (!r || r.ok === false) {
-            setErr((r && r.error) || "创建失败");
+            setErr((r && r.error) || "Ошибка создания");
             return;
           }
           setNewName("");
@@ -9544,7 +9544,7 @@ export const __dshPurgeDrill = (() => {
       );
     };
 
-    /** 刷新：重新拉取名册/快照，并让当前页签重新取数。 */
+    /** Обновление: заново тянем реестр/снимок и заставляем текущую вкладку перезагрузить данные. */
     const refreshAll = () => {
       setRefreshKey((k) => k + 1);
       api({ op: "bootstrap" }).then(
@@ -9635,7 +9635,7 @@ export const __dshPurgeDrill = (() => {
       );
     };
 
-    /* 切靶标：重新读该靶标的未读快照，并立刻取一次摘要 */
+    /* Смена цели: заново читаем снимок непрочитанного для этой цели и сразу берём сводку */
     React.useEffect(() => {
       if (!eng) {
         setDigest(null);
@@ -9647,7 +9647,7 @@ export const __dshPurgeDrill = (() => {
       let digestInflight = false;
       const tick = () => {
         if (digestInflight)
-          return; /* 上一轮还没回来，跳过这一轮，别把请求堆起来 */
+          return; /* предыдущий раунд ещё не вернулся — пропускаем этот, чтобы не копить запросы */
         digestInflight = true;
         api({ op: "consoleDigest", engagement: eng })
           .then(
@@ -9656,7 +9656,7 @@ export const __dshPurgeDrill = (() => {
                 setDigest(r.sections);
             },
             () => {
-              /* 网络异常：不打断，等下一轮 */
+              /* Сетевая ошибка: не прерываемся, ждём следующий раунд */
             },
           )
           .finally(() => {
@@ -9672,8 +9672,8 @@ export const __dshPurgeDrill = (() => {
     }, [eng, refreshKey]);
 
     /**
-     * 打开某个页签 = 看过这个页签的内容：把当前摘要记成已读。
-     * 没读过（第一次打开面板）不算新内容 —— 否则一进来满屏红点，反而看不出"哪里有新东西"。
+     * Открыть вкладку = посмотреть её содержимое: текущая сводка помечается прочитанной.
+     * Если ещё не читали (первый вход в панель) — это не новое, иначе при входе всё в красных точках и не видно, «где действительно новое».
      */
     const markTabSeen = React.useCallback(
       (tab) => {
@@ -9706,16 +9706,16 @@ export const __dshPurgeDrill = (() => {
 
     const stats = (snapshot && snapshot.stats) || {};
     const tabs = [
-      ["assets", "资产测绘"],
-      ["env", "环境适配"],
-      ["agents", "智能体"],
-      ["sessions", "会话隧道"],
-      ["findings", "漏洞战果"],
-      ["chain", "攻击链"],
-      ["scores", "得分目标"],
-      ["report", "报告"],
-      ["knowledge", "知识库"],
-      ["skills", "技能库"],
+      ["assets", "Карта активов"],
+      ["env", "Адаптация окружения"],
+      ["agents", "Агенты"],
+      ["sessions", "Сессии и туннели"],
+      ["findings", "Результаты по уязвимостям"],
+      ["chain", "Цепочка атаки"],
+      ["scores", "Цели начисления"],
+      ["report", "Отчёт"],
+      ["knowledge", "База знаний"],
+      ["skills", "Библиотека навыков"],
     ];
     const full = isFullWindow();
     const openFull = () => {
@@ -9726,15 +9726,15 @@ export const __dshPurgeDrill = (() => {
           "noopener",
         );
       } catch (e) {
-        setErr("无法打开新窗口：" + ((e && e.message) || e));
+        setErr("Не удалось открыть новое окно: " + ((e && e.message) || e));
       }
     };
     const exitFull = () => {
-      /* 优先关掉脚本打开的窗口；关不掉就退回带侧栏的普通界面 */
+      /* Сначала пытаемся закрыть окно, открытое скриптом; если не выходит — возвращаемся в обычный интерфейс с боковой панелью */
       try {
         window.close();
       } catch (e) {
-        /* 非脚本打开的窗口无法关闭 */
+        /* Окно, открытое не скриптом, закрыть нельзя */
       }
       try {
         if (window.location.hash) {
@@ -9756,7 +9756,7 @@ export const __dshPurgeDrill = (() => {
 
     let body;
     if (err) body = h("div", { className: "rt-err" }, err);
-    /* 全局页：没有靶标也能看（知识库 / 环境适配 / 技能库 / 智能体概览） */
+    /* Глобальные страницы: доступны и без цели (база знаний / адаптация окружения / библиотека навыков / обзор агентов) */
     else if (st.tab === "knowledge")
       body = h(KnowledgeTab, { refreshKey: refreshKey });
     else if (st.tab === "env") body = h(EnvTab, { refreshKey: refreshKey });
@@ -9771,7 +9771,7 @@ export const __dshPurgeDrill = (() => {
         h(
           "div",
           { className: "rt-card" },
-          h("h4", null, "还没有靶标"),
+          h("h4", null, "Целей пока нет"),
           h(
             "div",
             {
@@ -9781,7 +9781,7 @@ export const __dshPurgeDrill = (() => {
                 marginBottom: 8,
               },
             },
-            "输入攻防演练靶标单位名称，创建演练并开始资产测绘。",
+            "Введите название организации-цели учений по ИБ, создайте учения и начните карту активов.",
           ),
           h(
             "div",
@@ -9789,7 +9789,7 @@ export const __dshPurgeDrill = (() => {
             h("input", {
               className: "rt-input",
               style: { flex: 1 },
-              placeholder: "例如：示例科技有限公司",
+              placeholder: "например: ООО «Пример»",
               value: newName,
               onChange: (e) => setNewName(e.target.value),
               onKeyDown: (e) => {
@@ -9803,7 +9803,7 @@ export const __dshPurgeDrill = (() => {
                 disabled: creating,
                 onClick: () => openEngagement(),
               },
-              creating ? "创建中…" : "创建靶标",
+              creating ? "Создание…" : "Создать цель",
             ),
           ),
         ),
@@ -9836,7 +9836,7 @@ export const __dshPurgeDrill = (() => {
       body = h(FindingsTab, { engagement: eng, refreshKey: refreshKey });
     else if (st.tab === "scores")
       body = h(ScoreTab, { engagement: eng, refreshKey: refreshKey });
-    else body = h("div", { className: "rt-empty" }, "未知页签");
+    else body = h("div", { className: "rt-empty" }, "Неизвестная вкладка");
 
     const shellProps = full
       ? { className: "rt-full", style: { display: "flex" } }
@@ -9867,28 +9867,28 @@ export const __dshPurgeDrill = (() => {
         ? null
         : h("div", {
             className: "rt-grip",
-            title: "拖动调整宽度",
+            title: "Потяните, чтобы изменить ширину",
             onMouseDown: startResizeLeft,
           }),
       full || embedded
         ? null
         : h("div", {
             className: "rt-resize-r",
-            title: "拖动调整宽度",
+            title: "Потяните, чтобы изменить ширину",
             onMouseDown: startResizeRight,
           }),
       full || embedded
         ? null
         : h("div", {
             className: "rt-resize-b",
-            title: "拖动调整高度",
+            title: "Потяните, чтобы изменить высоту",
             onMouseDown: startResizeBottom,
           }),
       full || embedded
         ? null
         : h("div", {
             className: "rt-resize-c",
-            title: "拖动调整大小",
+            title: "Потяните, чтобы изменить размер",
             onMouseDown: startResizeCorner,
           }),
       h(
@@ -9896,7 +9896,7 @@ export const __dshPurgeDrill = (() => {
         {
           className: "rt-head",
           onMouseDown: full || embedded ? undefined : startDrag,
-          title: full || embedded ? undefined : "按住拖动面板",
+          title: full || embedded ? undefined : "Зажмите и перетащите панель",
         },
         embedded
           ? null
@@ -9904,12 +9904,12 @@ export const __dshPurgeDrill = (() => {
               "div",
               { className: "rt-title" },
               h("span", { className: "rt-dot" }),
-              full ? "演练台 · 全面浏览" : "演练台",
+              full ? "Полигон · полный просмотр" : "Полигон",
               full
                 ? h(
                     "span",
                     { className: "rt-tag", style: { marginLeft: 6 } },
-                    "独立窗口",
+                    "Отдельное окно",
                   )
                 : null,
             ),
@@ -9926,7 +9926,7 @@ export const __dshPurgeDrill = (() => {
             onChange: (e) => {
               setEng(e.target.value);
               loadSnapshot(e.target.value);
-              /* 同步「当前靶标」：原生 skill 目录按它解析技能根 */
+              /* Синхронизируем «текущую цель»: по ней нативный каталог skill определяет корень навыков */
               api({
                 op: "activateEngagement",
                 engagement: e.target.value,
@@ -9936,10 +9936,10 @@ export const __dshPurgeDrill = (() => {
           h(
             "option",
             { value: "", disabled: true },
-            engagements.length ? "选择靶标" : "暂无靶标",
+            engagements.length ? "Выбрать цель" : "Целей нет",
           ),
           engagements.map((x) =>
-            h("option", { key: x.id, value: x.id }, x.name || x.id || "未命名"),
+            h("option", { key: x.id, value: x.id }, x.name || x.id || "без названия"),
           ),
         ),
         h("div", { className: "rt-spacer" }),
@@ -9949,10 +9949,10 @@ export const __dshPurgeDrill = (() => {
               "button",
               {
                 className: "rt-btn",
-                title: "回到带侧栏的普通界面（或按 Esc）",
+                title: "Вернуться в обычный интерфейс с боковой панелью (или Esc)",
                 onClick: exitFull,
               },
-              "退出全面浏览",
+              "Выйти из полного просмотра",
             )
           : null,
         embedded
@@ -9961,10 +9961,10 @@ export const __dshPurgeDrill = (() => {
               "button",
               {
                 className: "rt-btn",
-                title: "刷新名册、快照与当前页面数据",
+                title: "Обновить реестр, снимок и данные текущей страницы",
                 onClick: refreshAll,
               },
-              "刷新",
+              "Обновить",
             ),
         full || embedded
           ? null
@@ -9972,10 +9972,10 @@ export const __dshPurgeDrill = (() => {
               "button",
               {
                 className: "rt-btn",
-                title: "在新浏览器窗口打开完整控制台",
+                title: "Открыть полную консоль в новом окне браузера",
                 onClick: openFull,
               },
-              "全面浏览",
+              "Полный просмотр",
             ),
         full || embedded
           ? null
@@ -9983,14 +9983,14 @@ export const __dshPurgeDrill = (() => {
               "button",
               {
                 className: "rt-btn",
-                title: "收起面板",
+                title: "Свернуть панель",
                 onClick: () => setUI({ open: false }),
               },
-              "收起",
+              "Свернуть",
             ),
       ),
-      /* 页签栏用标准 tablist/tab 角色：读屏软件据此播报「第几个页签、是否选中」。
-           键盘用户 Tab 进来后可用 Enter/Space 切换（由 clickable 提供）。 */
+      /* Для полосы вкладок используем стандартные роли tablist/tab: скринридер сообщает «какая вкладка и выбрана ли она».
+           Пользователь клавиатуры, дойдя Tab, переключается через Enter/Space (даёт clickable). */
       h(
         "div",
         { className: "rt-tabs", role: "tablist" },
@@ -9998,7 +9998,7 @@ export const __dshPurgeDrill = (() => {
           const activate = () => {
             markTabSeen(t[0]);
             setUI({ tab: t[0] });
-            /* 强制当前页重新取数，避免切页后仍显示上一页缓存视觉 */
+            /* Принудительно перезагружаем данные текущей страницы, чтобы после переключения не оставался вид предыдущей */
             setRefreshKey((k) => k + 1);
           };
           return h(
@@ -10009,13 +10009,13 @@ export const __dshPurgeDrill = (() => {
               role: "tab",
               "aria-selected": st.tab === t[0] ? "true" : "false",
               title: unreadOf(t[0])
-                ? t[1] + "：有新内容，点开看过红点就会消失"
+                ? t[1] + ": появился новый контент, откройте и посмотрите — точка исчезнет"
                 : t[1],
             }),
             t[1],
             unreadOf(t[0])
-              ? /* 红点是纯视觉信息，给读屏软件一个文字替代 */
-                h("span", { className: "rt-tab-dot", "aria-label": "有新内容" })
+              ? /* Красная точка — чисто визуальная информация, даём скринридеру текстовую замену */
+                h("span", { className: "rt-tab-dot", "aria-label": "Есть новый контент" })
               : null,
           );
         }),
@@ -10028,30 +10028,30 @@ export const __dshPurgeDrill = (() => {
       h(
         "div",
         { className: "rt-foot" },
-        h("span", null, "C 段 " + (stats.segments || 0)),
+        h("span", null, "C-сегментов " + (stats.segments || 0)),
         h(
           "span",
           null,
-          "资产 " +
+          "Активов " +
             (stats.assets || 0) +
-            "（存活 " +
+            " (живых " +
             (stats.liveAssets || 0) +
-            "）",
+            ")",
         ),
-        h("span", null, "端口 " + (stats.openPorts || 0)),
-        h("span", null, "指纹 " + (stats.fingerprints || 0)),
-        h("span", null, "漏洞 " + (stats.vulns || 0)),
+        h("span", null, "Портов " + (stats.openPorts || 0)),
+        h("span", null, "Фингерпринтов " + (stats.fingerprints || 0)),
+        h("span", null, "Уязвимостей " + (stats.vulns || 0)),
         h(
           "span",
           null,
-          "被动/主动 " +
+          "Пассивные/активные " +
             (stats.passiveSignals || 0) +
             "/" +
             (stats.activeSignals || 0),
         ),
         h("div", { className: "rt-spacer" }),
         full
-          ? h("span", null, "按 Esc 或点右上角「退出全面浏览」回到带侧栏的界面")
+          ? h("span", null, "Нажмите Esc или «Выйти из полного просмотра» справа сверху, чтобы вернуться к интерфейсу с боковой панелью")
           : null,
         h(
           "span",
@@ -10063,14 +10063,14 @@ export const __dshPurgeDrill = (() => {
     );
   }
 
-  /* ---------------------------------------------------------- 入口按钮 */
+  /* ---------------------------------------------------------- Кнопка входа */
   function SidebarButton(props) {
     const st = useUI();
     return h(
       "button",
       {
         className: "rt-icon-btn" + (st.open ? " on" : ""),
-        title: "RedTeam 控制台（常驻右侧栏）",
+        title: "Консоль RedTeam (постоянная в правой боковой панели)",
         onClick: () => setUI({ open: !st.open }),
       },
       h("span", { style: { fontSize: 14 } }, "⛨"),
@@ -10084,14 +10084,14 @@ export const __dshPurgeDrill = (() => {
       "button",
       {
         className: "rt-hbtn" + (st.open ? " on" : ""),
-        title: "RedTeam 控制台（常驻右侧栏）",
+        title: "Консоль RedTeam (постоянная в правой боковой панели)",
         onClick: () => setUI({ open: !st.open }),
       },
       "⛨ RedTeam",
     );
   }
 
-  /** 侧栏「全面浏览」：在新浏览器窗口打开完整控制台（当前窗口不受影响）。 */
+  /** «Полный просмотр» в боковой панели: открывает полную консоль в новом окне браузера (текущее окно не затрагивается). */
   function FullButton(props) {
     const open = () => {
       try {
@@ -10101,7 +10101,7 @@ export const __dshPurgeDrill = (() => {
           "noopener",
         );
       } catch {
-        /* 被浏览器拦截 */
+        /* Заблокировано браузером */
       }
     };
     return h(
@@ -10109,21 +10109,21 @@ export const __dshPurgeDrill = (() => {
       {
         className: "rt-icon-btn",
         title:
-          "全面浏览：在新窗口打开完整控制台（当前窗口不受影响；新窗口内按 Esc 退出）",
+          "Полный просмотр: открыть полную консоль в новом окне (текущее окно не затрагивается; в новом окне выйдите по Esc)",
         onClick: open,
       },
       h("span", { style: { fontSize: 14 } }, "⛶"),
-      props.wide ? h("span", null, "全面浏览") : null,
+      props.wide ? h("span", null, "Полный просмотр") : null,
     );
   }
 
-  /* ---------------------------------------------------------- 插件入口 */
-  /** 唯一硬依赖：槽位注册表。 */
+  /* ---------------------------------------------------------- Точка входа плагина */
+  /** Единственная жёсткая зависимость: реестр слотов. */
   const inject = ["slots"];
 
   /**
-   * 注入样式 + 三处槽位。样式标签与宽度变量随 fiber 卸载一起移除。
-   * @param ctx - 客户端根上下文。
+   * Внедряем стили + три слота. Тег стилей и переменная ширины удаляются при размонтировании fiber.
+   * @param ctx - корневой контекст клиента.
    */
   function applyDrillParts() {
     return {

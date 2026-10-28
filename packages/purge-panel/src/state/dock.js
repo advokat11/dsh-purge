@@ -48,7 +48,7 @@ export function writeDrillAuth(ok) {
       setDrillAuthLocal(!!(saved && saved.granted));
     })
     .catch(() => {
-      /* 页面先记住，下次同步再写入当前安装目录 */
+      /* страница запоминает заранее, запись в текущий каталог установки — при следующей синхронизации */
     })
     .finally(() => {
       drillGrantPosting = Math.max(0, drillGrantPosting - 1);
@@ -67,7 +67,7 @@ export function startGrantSync() {
 export function syncDrillGrant(attempt) {
   const n = attempt || 0;
   const gen = drillGrantGen;
-  /* 复位上一次调度的重试 timer,避免多次 writeDrillAuth 叠加链条 */
+  /* сбрасываем timer прошлой запланированной попытки, чтобы цепочки writeDrillAuth не накапливались */
   if (drillSyncRetryTimer) {
     try {
       clearTimeout(drillSyncRetryTimer);
@@ -177,7 +177,7 @@ export function requestDrill(kind) {
     }
     return;
   }
-  /* 未授权：直接切到演练台页签并弹出授权窗（不再停在清洗页，避免像「没触发」） */
+  /* нет авторизации: сразу переключаемся на вкладку полигона и открываем окно авторизации (не стоим на странице очистки, чтобы это не выглядело как «не сработало») */
   setDock({ open: true, tab: "drill", authOpen: true, pending: pending });
 }
 

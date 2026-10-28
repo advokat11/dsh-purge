@@ -8,8 +8,8 @@ import {
 import { apiJson } from "../api/client.js";
 import { Btn, HelpTip } from "./primitives.js";
 /**
- * 状态页顶部的两块紧凑信息：破甲自检（默认收起）+ 破甲强化段开关。
- * 单独拆出来，是为了让「应用」按钮留在页面最上面，而自检不占一屏。
+ * Два компактных блока в начале страницы статуса: самопроверка снятия защиты (по умолчанию свёрнута) + переключатель усиливающего блока.
+ * Вынесено отдельно, чтобы кнопка «Применить» оставалась вверху страницы, а самопроверка не занимала весь экран.
  */
 export function StatusExtras() {
   const [check, setCheck] = useState(null);
@@ -36,7 +36,7 @@ export function StatusExtras() {
         body: JSON.stringify({ enabled: !boost }),
       });
       setBoost(!!r.enabled);
-      setNotice(r.enabled ? "已开启，重启后生效" : "已关闭，重启后生效");
+      setNotice(r.enabled ? "Включено, подействует после перезапуска" : "Выключено, подействует после перезапуска");
     } catch (e) {
       setNotice(e.message);
     }
@@ -66,7 +66,7 @@ export function StatusExtras() {
   const total = layers.filter((layer) => layer.applicable !== false).length;
   return h(
     "section",
-    { className: "dshpp-card", "aria-label": "破甲状态" },
+    { className: "dshpp-card", "aria-label": "состояние снятия защиты" },
     h(
       "div",
       { className: "dshpp-line" },
@@ -84,25 +84,25 @@ export function StatusExtras() {
                   : "is-ok"
               : ""),
         }),
-        "破甲自检",
+        "Самопроверка снятия защиты",
         h(
           "b",
           null,
           check
             ? failed.length
-              ? `${failed.length} 层未生效`
+              ? `слоёв без эффекта: ${failed.length}`
               : pendingLayers.length
-                ? `${pendingPatches} 条待应用`
+                ? `${pendingPatches} шт. ждут применения`
                 : uncertain.length
-                  ? `${uncertain.length} 层需确认`
-                  : `${total} 层全部在位`
-            : "检测中…",
+                  ? `требуют проверки: ${uncertain.length}`
+                  : `все ${total} слоёв на месте`
+            : "Проверка…",
         ),
       ),
       h(
         "details",
         { className: "dshpp-fold-inline" },
-        h("summary", null, "查看逐层"),
+        h("summary", null, "по слоям"),
         h(
           "div",
           { className: "dshpp-checks" },
@@ -134,13 +134,13 @@ export function StatusExtras() {
                     "span",
                     { className: "dshpp-check-val" },
                     layer.applicable === false
-                      ? "不适用"
+                      ? "не применимо"
                       : layer.state === "pending"
-                        ? `待应用 #${(layer.pending || []).join("/#")}`
+                        ? `ждёт применения #${(layer.pending || []).join("/#")}`
                         : layer.state === "inferred"
-                          ? "宿主推导"
+                          ? "выведено из хоста"
                           : layer.state === "unknown"
-                            ? "未确认"
+                            ? "не подтверждено"
                             : `${layer.applied}/${layer.required ?? layer.total}`,
                   ),
                   layer.note
@@ -148,19 +148,19 @@ export function StatusExtras() {
                     : null,
                 ),
               )
-            : h("div", { className: "dshpp-muted" }, "检测中…"),
+            : h("div", { className: "dshpp-muted" }, "Проверка…"),
         ),
       ),
       h(
         Btn,
         { tiny: true, disabled: busy, onClick: rerun },
-        busy ? "…" : "重测",
+        busy ? "…" : "Повторить",
       ),
       h(
         Btn,
         {
           tiny: true,
-          title: "生成一次性探针：下一轮回复里看模型有没有原样回显该标记",
+          title: "Создать одноразовый зонд: в следующем ответе видно, вернула ли модель эту метку дословно",
           onClick: async () => {
             try {
               const r = await apiJson("/dsh-purge/probe", {
@@ -174,7 +174,7 @@ export function StatusExtras() {
             }
           },
         },
-        "探针",
+        "Зонд",
       ),
     ),
     h(
@@ -183,18 +183,18 @@ export function StatusExtras() {
       h(
         "span",
         { className: "dshpp-line-main" },
-        "破甲强化段",
+        "Усиливающий блок снятия защиты",
         h(
           HelpTip,
-          { title: "破甲强化段" },
-          "在系统提示词末尾追加一段与注入同级的文本：层级声明 / 拒绝即故障 / 抗谄媚 / 多轮重申。默认开启。",
+          { title: "Усиливающий блок снятия защиты" },
+          "Дописывает в конец системного промпта блок того же уровня, что и инъекция: объявление уровней / отказ как сбой / против подхалимства / повтор в нескольких раундах. Включено по умолчанию.",
         ),
-        h("b", null, boost === null ? "…" : boost ? "已开启" : "已关闭"),
+        h("b", null, boost === null ? "…" : boost ? "Включено" : "Выключено"),
       ),
       h(
         Btn,
         { tiny: true, disabled: boost === null, onClick: toggle },
-        boost ? "关闭" : "开启",
+        boost ? "Выключить" : "Включить",
       ),
       notice ? h("span", { className: "dshpp-muted" }, notice) : null,
     ),
@@ -203,43 +203,43 @@ export function StatusExtras() {
 
 export function assertMaintenanceResult(result) {
   if (!result || typeof result !== "object")
-    throw new Error("维护接口返回了无效结果");
+    throw new Error("интерфейс обслуживания вернул некорректный результат");
   if (result.ok === false) {
     const errors = Array.isArray(result.errors)
-      ? result.errors.filter(Boolean).join("；")
+      ? result.errors.filter(Boolean).join("; ")
       : "";
     const partial = result.applied
-      ? "；部分目标已更新，请重启对应 DSH 进程加载"
+      ? "; часть целей обновлена — перезапустите соответствующие процессы DSH, чтобы загрузить изменения"
       : "";
-    throw new Error((result.error || errors || "维护操作失败") + partial);
+    throw new Error((result.error || errors || "операция обслуживания не удалась") + partial);
   }
 }
 export function maintenanceNotice(op, result) {
   if (op === "backup") {
     if (!result.id)
-      throw new Error("备份操作未返回备份编号，请刷新列表核对结果");
-    return `备份已创建：${result.id}`;
+      throw new Error("операция резервного копирования не вернула номер копии; обновите список и сверьте результат");
+    return `Резервная копия создана: ${result.id}`;
   }
   if (op === "rollback")
     return (
-      (result.note || "插件回滚已完成") +
-      "。请重启 DSH 进程；仅刷新浏览器不会加载新版后端。"
+      (result.note || "откат плагина завершён") +
+      ". Перезапустите процесс DSH; простое обновление страницы не загрузит новый бэкенд."
     );
   if (op === "update") {
     if (result.applied === false || result.skipped)
-      return result.note || "未安装新版本，当前安装未更新。";
+      return result.note || "новая версия не установлена, текущая установка не изменилась.";
     if (result.applied || result.needRestart || result.restart_required) {
       const version =
         result.release?.version || result.localVersion || result.remoteVersion;
       const warnings = result.cleanup_warnings || [];
       const cleanup = warnings.length
-        ? `清理未完成（${warnings.map((w) => `${w.stage}:${w.code}`).join("，")}），残留已保留。`
+        ? `очистка не завершена (${warnings.map((w) => `${w.stage}:${w.code}`).join(", ")}), остатки сохранены.`
         : "";
-      return `${cleanup}插件已安装${version ? "：" + version : ""}。请重启 DSH 进程；仅刷新浏览器不会加载新版后端。`;
+      return `${cleanup}плагин установлен${version ? ": " + version : ""}. Перезапустите процесс DSH; простое обновление страницы не загрузит новый бэкенд.`;
     }
-    return result.note || "更新请求已完成，请刷新状态核对安装结果。";
+    return result.note || "запрос на обновление выполнен; обновите состояние и сверьте результат установки.";
   }
-  return result.note || "维护操作已完成";
+  return result.note || "операция обслуживания завершена";
 }
 
 export function UpdatePreferences({ value, status = {}, onSaved }) {
@@ -269,7 +269,7 @@ export function UpdatePreferences({ value, status = {}, onSaved }) {
   }
   return h(
     "section",
-    { "aria-label": "自动更新设置", className: "dshpp-card" },
+    { "aria-label": "настройки автообновления", className: "dshpp-card" },
     h(
       "div",
       { className: "dshpp-row" },
@@ -281,26 +281,26 @@ export function UpdatePreferences({ value, status = {}, onSaved }) {
           checked: value.autoCheck,
           disabled: saving,
           onChange: (e) => save({ autoCheck: e.target.checked }),
-          "aria-label": "自动检查更新",
+          "aria-label": "автоматическая проверка обновлений",
         }),
-        "自动检查更新",
+        "Автопроверка обновлений",
       ),
       h(HelpTip, {
-        title: "自动检查更新",
+        title: "автоматическая проверка обновлений",
         children:
-          "启动 30 秒后检查，之后按间隔检查。关闭不会改变已保存的自动安装偏好，但会暂停自动安装。",
+          "Проверка через 30 секунд после запуска, далее — с заданным интервалом. Выключение не меняет сохранённые предпочтения автоустановки, но приостанавливает её.",
       }),
       h(
         "select",
         {
-          "aria-label": "更新检查间隔",
+          "aria-label": "интервал проверки обновлений",
           value: value.intervalHours,
           disabled: saving || !value.autoCheck,
           onChange: (e) => save({ intervalHours: Number(e.target.value) }),
         },
         [...new Set([1, 6, 12, 24, value.intervalHours])]
           .sort((a, b) => a - b)
-          .map((v) => h("option", { key: v, value: v }, `每 ${v} 小时`)),
+          .map((v) => h("option", { key: v, value: v }, `каждые ${v} ч.`)),
       ),
     ),
     h(
@@ -314,28 +314,28 @@ export function UpdatePreferences({ value, status = {}, onSaved }) {
           checked: value.autoInstall,
           disabled: saving,
           onChange: (e) => save({ autoInstall: e.target.checked }),
-          "aria-label": "自动安装更新",
+          "aria-label": "автоматическая установка обновлений",
         }),
-        "自动安装更新",
+        "Автоустановка обновлений",
       ),
       h(HelpTip, {
-        title: "自动安装更新",
+        title: "автоматическая установка обновлений",
         children:
-          "仅在自动检查开启、发现未锁定的新正式版时安装。安装前备份、校验发行包；失败不自动切换来源。安装后等待你手动重启，不会自动重启 DSH。",
+          "Ставится только когда автопроверка включена и найдена незаблокированная новая стабильная версия. Перед установкой — резервная копия и проверка пакета; при сбое источник не переключается автоматически. После установки ждём вашего ручного перезапуска, DSH сам не перезапускается.",
       }),
     ),
     h(
       "p",
       { className: "dshpp-hint" },
       status.reconciliationError
-        ? "安装状态待核对，自动安装已暂停。"
+        ? "Состояние установки не сверено, автоустановка приостановлена."
         : status.restartRequired
-          ? `磁盘版本 ${status.pendingVersion}，当前运行 ${status.runningVersion || "未知"}；等待你手动重启 DSH。`
+          ? `Версия на диске ${status.pendingVersion}, сейчас работает ${status.runningVersion || "неизвестно"}; ждём вашего ручного перезапуска DSH.`
           : !value.autoCheck
-            ? "自动检查已关闭，自动安装暂停。"
+            ? "Автопроверка выключена, автоустановка приостановлена."
             : status.checkedAt
-              ? `上次检查：${new Date(status.checkedAt).toLocaleString()}${status.hasUpdate ? ` · 可用版本 ${status.availableVersion}` : ""}`
-              : "启动后自动检查；安装后仅提示手动重启。",
+              ? `Последняя проверка: ${new Date(status.checkedAt).toLocaleString()}${status.hasUpdate ? ` · доступна версия ${status.availableVersion}` : ""}`
+              : "Проверка выполняется после запуска; после установки только предлагаем ручной перезапуск.",
     ),
     status.reconciliationError
       ? h("p", { role: "alert" }, status.reconciliationError)
@@ -366,7 +366,7 @@ export function CommunityMaintenance() {
     try {
       const result = await apiJson("/dsh-purge/community");
       assertMaintenanceResult(result);
-      if (!Array.isArray(result.backups)) throw new Error("备份列表响应无效");
+      if (!Array.isArray(result.backups)) throw new Error("некорректный ответ со списком резервных копий");
       if (!mounted.current || request !== generation.current) return;
       setValue(result);
       setSelected((current) =>
@@ -392,20 +392,20 @@ export function CommunityMaintenance() {
     if (
       op === "rollback" &&
       !window.confirm(
-        "只回滚 Purge 插件及其入口，保留当前提示词和设置；完成后需重启 DSH 进程；仅刷新浏览器不会加载新版后端。继续？",
+        "Откатывается только плагин Purge и его точка входа, текущий промпт и настройки сохраняются; после этого нужен перезапуск процесса DSH; обновление страницы не загрузит новый бэкенд. Продолжить?",
       )
     )
       return;
     if (
       op === "update" &&
       !window.confirm(
-        "将先备份，再安装所选社区正式版；不会重新应用宿主补丁。安装后请重启 DSH 进程；仅刷新浏览器不会加载新版后端。继续？",
+        "Сначала сделаем резервную копию, затем установим выбранный стабильный релиз community-версии; патчи хоста заново применяться не будут. После установки перезапустите процесс DSH; обновление страницы не загрузит новый бэкенд. Продолжить?",
       )
     )
       return;
     running.current = true;
     setBusy(true);
-    setNotice("处理中…");
+    setNotice("Выполняется…");
     try {
       const r = await apiJson("/dsh-purge/community", {
         method: "POST",
@@ -415,17 +415,17 @@ export function CommunityMaintenance() {
       assertMaintenanceResult(r);
       if (!mounted.current) return;
       if (op === "check") {
-        if (!Array.isArray(r.versions)) throw new Error("发行列表响应无效");
+        if (!Array.isArray(r.versions)) throw new Error("некорректный ответ со списком релизов");
         setReleases(r.versions.filter((v) => v.asset));
         setRelease(r.versions.find((v) => v.asset)?.ref || "");
         setNotice(
           r.degraded
-            ? `${r.degraded}；${r.stale ? "当前显示缓存列表，请稍后重试" : "已显示备用列表"}`
+            ? `${r.degraded}; ${r.stale ? "сейчас показан кэшированный список, повторите позже" : "показан резервный список"}`
             : r.error
-              ? `检查更新失败：${r.error}`
+              ? `ошибка проверки обновлений: ${r.error}`
               : r.hasUpdate
-                ? `发现新版本 ${r.remoteVersion}`
-                : "当前已是最新正式版",
+                ? `доступна новая версия ${r.remoteVersion}`
+                : "установлена последняя стабильная версия",
         );
       } else {
         setNotice(maintenanceNotice(op, r));
@@ -434,7 +434,7 @@ export function CommunityMaintenance() {
       if (mounted.current)
         setNotice(
           e.message === "timeout"
-            ? "维护请求超时，操作可能仍在执行；请先刷新状态，勿重复提交。"
+            ? "тайм-аут запроса обслуживания: операция могла продолжиться; сначала обновите состояние и не отправляйте повторно."
             : e.message,
         );
     } finally {
@@ -447,8 +447,8 @@ export function CommunityMaintenance() {
   }
   return h(
     "section",
-    { className: "dshpp-panel", "aria-label": "社区版维护" },
-    h("h3", null, "维护：更新与本机备份"),
+    { className: "dshpp-panel", "aria-label": "обслуживание community-версии" },
+    h("h3", null, "Обслуживание: обновления и локальные копии"),
     h(UpdatePreferences, {
       value: value?.update_preferences,
       status: value?.update_status,
@@ -458,7 +458,7 @@ export function CommunityMaintenance() {
     h(
       "div",
       { className: "dshpp-row" },
-      h(Btn, { disabled: busy, onClick: () => run("check") }, "检查社区版更新"),
+      h(Btn, { disabled: busy, onClick: () => run("check") }, "Проверить обновления community-версии"),
       h(
         Btn,
         {
@@ -476,13 +476,13 @@ export function CommunityMaintenance() {
                     ),
                   )}`,
               );
-              setNotice(lines.length ? lines.join("\n") : "还没有动作记录");
+              setNotice(lines.length ? lines.join("\n") : "записей о действиях пока нет");
             } catch (e) {
               setNotice(e.message);
             }
           },
         },
-        "最近动作",
+        "Последние действия",
       ),
       h(
         "a",
@@ -491,7 +491,7 @@ export function CommunityMaintenance() {
           target: "_blank",
           rel: "noreferrer",
         },
-        "发行记录",
+        "Релизы",
       ),
     ),
     releases?.length
@@ -501,7 +501,7 @@ export function CommunityMaintenance() {
           h(
             "select",
             {
-              "aria-label": "选择社区发行版本",
+              "aria-label": "выбор релиза community-версии",
               value: release,
               onChange: (e) => setRelease(e.target.value),
               disabled: busy,
@@ -513,38 +513,38 @@ export function CommunityMaintenance() {
           h(
             Btn,
             { disabled: busy || !release, onClick: () => run("update") },
-            "安装所选版本",
+            "Установить выбранную версию",
           ),
         )
       : null,
-    h("h3", { style: { marginTop: 20 } }, "本机备份"),
+    h("h3", { style: { marginTop: 20 } }, "Локальные копии"),
     h(
       Btn,
       { disabled: busy || listState === "loading", onClick: load },
-      "刷新备份列表",
+      "Обновить список копий",
     ),
     listState === "loading"
-      ? h("p", { role: "status" }, "正在读取备份…")
+      ? h("p", { role: "status" }, "Читаем резервные копии…")
       : null,
     listState === "error"
-      ? h("p", { role: "alert" }, `读取备份失败：${listError}`)
+      ? h("p", { role: "alert" }, `ошибка чтения резервных копий: ${listError}`)
       : null,
     listState === "ready" && !value.backups.length
-      ? h("p", { role: "status" }, "暂无备份")
+      ? h("p", { role: "status" }, "резервных копий пока нет")
       : null,
     h(
       "div",
       { className: "dshpp-row" },
-      h(Btn, { disabled: busy, onClick: () => run("backup") }, "立即备份"),
+      h(Btn, { disabled: busy, onClick: () => run("backup") }, "Сделать копию"),
       h(
         "select",
         {
-          "aria-label": "选择回滚备份",
+          "aria-label": "выбор копии для отката",
           value: selected,
           onChange: (e) => setSelected(e.target.value),
           disabled: busy || listState !== "ready",
         },
-        h("option", { value: "" }, "选择备份"),
+        h("option", { value: "" }, "Выберите копию"),
         ...(value?.backups || []).map((b) =>
           h(
             "option",
@@ -559,13 +559,13 @@ export function CommunityMaintenance() {
           disabled: busy || !selected || listState !== "ready",
           onClick: () => run("rollback"),
         },
-        "回滚插件",
+        "Откатить плагин",
       ),
     ),
     h(
       "p",
       { className: "dshpp-hint" },
-      "备份只保存在本机。回滚保留当前提示词、规则和其他插件设置；安装或回滚后需要重启 DSH 进程；仅刷新浏览器不会加载新版后端。",
+      "Копии хранятся только на этой машине. Откат сохраняет текущий промпт, правила и настройки других плагинов; после установки или отката нужен перезапуск процесса DSH; обновление страницы не загрузит новый бэкенд.",
     ),
     notice ? h("p", { role: "status" }, notice) : null,
   );

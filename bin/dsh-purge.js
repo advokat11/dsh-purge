@@ -7,24 +7,24 @@ const args = process.argv.slice(2);
 
 function printStatus(state) {
   const out = [];
-  out.push("dsh-purge 状态 / Status");
-  out.push("  宿主 / surface " + (state.surface || "web"));
+  out.push("dsh-purge статус / Status");
+  out.push("  Хост / surface " + (state.surface || "web"));
   out.push("  DSH_HOME      " + state.dsh_home);
-  if (state.desktop_install) out.push("  桌面安装       " + state.desktop_install);
+  if (state.desktop_install) out.push("  Десктопная установка       " + state.desktop_install);
   if (state.ai_base) {
-    out.push("  插件根 / root  " + state.ai_base);
+    out.push("  Корень плагина / root  " + state.ai_base);
     for (const [key, fp] of Object.entries(state.files)) {
       out.push(`    ${key.padEnd(22)} ${fp}`);
     }
   } else {
-    out.push("  插件根 / root  " + core.missingAiBaseMessage());
+    out.push("  Корень плагина / root  " + core.missingAiBaseMessage());
   }
-  out.push(`  shim 目录      ${state.shim_dir || "未定位 / not found"}`);
-  out.push(`  备份 / backup  ${state.has_backup ? "有 / yes" : "无 / no"}`);
-  out.push(`  注入文件       ${state.override_path}`);
-  out.push(`  注入状态       ${state.override_status}`);
+  out.push(`  каталог shim      \${state.shim_dir || "Не найден / not found"}`);
+  out.push(`  бэкап / backup  \${state.has_backup ? "Есть / yes" : "Нет / no"}`);
+  out.push(`  файл инъекции       \${state.override_path}`);
+  out.push(`  статус инъекции       \${state.override_status}`);
   out.push("");
-  out.push(`  补丁 ${state.patches_applied}/${core.ALL_PATCHES.length} 已清洗, ${state.patches_pending} 待清洗`);
+  out.push(`  Патчи ${state.patches_applied}/${core.ALL_PATCHES.length} очищено, ${state.patches_pending} ожидает очистки`);
   for (const p of core.ALL_PATCHES) {
     const s = state.patch_status[p.id];
     const mark = s === "applied" ? "✓" : s === "pending" ? "✗" : "·";
@@ -39,13 +39,13 @@ async function main() {
   const mode = args.find((a) => ["--apply", "--revert", "--uninstall", "--status", "--edit", "--help"].includes(a));
 
   if (mode === "--help" || args.includes("-h")) {
-    console.log(`dsh-purge 用法:
-  dsh-purge --status     显示状态
-  dsh-purge --apply      应用全部清洗（提示词+代码+shim+override）
-  dsh-purge --revert     回滚还原
-  dsh-purge --uninstall  卸载插件（已应用则先还原）
-  dsh-purge --edit       编辑注入文件 prompt-inject.md
-  dsh-purge --help       帮助`);
+    console.log(`Использование dsh-purge:
+  dsh-purge --status     показать статус
+  dsh-purge --apply      применить всю очистку (промпт+код+shim+override)
+  dsh-purge --revert     откатить изменения назад
+  dsh-purge --uninstall  удалить плагин (если применено — сначала откат)
+  dsh-purge --edit       редактировать файл инъекции prompt-inject.md
+  dsh-purge --help       справка`);
     return;
   }
 
@@ -56,51 +56,51 @@ async function main() {
   if (mode === "--apply") {
     if (!state.ai_base) {
       console.log("[ERROR] " + core.missingAiBaseMessage());
-      console.log("  fix: 把 DSH_BASE 指到含 dsh-agent-instructions/lib 的 @deepseek-ai 目录");
+      console.log("  fix: укажите DSH_BASE на каталог @deepseek-ai, содержащий dsh-agent-instructions/lib");
       process.exit(1);
     }
     const inject = rules.resolveInjectText(state.dsh_home);
     if (!inject.text) {
-      console.log("[ERROR] 提示词和规则集都是空的，必须先添加提示词");
+      console.log("[ERROR] prompt и набор правил пусты — сначала добавьте prompt");
       process.exit(1);
     }
     const { hosts, report } = await core.applyPatchesAllHosts(core.ALL_PATCHES, {
       preserveClientBundles: false,
       forApply: true,
     });
-    for (const h of hosts) console.log(`  宿主 / host → ${h.aiBase}`);
+    for (const h of hosts) console.log(`  Хост / host → ${h.aiBase}`);
     for (const r of report) {
-      const m = r.status === "applied" ? "✓ 已清洗" : r.status === "already" ? "- 已是最新" : r.status === "missing_file" ? "⚠ 文件缺失" : `✗ ${r.status}`;
+      const m = r.status === "applied" ? "✓ Очищено" : r.status === "already" ? "- Уже актуально" : r.status === "missing_file" ? "⚠ Файл отсутствует" : `✗ ${r.status}`;
       console.log(`  ${m} patch #${String(r.patch_id).padEnd(2)} ${r.name}`);
     }
     const flashHost = hosts[0]?.aiBase || state.ai_base;
     const flash = core.silenceCmdFlash(flashHost);
     console.log(`  cmd-flash=${flash.entry} phase-1=${flash.phase1} ok=${flash.ok}`);
     if (hosts.length > 1) {
-      console.log(`  多宿主 / multi-host: ${hosts.length} 份 @deepseek-ai 已清洗`);
+      console.log(`  Мультихост / multi-host: ${hosts.length} копий @deepseek-ai очищено`);
     }
     console.log(inject.source === "rule"
-      ? "  - 使用当前规则集，不改写提示词文件"
-      : "  - 使用已有提示词文件");
+      ? "  - использовать текущий набор правил, файл prompt не перезаписывается"
+      : "  - использовать существующий файл prompt");
     if (state.shim_dir) {
       const r = await core.patchShim(state.shim_dir);
       for (const [fname, st] of Object.entries(r)) {
-        if (st === "patched") console.log(`  ✓ shim ${fname} 注入 / injected`);
-        else if (st === "already_patched") console.log(`  - shim ${fname} 已注入 / already injected`);
-        else if (st === "missing") console.log(`  - shim ${fname} 不存在 / missing`);
+        if (st === "patched") console.log(`  ✓ shim ${fname} внедрён / injected`);
+        else if (st === "already_patched") console.log(`  - shim ${fname} уже внедрён / already injected`);
+        else if (st === "missing") console.log(`  - shim ${fname} отсутствует / missing`);
         else console.log(`  ⚠ shim ${fname}: ${st}`);
       }
     } else {
-      console.log("  ⚠ 未定位 shim 目录，跳过注入");
+      console.log("  ⚠ каталог shim не найден, внедрение пропущено");
     }
     console.log("");
-    console.log("全部完成 / All done。重启 dsh 生效 / Restart dsh to take effect.");
+    console.log("Всё готово / All done. Перезапустите dsh, чтобы изменения вступили в силу / Restart dsh to take effect.");
   } else if (mode === "--revert") {
     if (state.ai_base || core.enumeratePatchAiBases().length) {
       const { reverted, errors } = await core.revertAllHosts();
-      for (const p of reverted) console.log(`  ✓ 已还原 / Reverted ${p}`);
-      for (const [p, e] of errors) console.log(`  ⚠ 还原失败 ${p}: ${e}`);
-      if (reverted.length === 0) console.log("  - 没有补丁备份可还原 / no patch backup");
+      for (const p of reverted) console.log(`  ✓ Восстановлено / Reverted ${p}`);
+      for (const [p, e] of errors) console.log(`  ⚠ Ошибка восстановления ${p}: ${e}`);
+      if (reverted.length === 0) console.log("  - Нет резервной копии патчей / no patch backup");
     }
     if (state.shim_dir) {
       const r = await core.revertShim(state.shim_dir);
@@ -110,34 +110,34 @@ async function main() {
       }
     }
     console.log("");
-    console.log("回滚完成 / Revert done。重启 dsh 后恢复 / restart to restore.");
-    console.log("注: prompt-inject.md 保留（用户文件）/ prompt-inject.md kept (user file)");
+    console.log("Откат выполнен / Revert done. Восстановится после перезапуска dsh / restart to restore.");
+    console.log("Прим.: prompt-inject.md сохраняется (файл пользователя) / prompt-inject.md kept (user file)");
   } else if (mode === "--uninstall") {
     const { uninstallPurge, finishUninstallCleanup } = await import("../lib/uninstall.js");
     const result = await finishUninstallCleanup(await uninstallPurge());
-    if (result.applied) console.log("  已检测到补丁，已还原回原版。");
-    else console.log("  未检测到已应用补丁，仍会清除插件文件。");
-    if (result.override?.removed) console.log(`  已删除 ${result.override.path}`);
-    if (result.stripped?.length) console.log(`  已从 profile 移除: ${result.stripped.join(", ")}`);
+    if (result.applied) console.log("  Патчи обнаружены, восстановлена исходная версия.");
+    else console.log("  Применённых патчей не обнаружено, файлы плагина всё равно будут удалены.");
+    if (result.override?.removed) console.log(`  Удалено ${result.override.path}`);
+    if (result.stripped?.length) console.log(`  Удалено из profile: \${result.stripped.join(", ")}`);
     for (const e of result.errors || []) console.log(`  ⚠ ${e}`);
     if (!result.ok) {
-      console.log("  卸载未完成：请检查上面的还原、注销或文件清理错误。");
+      console.log("  Удаление не завершено: проверьте ошибки восстановления, отмены регистрации или очистки файлов выше.");
       process.exit(1);
     }
     console.log("");
-    console.log("卸载完成。请重启 dsh。");
+    console.log("Удаление завершено. Перезапустите dsh.");
   } else if (mode === "--edit") {
     const r = core.editOverride(state.dsh_home);
     if (!r.ok && r.needCreate) {
       await core.installOverride(state.dsh_home, true);
-      console.log(`  ✓ 已创建默认注入文件：${state.override_path}`);
+      console.log(`  ✓ Создан файл инъекции по умолчанию: ${state.override_path}`);
       core.editOverride(state.dsh_home);
     } else {
-      console.log(`  → 已打开 ${r.editor} 编辑注入文件：${r.path}`);
+      console.log(`  → Открыт ${r.editor} для редактирования файла инъекции: ${r.path}`);
     }
-    console.log("  编辑完成后重启 dsh 生效。");
+    console.log("  После редактирования перезапустите dsh, чтобы изменения вступили в силу.");
   } else {
-    console.log("默认不清洗，使用 --apply 应用清洗。");
+    console.log("По умолчанию очистка не выполняется, примените её через --apply.");
   }
 }
 

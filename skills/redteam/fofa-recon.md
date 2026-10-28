@@ -1,60 +1,60 @@
 ---
 name: fofa-recon
-description: 用 FOFA API 批量测绘靶标资产（域名/IP/端口/标题/指纹）；内置限速客户端，严格单线程 + 最小间隔 + 退避重试，避免触发 45012
-whenToUse: 信息收集阶段需要快速铺开某单位/域名的互联网资产面时
+description: Массовое картирование активов цели через FOFA API (домен/IP/порт/заголовок/фингерпринт); встроенный клиент с ограничением скорости — строго один поток + минимальный интервал + backoff-повторы, чтобы не поймать 45012
+whenToUse: Когда на этапе разведки нужно быстро развернуть интернет-поверхность активов организации или домена
 role: recon
 enabled: true
 ---
 
-# FOFA 资产测绘（限速安全版）
+# Картирование активов FOFA (безопасная версия с лимитами)
 
-## 凭据
-- API Key：从环境变量 `FOFA_KEY` 读取（**任何 key 都不要写进仓库**；本技能所有脚本只读环境变量）
-- 接口：`GET https://fofa.info/api/v1/search/all`
-- 参数：`key`、`qbase64`（查询语句的 base64）、`size`、`page`、`fields`
+## Учётные данные
+- API Key: читается из переменной окружения `FOFA_KEY` (**никакой key не пишите в репозиторий**; все скрипты навыка читают только переменную окружения)
+- Эндпоинт: `GET https://fofa.info/api/v1/search/all`
+- Параметры: `key`, `qbase64` (base64 от поискового запроса), `size`, `page`, `fields`
 
-## 官方限额（fofa.info/vip，2026-09 核对）
+## Официальные лимиты (fofa.info/vip, проверено 2026-09)
 
-| 会员 | 查询请求 | 获取数据量 | **查询接口并发** |
+| Тариф | Запросы | Объём данных | **Параллельность API** |
 |---|---|---|---|
-| 注册用户（免费） | 无 API（页面 300 次/月） | 页面 3,000 条/月 | — |
-| 个人版 | 10,000 次/月 | 100,000 条/月 | **1 秒 1 次** |
-| 专业版 | 80,000 次/月 | 800,000 条/月 | **1 秒 1 次** |
-| 商业版 | 900,000 次/月 | 9,000,000 条/月 | **1 秒 2 次** |
-| 企业版 V2 | 5,000,000 次/月 | 50,000,000 条/月 | **1 秒 5 次** |
+| Зарегистрированный пользователь (бесплатно) | API нет (страница: 300 раз/мес) | 3,000 записей/мес через страницу | — |
+| Персональный | 10,000 раз/мес | 100,000 записей/мес | **1 раз в секунду** |
+| Профессиональный | 80,000 раз/мес | 800,000 записей/мес | **1 раз в секунду** |
+| Коммерческий | 900,000 раз/мес | 9,000,000 записей/мес | **2 раза в секунду** |
+| Корпоративный V2 | 5,000,000 раз/мес | 50,000,000 записей/мес | **5 раз в секунду** |
 
-## 实测行为（实测验证）
-- 连续快速请求 → **HTTP 429**，响应体 `{"error":true,"errmsg":"[45012] 请求速度过快"}`
-- key 错误 → HTTP 200 + `{"error":true,"errmsg":"[-700] 账号无效"}`
-- 单页 `size` 到 1000 正常；请求间隔 ≥1 秒时连续请求均返回 200
-- 结论：**按 1 请求/秒 保守执行，绝不并发**；遇到 45012 必须退避，不要立即重试
+## Фактическое поведение (проверено на практике)
+- Частые запросы подряд → **HTTP 429**, тело ответа `{"error":true,"errmsg":"[45012] слишком высокая частота запросов"}`
+- Неверный key → HTTP 200 + `{"error":true,"errmsg":"[-700] недействительный аккаунт"}`
+- `size` до 1000 на одну страницу работает нормально; при интервале ≥1 секунды все последовательные запросы возвращают 200
+- Вывод: **работаем консервативно — 1 запрос/сек, никакой параллельности**; при 45012 обязателен backoff, не повторяйте сразу
 
-## 使用纪律（重要）
-1. **精确查询优先**：`domain=` / `cert=` / `org=` 先缩小范围，再考虑 `body=` / `title=` 等宽泛语句。宽语句返回几十万条没意义，还烧配额。
-2. **不要全量翻页**：默认只取前 1–3 页（每页 100 条）拿到测绘入口即可。
-3. **单进程单线程**：同一时刻只跑一个采集任务；多个查询串行排队。
-4. **结果落盘缓存**：同一查询不要重复拉，先看 `runs/fofa-*.jsonl` 是否已有。
-5. **长任务放后台**：用 `run_in_background` 跑，别阻塞对话。
-6. 配额耗尽或被限速时改用其他数据源（证书透明、DNS、搜索引擎），不要死磕。
+## Дисциплина использования (важно)
+1. **Точные запросы в приоритете**: `domain=` / `cert=` / `org=` сначала сужают область, и только потом берите широкие `body=` / `title=`. Широкие запросы отдают сотни тысяч записей — бесполезно и сжигает квоту.
+2. **Не перелистывайте всё**: по умолчанию берите первые 1–3 страницы (по 100 записей) — этого достаточно, чтобы получить точку входа для картирования.
+3. **Один процесс, один поток**: одновременно выполняется только одна задача сбора; несколько запросов выстраиваются в очередь последовательно.
+4. **Результаты кешируются на диск**: один и тот же запрос не тяните повторно, сначала проверьте, есть ли уже `runs/fofa-*.jsonl`.
+5. **Долгие задачи — в фон**: запускайте через `run_in_background`, не блокируйте диалог.
+6. Когда квота исчерпана или вас ограничили по скорости, переходите на другие источники (прозрачность сертификатов, DNS, поисковые системы), не упирайтесь в одно.
 
-## 限速客户端（用这个，不要手写 curl 循环）
+## Клиент с ограничением скорости (используйте его, не пишите цикл curl руками)
 ```bash
 cat > runs/fofa_client.py <<'PY'
 #!/usr/bin/env python3
-"""FOFA 采集（限速安全）：单线程 + 最小间隔 + 指数退避 + 结果缓存。
+"""Сбор данных FOFA (безопасно по лимитам): один поток + минимальный интервал + экспоненциальный backoff + кеш результатов.
 
-用法:
+Использование:
   python3 runs/fofa_client.py 'domain="example.com"' --pages 2 --size 100 --interval 2.0
-输出:
-  runs/fofa-<slug>.jsonl   每行一个资产 {host,ip,port,title,domain,server,protocol}
+Вывод:
+  runs/fofa-<slug>.jsonl   по одной строке на актив {host,ip,port,title,domain,server,protocol}
 """
 import argparse, base64, hashlib, json, os, sys, time, urllib.error, urllib.parse, urllib.request
 
 KEY = os.environ["FOFA_KEY"]
 API = "https://fofa.info/api/v1/search/all"
 FIELDS = "host,ip,port,title,domain,server,protocol"
-RETRY_BACKOFF = [5, 15, 45]          # 遇 45012 的退避秒数
-HARD_BUDGET = 30                      # 单次运行最多请求次数
+RETRY_BACKOFF = [5, 15, 45]          # секунды backoff при 45012
+HARD_BUDGET = 30                      # максимум запросов за один запуск
 
 
 def fetch(query, page, size, timeout=30):
@@ -77,9 +77,9 @@ def fetch(query, page, size, timeout=30):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("query")
-    ap.add_argument("--pages", type=int, default=2, help="最多翻页数（默认 2）")
-    ap.add_argument("--size", type=int, default=100, help="每页条数（默认 100，不要调大）")
-    ap.add_argument("--interval", type=float, default=2.0, help="请求最小间隔秒（默认 2.0）")
+    ap.add_argument("--pages", type=int, default=2, help="сколько страниц максимум (по умолчанию 2)")
+    ap.add_argument("--size", type=int, default=100, help="записей на страницу (по умолчанию 100, не увеличивайте)")
+    ap.add_argument("--interval", type=float, default=2.0, help="минимальный интервал между запросами в секундах (по умолчанию 2.0)")
     ap.add_argument("--out", default=None)
     args = ap.parse_args()
 
@@ -88,12 +88,12 @@ def main():
     os.makedirs(os.path.dirname(out) or ".", exist_ok=True)
 
     if os.path.exists(out) and os.path.getsize(out) > 0:
-        print(f"[cache] {out} 已存在（{os.path.getsize(out)} bytes），如需重拉请先删除", file=sys.stderr)
+        print(f"[cache] {out} уже существует ({os.path.getsize(out)} bytes), для повторной загрузки удалите файл", file=sys.stderr)
         return 0
 
     seen, rows, requests_made, last_ts = set(), [], 0, 0.0
     for page in range(1, args.pages + 1):
-        # ---- 限速：保证两次请求之间至少间隔 interval 秒 ----
+        # ---- ограничение скорости: между запросами минимум interval секунд ----
         wait = args.interval - (time.time() - last_ts)
         if wait > 0:
             time.sleep(wait)
@@ -101,27 +101,27 @@ def main():
         status, data = None, None
         for attempt, backoff in enumerate([0] + RETRY_BACKOFF):
             if attempt:
-                print(f"[backoff] 等待 {backoff}s 后重试 (page={page})", file=sys.stderr)
+                print(f"[backoff] ждём {backoff}s и повторяем (page={page})", file=sys.stderr)
                 time.sleep(backoff)
             last_ts = time.time()
             requests_made += 1
             if requests_made > HARD_BUDGET:
-                print(f"[stop] 达到请求预算 {HARD_BUDGET}", file=sys.stderr)
+                print(f"[stop] достигнут бюджет запросов {HARD_BUDGET}", file=sys.stderr)
                 break
             status, data = fetch(args.query, page, args.size)
             if status == 200 and not data.get("error"):
                 break
             errmsg = str(data.get("errmsg", ""))
             if "45012" in errmsg or status == 429:
-                continue                      # 限速 → 退避重试
-            print(f"[stop] 不可重试错误 http={status} {errmsg}", file=sys.stderr)
+                continue                      # ограничение скорости → backoff и повтор
+            print(f"[stop] неповторяемая ошибка http={status} {errmsg}", file=sys.stderr)
             data = None
             break
         if data is None:
             break
 
         results = data.get("results") or []
-        print(f"[page {page}] {len(results)} 条 (size={data.get('size')}, 消耗F点={data.get('consumed_fpoint')})", file=sys.stderr)
+        print(f"[page {page}] {len(results)} записей (size={data.get('size')}, потрачено F-точек={data.get('consumed_fpoint')})", file=sys.stderr)
         for item in results:
             if isinstance(item, str):
                 item = [item]
@@ -140,12 +140,12 @@ def main():
                 "protocol": item[6] if len(item) > 6 else "",
             })
         if len(results) < args.size:
-            break                              # 已到末页
+            break                              # последняя страница
 
     with open(out, "w", encoding="utf-8") as f:
         for row in rows:
             f.write(json.dumps(row, ensure_ascii=False) + "\n")
-    print(f"[done] {len(rows)} 条资产 → {out}（共 {requests_made} 次请求）", file=sys.stderr)
+    print(f"[done] {len(rows)} активов → {out} (всего {requests_made} запросов)", file=sys.stderr)
     return 0
 
 
@@ -154,26 +154,26 @@ if __name__ == "__main__":
 PY
 ```
 
-### 用法
+### Использование
 ```bash
 mkdir -p runs
 python3 runs/fofa_client.py 'domain="example.com"' --pages 2 --size 100 --interval 2.0
 python3 runs/fofa_client.py 'cert="example.com"' --pages 3 --interval 2.0
-python3 runs/fofa_client.py 'org="示例科技有限公司"' --pages 2 --interval 2.0
+python3 runs/fofa_client.py 'org="ООО «Пример»"' --pages 2 --interval 2.0
 ```
 
-### 落库
-读 `runs/fofa-*.jsonl`，逐条 `redteam_asset_add`：`provenance="passive"`、`tool="fofa"`，端口带 `url=host`、`title`、`product=server`；域名写进 `names`。
+### Запись в базу
+Читайте `runs/fofa-*.jsonl` и для каждой записи вызывайте `redteam_asset_add`: `provenance="passive"`, `tool="fofa"`, порт с `url=host`, `title`, `product=server`; домен записывается в `names`.
 
-## 常用查询语句
-| 目的 | 语句 |
+## Частые поисковые запросы
+| Цель | Запрос |
 |---|---|
-| 某域名全部资产 | `domain="example.com"` |
-| 证书包含该域名 | `cert="example.com"` |
-| 某 C 段 | `ip="203.0.113.0/24"` |
-| 单位名称 | `org="示例科技有限公司"` |
-| 按标题找后台 | `title="登录" && domain="example.com"` |
-| 按 body 特征 | `body="/seeyon/"` |
-| 指定端口 | `ip="203.0.113.0/24" && port="3306"` |
+| Все активы домена | `domain="example.com"` |
+| Сертификат содержит домен | `cert="example.com"` |
+| Некая подсеть C | `ip="203.0.113.0/24"` |
+| Название организации | `org="ООО «Пример»"` |
+| Найти админку по заголовку | `title="login" && domain="example.com"` |
+| По признаку в body | `body="/seeyon/"` |
+| Конкретный порт | `ip="203.0.113.0/24" && port="3306"` |
 
-> 宽泛语句（单独用 `body=` / `title=`）结果量大、消耗配额快，务必叠加域名或 IP 限定。
+> Широкие запросы (только `body=` / `title=`) дают много результатов и быстро сжигают квоту — обязательно добавляйте ограничение по домену или IP.

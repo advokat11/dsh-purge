@@ -44,7 +44,7 @@ export function RestartAsk(props) {
       return rd.createPortal(node, document.body);
     }
   } catch {
-    /* host 可能没暴露 react-dom */
+    /* хост мог не отдать react-dom */
   }
   return node;
 }
@@ -55,7 +55,7 @@ export function reopenAfterRestart() {
 
 export function waitForRestart(setNotice, setBusy, t) {
   const started = Date.now();
-  // 必须先看到旧进程掉线，再等新进程就绪；否则同进程立刻 200 会被当成「重启成功」又弹重启。
+  // сначала надо увидеть, что старый процесс отвалился, и только потом ждать готовности нового; иначе мгновенный 200 от того же процесса примут за «перезапуск удался» и снова покажут окно перезапуска.
   let sawDown = false;
   const ping = () => {
     fetch("/dsh-purge/status", {

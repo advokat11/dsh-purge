@@ -1,4 +1,4 @@
-// Session composer "回退" (rewind) button ported from YuJunZhiXue/dsh-purge
+// Кнопка «откат» (rewind) в composer сессии, портирована из YuJunZhiXue/dsh-purge
 // 1.1.71 (MIT). Original block: client.js 1.1.71 lines 2835-3474:
 // REWIND_CSS, RewindSafe/RewindFallback/RewindButton, installRewindUi,
 // installRewindWatch.
@@ -61,14 +61,14 @@ function rewindMenuNode(t, menuPos, menuRef, runRewind) {
           runRewind("once");
         },
       },
-      h("b", null, rewindText(t, "rewind.once", "回退一次")),
+      h("b", null, rewindText(t, "rewind.once", "Откатить раз")),
       h(
         "span",
         null,
         rewindText(
           t,
           "rewind.once.hint",
-          "把这一轮发出去的那句放回输入框，并清掉这一轮",
+          "Вернуть отправленное в этом раунде в поле ввода и убрать только этот раунд",
         ),
       ),
     ),
@@ -87,14 +87,14 @@ function rewindMenuNode(t, menuPos, menuRef, runRewind) {
           runRewind("round");
         },
       },
-      h("b", null, rewindText(t, "rewind.round", "回退上一轮")),
+      h("b", null, rewindText(t, "rewind.round", "Откатить раунд")),
       h(
         "span",
         null,
         rewindText(
           t,
           "rewind.round.hint",
-          "把这一轮发出去的那句放回输入框；子代理也只撤这一轮",
+          "Вернуть отправленное в этом раунде в поле ввода; у субагентов убирается только этот раунд",
         ),
       ),
     ),
@@ -132,7 +132,7 @@ export class RewindFallback extends Component {
     })
       .then(async (data) => {
         if (!data || !data.ok || !data.sessionId || data.cleared === false) {
-          throw new Error((data && data.error) || "没有清掉之前发送的内容");
+          throw new Error((data && data.error) || "отправленное ранее не удалено");
         }
         noteRewindAt(data.at);
         const text = isPluginDraft(data.text) ? "" : data.text || "";
@@ -144,7 +144,7 @@ export class RewindFallback extends Component {
       .catch((e) => {
         this.setState({
           busy: false,
-          notice: "回退失败: " + String((e && e.message) || e),
+          notice: "Откат не удался: " + String((e && e.message) || e),
         });
       });
   }
@@ -168,10 +168,10 @@ export class RewindFallback extends Component {
     const sessionId = this.props.sessionId || currentSessionId(hostSessions());
     const t = this.props.t || null;
     const label = this.state.busy
-      ? "回退中…"
+      ? "Откат…"
       : this.state.notice
         ? this.state.notice.slice(0, 18)
-        : "回退";
+        : "Откат";
     return h(
       "div",
       {
@@ -209,7 +209,7 @@ export class RewindFallback extends Component {
   }
 }
 
-/** 回退按钮是否显示：默认显示（原版功能），可用 `purge-community rewind off` 关掉。 */
+/** Показывать ли кнопку отката: по умолчанию показывается (функция оригинала), отключается через `purge-community rewind off`. */
 let rewindVisible = true;
 let rewindProbe = null;
 
@@ -303,7 +303,7 @@ export function RewindButton(props) {
         body: JSON.stringify({ sessionId, mode }),
       });
       if (!data || !data.ok || !data.sessionId || data.cleared === false) {
-        throw new Error((data && data.error) || "没有清掉之前发送的内容");
+        throw new Error((data && data.error) || "отправленное ранее не удалено");
       }
       noteRewindAt(data.at);
       const text = isPluginDraft(data.text) ? "" : data.text || "";
@@ -311,7 +311,7 @@ export function RewindButton(props) {
       await openRewoundSession(sessions, data.sessionId);
       scheduleComposerFill(data.sessionId, text);
     } catch (e) {
-      const message = rewindText(t, "rewind.fail", "回退失败: {error}").replace(
+      const message = rewindText(t, "rewind.fail", "Откат не удался: {error}").replace(
         "{error}",
         String((e && e.message) || e),
       );
@@ -346,9 +346,9 @@ export function RewindButton(props) {
       : notice
     : "";
   const label = busy
-    ? rewindText(t, "rewind.busy", "回退中…")
-    : failLabel || rewindText(t, "rewind.label", "回退");
-  const title = notice || rewindText(t, "rewind.aria", "回退");
+    ? rewindText(t, "rewind.busy", "Откат…")
+    : failLabel || rewindText(t, "rewind.label", "Откат");
+  const title = notice || rewindText(t, "rewind.aria", "Откат");
   return h(
     "div",
     { className: "dshp-rewind-wrap", ref: wrapRef },
@@ -359,7 +359,7 @@ export function RewindButton(props) {
         type: "button",
         className: "dshp-rewind",
         title,
-        "aria-label": rewindText(t, "rewind.aria", "回退"),
+        "aria-label": rewindText(t, "rewind.aria", "Откат"),
         "aria-expanded": menu ? "true" : "false",
         disabled: busy || !sessionId,
         onMouseDown: (e) => e.preventDefault(),

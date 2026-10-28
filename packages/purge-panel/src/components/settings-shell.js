@@ -23,9 +23,9 @@ export function compatibilityLevelText(t, level) {
 }
 
 /**
- * 社区版兼容提示：读取后端 /dsh-purge/community 报告的宿主版本与兼容级别。
- * 原版 1.1.71 的 CompatibilityNote 只对官方接口版本告警；社区版换成本 fork
- * 真实的宿主版本/兼容级别，且永远渲染（不再无条件 return null）。
+ * Подсказка о совместимости для community-версии: читаем версию хоста и уровень совместимости, которые отдаёт бэкенд /dsh-purge/community.
+ * В оригинале 1.1.71 CompatibilityNote предупреждал только о версии официального интерфейса; в community-версии берём
+ * реальные версию хоста и уровень совместимости этого форка и рендерим всегда (без безусловного return null).
  */
 export function CommunityCompatibilityNote() {
   const t = useT();
@@ -76,10 +76,10 @@ export function CompatibilityNote({ status }) {
       style: { margin: "0 20px 10px" },
     },
     valid
-      ? "官方版本 " +
+      ? "Официальная версия " +
           v +
-          "；此界面已验证 1.1.71。如遇设置异常，请更新界面插件。"
-      : "无法确认官方 Purge 接口。请检查官方插件是否启用，或更新界面插件。",
+          "; этот интерфейс проверен на 1.1.71. Если настройки ведут себя странно, обновите плагин интерфейса."
+      : "Не удалось подтвердить официальный интерфейс Purge. Проверьте, включён ли официальный плагин, или обновите плагин интерфейса.",
   );
 }
 
@@ -104,23 +104,23 @@ export function SettingsRoot(props = {}) {
     h(
       "header",
       { className: "dshpp-native-head" },
-      h("div", null, h("h2", null, "Purge"), h("p", null, "插件设置")),
+      h("div", null, h("h2", null, "Purge"), h("p", null, "настройки плагина")),
       h(
         "span",
         { className: "dshpp-native-badge" },
-        (__COMMUNITY__ ? "社区版 " : "独立界面 ") + __PANEL_VERSION__,
+        (__COMMUNITY__ ? "community-версия " : "отдельный интерфейс ") + __PANEL_VERSION__,
       ),
     ),
     h(CompatibilityNote, { status: backendStatus }),
     h(
       "nav",
-      { className: "dshpp-native-nav", "aria-label": "Purge 设置分类" },
+      { className: "dshpp-native-nav", "aria-label": "категории настроек Purge" },
       [
-        ["status", "状态"],
-        ["prompt", "提示词"],
-        ["rules", "规则"],
-        ["skills", "技能"],
-        ["more", "更多"],
+        ["status", "Статус"],
+        ["prompt", "Промпт"],
+        ["rules", "Правила"],
+        ["skills", "Навыки"],
+        ["more", "Ещё"],
       ].map(([id, label]) =>
         h(
           "button",
@@ -152,8 +152,8 @@ export function SettingsRoot(props = {}) {
       h(
         "div",
         { hidden: page !== "more", className: "dshpp-more" },
-        h("h3", null, "演练台"),
-        h("p", null, "打开插件原有的演练工具与环境设置。"),
+        h("h3", null, "Полигон"),
+        h("p", null, "Открыть встроенные инструменты полигона и настройки окружения."),
         h(
           Btn,
           {
@@ -162,22 +162,22 @@ export function SettingsRoot(props = {}) {
               requestDrill("tab");
             },
           },
-          "打开演练台",
+          "Открыть полигон",
         ),
         h(
           "p",
           { className: "dshpp-attribution" },
           __COMMUNITY__
-            ? "基于 YuJunZhiXue/dsh-purge 1.1.71 独立维护，保留原作者署名；更新仅来自本 fork。"
-            : "界面独立维护；官方 Purge 可单独更新。基于 YuJunZhiXue/dsh-purge 1.1.71（MIT）。",
+            ? "Поддерживается независимо на основе YuJunZhiXue/dsh-purge 1.1.71, авторство сохранено; обновления идут только из этого форка."
+            : "Интерфейс поддерживается независимо; официальный Purge обновляется отдельно. На основе YuJunZhiXue/dsh-purge 1.1.71 (MIT).",
         ),
       ),
       page === "drill"
         ? h(
             "div",
             { className: "dshpp-native-drill" },
-            // 演练台自带一套 CSS（.rt-*）；旧版由 dock 注入 <head>，重构时丢了，
-            // 结果面板在右侧栏里完全没样式、文字被挤成一列。这里随组件一起挂上。
+            // у полигона свой CSS (.rt-*); в старой версии его вставлял в <head> dock, при рефакторинге он потерялся,
+            // и панель в правой колонке оставалась совсем без стилей, а текст сжимался в одну колонку. Здесь подключаем его вместе с компонентом.
             __dshPurgeDrill && __dshPurgeDrill.CSS
               ? h("style", { "data-dsh-purge-drill": "1" }, __dshPurgeDrill.CSS)
               : null,
@@ -189,11 +189,11 @@ export function SettingsRoot(props = {}) {
                   select("more");
                 },
               },
-              "返回设置",
+              "Вернуться к настройкам",
             ),
             readDrillAuth()
               ? h(__dshPurgeDrill.Panel, { embedded: true })
-              : h("p", null, "请先完成演练台授权。"),
+              : h("p", null, "сначала пройдите авторизацию полигона."),
           )
         : null,
     ),

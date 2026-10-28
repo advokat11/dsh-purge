@@ -79,7 +79,7 @@ export function apply(ctx) {
       PanelOverlays,
     ),
   );
-  // 左侧栏入口：图标 + 整页。右侧抽屉不再注册，避免两处重复。
+  // Вход в левой панели: иконка + отдельная страница. Правый drawer больше не регистрируется, чтобы не дублировать.
   ctx.slots.inject("sidebar.panellist", () =>
     ctx.slots.register(
       {

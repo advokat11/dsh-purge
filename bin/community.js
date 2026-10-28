@@ -53,21 +53,21 @@ if (LEGACY[op]) {
       };
     } else if (sub === "show") {
       const row = byId(argument2);
-      if (!row) throw Error(`没有漂移的补丁 #${argument2}`);
+      if (!row) throw Error(`Патчи без дрейфа #\${argument2}`);
       result = row;
     } else if (sub === "clear") {
       const idx = rawArgs.indexOf("--index");
       const wanted = idx >= 0 ? Number(rawArgs[idx + 1]) : undefined;
-      if (idx >= 0 && !Number.isInteger(wanted)) throw Error("--index 需要整数");
+      if (idx >= 0 && !Number.isInteger(wanted)) throw Error("--index требует целое число");
       result = { cleared: true, overrides: clearOverride(home, argument2, wanted) };
     } else if (sub === "apply") {
       const row = byId(argument2);
-      if (!row) throw Error(`没有漂移的补丁 #${argument2}`);
+      if (!row) throw Error(`Патчи без дрейфа #\${argument2}`);
       const idxFlag = rawArgs.indexOf("--index");
       const wanted = idxFlag >= 0 ? Number(rawArgs[idxFlag + 1]) : NaN;
-      if (idxFlag >= 0 && !Number.isInteger(wanted)) throw Error("--index 需要整数");
+      if (idxFlag >= 0 && !Number.isInteger(wanted)) throw Error("--index требует целое число");
       const target = idxFlag >= 0 ? row.anchors.find((a) => a.index === wanted) : row.anchors[0];
-      if (!target) throw Error("找不到对应的锚点（用 --index 指定）");
+      if (!target) throw Error("Подходящий якорь не найден (укажите через --index)");
       const text = readFileSync(target.file, "utf8").replace(/\r\n/g, "\n");
       const lines = text.split("\n");
       const oldCount = String(target.head || "").split("\n").length;
@@ -76,7 +76,7 @@ if (LEGACY[op]) {
       let to;
       if (linesFlag >= 0) {
         const [a, b] = String(rawArgs[linesFlag + 1]).split("-").map(Number);
-        if (!Number.isInteger(a) || !Number.isInteger(b) || a < 1 || b < a) throw Error("--lines 需要形如 120-132");
+        if (!Number.isInteger(a) || !Number.isInteger(b) || a < 1 || b < a) throw Error("--lines требует формат вида 120-132");
         from = a - 1;
         to = b;
       } else {
@@ -86,9 +86,9 @@ if (LEGACY[op]) {
         to = Math.min(lines.length, from + span);
       }
       const candidate = lines.slice(from, to).join("\n");
-      if (!candidate.trim()) throw Error("取到的片段为空，用 --lines 指定范围");
+      if (!candidate.trim()) throw Error("Полученный фрагмент пуст, задайте диапазон через --lines");
       const occurrences = text.split(candidate).length - 1;
-      if (occurrences !== 1) throw Error(`候选片段在文件里出现 ${occurrences} 次，必须唯一；用 --lines 缩小范围`);
+      if (occurrences !== 1) throw Error(`Кандидатный фрагмент встречается в файле \${occurrences} раз, должен быть единственным; сузьте диапазон через --lines`);
       const preview = {
         patch: row.id,
         name: row.name,
@@ -103,7 +103,7 @@ if (LEGACY[op]) {
         ).changed,
       };
       if (!rawArgs.includes("--yes")) {
-        result = { dryRun: true, ...preview, hint: "确认无误后加 --yes 写入本地重锚覆盖" };
+        result = { dryRun: true, ...preview, hint: "Если всё верно, добавьте --yes, чтобы записать локальное переопределение якоря" };
       } else {
         writeOverride(home, row.id, target.index, candidate, { host: drift.host });
         logAudit("reanchor", { patch: row.id, index: target.index, host: drift.host }, home);
@@ -112,7 +112,7 @@ if (LEGACY[op]) {
         result = { written: true, ...preview, status: (await core.patchStatus(host))[row.id] };
       }
     } else {
-      throw Error("用法：purge-community reanchor list | show <id> | apply <id> [--index n] [--lines a-b] [--yes] | clear <id>");
+      throw Error("Использование: purge-community reanchor list | show <id> | apply <id> [--index n] [--lines a-b] [--yes] | clear <id>");
     }
   } else if (op === "retry") {
     const sub = (argument || "status").toLowerCase();
@@ -142,7 +142,7 @@ if (LEGACY[op]) {
     } else if (sub === "status" || !argument) {
       result = { ok: true, injectPosition: readTuning(home).injectPosition || "head", hint: "purge-community inject head|tail|both" };
     } else {
-      result = { ok: false, error: "injectPosition 只接受 head / tail / both", value: sub };
+      result = { ok: false, error: "injectPosition принимает только head / tail / both", value: sub };
       process.exitCode = 2;
     }
   } else if (op === "probe") {
@@ -162,7 +162,7 @@ if (LEGACY[op]) {
     } else if (sub === "status" || sub === "path") {
       result = presetStatus(home);
     } else {
-      throw Error("用法：purge-community preset [status|install [--force]]");
+      throw Error("Использование: purge-community preset [status|install [--force]]");
     }
   } else if (op === "boost") {
     if (argument === "on" || argument === "off") result = { enabled: writeBoost(argument === "on") };
@@ -177,30 +177,30 @@ if (LEGACY[op]) {
     if (rawArgs.includes("--json")) result = report;
     else {
       const notApplicable = report.patch.not_applicable || 0;
-      const naNote = notApplicable ? `（另 ${notApplicable} 条明确不适用、已关闭或无需迁移）` : "";
-      const missingNote = report.patch.missing_file ? ` · 目标缺失 ${report.patch.missing_file} 条（详见诊断）` : "";
+      const naNote = notApplicable ? `(ещё \${notApplicable} шт. явно не применимы, уже закрыты или не требуют миграции)` : "";
+      const missingNote = report.patch.missing_file ? ` · отсутствует цель у \${report.patch.missing_file} шт. (подробности в диагностике)` : "";
       const lines = [
-        `Purge 破甲自检 · ${report.host || "(未定位宿主)"}`,
-        `  DSH ${report.host_version} · ${report.level} · 宿主补丁 ${report.patch.applied}/${report.patch.total}${naNote}${missingNote}`,
+        `Самопроверка пробития Purge · \${report.host || "(хост не определён)"}`,
+        `  DSH \${report.host_version} · \${report.level} · патчи хоста \${report.patch.applied}/\${report.patch.total}\${naNote}\${missingNote}`,
         "",
       ];
       for (const layer of report.layers) {
         const mark = ["pending", "inferred", "unknown"].includes(layer.state) ? "⏳" : layer.ok ? "✓" : "✗";
         const tail = layer.note
           || (layer.broken.length ? JSON.stringify(layer.broken) : "")
-          || (layer.pending && layer.pending.length ? `待应用 #${layer.pending.join("/#")}` : "");
+          || (layer.pending && layer.pending.length ? `К применению #\${layer.pending.join("/#")}` : "");
         lines.push(`  ${mark} ${layer.title}  ${layer.applied}/${layer.required ?? layer.total}${tail ? "  " + tail : ""}`);
       }
       const pendingCount = (report.summary && report.summary.pending && report.summary.pending.patches) || 0;
       lines.push(
         "",
         report.state === "pending"
-          ? `结论：有 ${pendingCount} 条补丁待应用 —— 点一次「应用」，然后退出重开 DSH 即可。`
+          ? `Итог: \${pendingCount} патчей ждут применения — нажмите «Применить» один раз, затем выйдите и снова откройте DSH.`
           : report.state === "broken"
-            ? "结论：有层真的没生效（✗），见上面。"
+            ? "Вывод: часть слоёв реально не работает (✗), см. выше."
             : ["unknown", "inferred"].includes(report.state)
-              ? "结论：未发现已确认故障，但存在推导值或未确认项，见逐层说明。"
-              : "结论：所有层都在位。",
+              ? "Вывод: подтверждённых сбоев нет, но есть расчётные значения и неподтверждённые пункты — см. пояснения по слоям."
+              : "Вывод: все слои на месте.",
       );
       if (rawArgs.includes("--text")) {
         console.log(lines.join("\n"));
@@ -216,7 +216,7 @@ if (LEGACY[op]) {
     const drift = target
       ? await patchDrift(target, undefined, {surface:hostSurface(target),dshHome:home})
       : {host:"",state:"unknown",checked:0,drifted:[],optionalDrift:[],chained:[],missing:[],
-          note:"未定位当前实例；请明确 DSH_BASE 或 PURGE_DSH_CLI，不扫描其他安装"};
+          note:"Текущий экземпляр не определён; укажите DSH_BASE или PURGE_DSH_CLI — другие установки не сканируются"};
     result = { name: "Purge Community", package: PACKAGE, compatibility: compatibility(target), ...drift };
   } else if (op === "status")
     result = {
@@ -230,14 +230,14 @@ if (LEGACY[op]) {
   else if (op === "usage") result = maintenance().usage();
   else if (op === "rollback") result = await maintenance().rollback(argument);
   else if (op === "install" || op === "migrate") {
-    if (!argument) throw Error("需要安装包路径");
+    if (!argument) throw Error("Нужен путь к пакету установки");
     result = await maintenance().install(path.resolve(argument), {
       reason: op === "migrate" ? "before-migration" : "before-update",
       migrate: op === "migrate",
     });
   } else
     throw Error(
-      "用法：purge-community status | host-status | diagnose | selfcheck [--json] | boost on|off | rewind on|off | probe [new] | audit [--limit n] | preset [status|install] | backup [prune|usage] | rollback <备份ID> | migrate <tgz> | apply | revert | uninstall | edit",
+      "Использование: purge-community status | host-status | diagnose | selfcheck [--json] | boost on|off | rewind on|off | probe [new] | audit [--limit n] | preset [status|install] | backup [prune|usage] | rollback <ID резервной копии> | migrate <tgz> | apply | revert | uninstall | edit",
     );
   console.log(JSON.stringify(result, null, 2));
 } catch (e) {
